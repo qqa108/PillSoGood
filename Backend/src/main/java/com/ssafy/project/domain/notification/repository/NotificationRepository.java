@@ -1,7 +1,9 @@
 package com.ssafy.project.domain.notification.repository;
 
+import com.ssafy.project.domain.notification.entity.Notification;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class NotificationRepository {
+public interface NotificationRepository extends JpaRepository<Notification, Integer> {
 }
