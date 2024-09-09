@@ -20,10 +20,13 @@ public class UserMedicationDetail {
     private int remain;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medicine_id", nullable = false)
+    @JoinColumns({
+            @JoinColumn(name = "medicine_id", referencedColumnName = "medicineId"),
+            @JoinColumn(name = "medicine_code", referencedColumnName = "code")
+    })
     private Medicine medicine;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "user_medication_id", nullable = false)
+    @JoinColumn(name = "user_medication_id", nullable = false)
     private UserMedication userMedication;
 }

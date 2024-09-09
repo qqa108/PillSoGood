@@ -1,45 +1,52 @@
 package com.ssafy.project.domain.medicine.entity;
 
+import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor (access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Medicine {
-    @EmbeddedId
-    private MedicineKey medicineKey;
 
-    @Column (name = "kor_name", nullable = false)
+    @EmbeddedId
+    private MedicineId medicineId;
+
+    @Column(name = "kor_name", nullable = false)
     private String korName;
 
-    @Column (name = "eng_name")
+    @Column(name = "eng_name")
     private String engName;
 
-    @Enumerated (EnumType.STRING)
-    @Column (name = "category")
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "category")
     private Category category;
 
-    @Column (name = "company")
+    @Column(name = "company")
     private String company;
 
-    @Column (name = "drug_form")
+    @Column(name = "drug_form")
     private String drugForm;
 
-    @Column (name = "character")
-    private String character;
+    @Column(name = "characters")
+    private String characters;
 
-    @Column (name = "kind")
+    @Column(name = "kind")
     private String kind;
 
-    @Column (name = "effect")
+    @Column(name = "effect")
     private String effect;
 
-    @Column (name = "usage")
-    private String usage;
+    @Column(name = "usages")
+    private String usages;
 
-    @Column (name = "image_url")
+    @Column(name = "image_url")
     private String imageUrl;
+
+    @OneToMany(mappedBy = "medicine", fetch = FetchType.LAZY)
+    private List<UserMedicationDetail> userMedicationDetailList;
 }

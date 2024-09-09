@@ -2,13 +2,13 @@ package com.ssafy.project.domain.lists.pregnancyProhibition.entity;
 
 import com.ssafy.project.domain.medicine.entity.Medicine;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class PregnancyProhibition {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -16,12 +16,11 @@ public class PregnancyProhibition {
     private int id;
 
     @ManyToOne
-    @JoinColumn (name = "medicine_id", referencedColumnName = "id", nullable = false)
-    private Medicine medicineId;
-
-    @ManyToOne
-    @JoinColumn (name = "medicine_code", referencedColumnName = "code", nullable = false)
-    private Medicine medicineCode;
+    @JoinColumns({
+            @JoinColumn(name = "medicine_id", referencedColumnName = "medicineId"),
+            @JoinColumn(name = "medicine_code", referencedColumnName = "code")
+    })
+    private Medicine medicine;
 
     @Column (name = "level")
     private int level;
