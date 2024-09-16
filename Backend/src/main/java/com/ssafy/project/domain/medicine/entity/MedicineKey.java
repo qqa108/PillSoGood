@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class MedicineId implements Serializable {
+public class MedicineKey implements Serializable {
     private int medicineId;
     private String code;
 }

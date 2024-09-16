@@ -2,31 +2,32 @@ package com.ssafy.project.domain.lists.amountProhibition.entity;
 
 import com.ssafy.project.domain.medicine.entity.Medicine;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-public class AmountProhibition {
+public class AmountProhibitionEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column (name = "id")
     private int id;
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "medicine_id", referencedColumnName = "medicineId"),
-            @JoinColumn(name = "medicine_code", referencedColumnName = "code")
-    })
-    private Medicine medicine;
+    @JoinColumn (name = "medicine_id", referencedColumnName = "id", nullable = false)
+    private Medicine medicineId;
+
+    @ManyToOne
+    @JoinColumn (name = "medicine_code", referencedColumnName = "code", nullable = false)
+    private Medicine medicineCode;
 
     @Column (name = "amount")
     private double amount;
 
-    @Column (name = "limits")
-    private double limits;
+    @Column (name = "limit")
+    private double limit;
 
     @Column (name = "name")
     private String name;
