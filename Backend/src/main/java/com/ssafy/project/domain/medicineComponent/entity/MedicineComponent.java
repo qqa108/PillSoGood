@@ -1,4 +1,4 @@
-package com.ssafy.project.domain.lists.ageProhibition.entity;
+package com.ssafy.project.domain.medicineComponent.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AgeProhibition {
+public class MedicineComponent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
