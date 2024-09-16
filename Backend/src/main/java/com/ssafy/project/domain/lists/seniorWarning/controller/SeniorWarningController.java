@@ -1,9 +1,9 @@
-package com.ssafy.project.domain.lists.seniorProhibition.controller;
+package com.ssafy.project.domain.lists.seniorWarning.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class SeniorProhibitionController {
+public class SeniorWarningController {
 }
