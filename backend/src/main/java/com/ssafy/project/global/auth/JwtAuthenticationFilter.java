@@ -1,5 +1,6 @@
 package com.ssafy.project.global.auth;
 
+import com.ssafy.project.domain.user.service.UserLoginService;
 import com.ssafy.project.global.utils.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

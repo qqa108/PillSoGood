@@ -1,8 +1,8 @@
 package com.ssafy.project.global.config;
 
+import com.ssafy.project.domain.user.service.UserLoginService;
 import com.ssafy.project.global.auth.JwtAuthenticationEntryPoint;
 import com.ssafy.project.global.auth.JwtAuthenticationFilter;
-import com.ssafy.project.global.auth.UserLoginService;
 import com.ssafy.project.global.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
