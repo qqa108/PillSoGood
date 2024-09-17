@@ -45,6 +45,46 @@ public class UserLoginService {
         }
     }
 
+    public void storeRefreshToken(int userId, String token) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setRefreshToken(token);  // 리프레시 토큰 저장
+            userRepository.save(user);  // 엔티티 업데이트
+        } else {
+            throw new RuntimeException("유저를 찾을 수 없습니다.");
+        }
+    }
+
+    public void invalidateRefreshToken(int userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setRefreshToken(null);  // 리프레시 토큰 무효화
+            userRepository.save(user);  // 엔티티 업데이트
+        } else {
+            throw new RuntimeException("유저를 찾을 수 없습니다.");
+        }
+    }
+
+    public int getUserIdByRefreshToken(String refreshToken) {
+        Optional<User> userOpt = userRepository.findByRefreshToken(refreshToken);
+        if (userOpt.isPresent()) {
+            return userOpt.get().getId();
+        } else {
+            throw new RuntimeException("유효하지 않은 리프레시 토큰입니다.");
+        }
+    }
+
+    public String getRefreshTokenByUserId(int userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            return userOpt.get().getRefreshToken();
+        } else {
+            throw new RuntimeException("유저를 찾을 수 없습니다.");
+        }
+    }
+
     // User 엔티티를 UserDto로 변환하는 메서드
     private UserDto toDto(User user) {
         return UserDto.builder()
@@ -53,28 +93,23 @@ public class UserLoginService {
                 .name(user.getName())
                 .kakaoKey(user.getKakaoKey())
                 .flag(user.isFlag())
+                .refreshToken(user.getRefreshToken())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
-    public void storeRefreshToken(int userId, String token) {
-//        userLoginMapper.storeRefreshToken(userId, token);
+    // UserDto를 User 엔티티로 변환
+    private User toEntity(UserDto userDto) {
+        return User.builder()
+                .id(userDto.getId())
+                .email(userDto.getEmail())
+                .name(userDto.getName())
+                .kakaoKey(userDto.getKakaoKey())
+                .flag(userDto.isFlag())
+                .refreshToken(userDto.getRefreshToken())
+                .createdAt(userDto.getCreatedAt())
+                .updatedAt(userDto.getUpdatedAt())
+                .build();
     }
-
-    public void invalidateRefreshToken(int userId) {
-//        userLoginMapper.invalidateRefreshToken(userId);
-    }
-
-    public int getUserIdByRefreshToken(String refreshToken) {
-        return 0;
-//        return userLoginMapper.getUserIdByRefreshToken(refreshToken);
-    }
-
-    public String getRefreshTokenByUserId(int userId) {
-        return "";
-//        return userLoginMapper.getRefreshTokenByUserId(userId);
-    }
-
-
 }

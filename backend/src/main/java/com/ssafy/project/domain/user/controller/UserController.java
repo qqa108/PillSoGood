@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @Tag(name = "카카오 로그인")
 @RestController
 @RequestMapping(value = "/api")
@@ -35,11 +33,9 @@ public class UserController {
 
     @Operation(summary = "카카오 로그인")
     @PostMapping("/login")
-    public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> tokenRequest) {
-        String kakaoToken = tokenRequest.get("token");  // 프론트엔드에서 받은 카카오 액세스 토큰
+    public ResponseEntity<?> kakaoLogin(@RequestBody String kakaoToken) {
 
         try {
-
             // 카카오 사용자 정보 조회
             UserDto userInfo = kakaoService.getUserInfo(kakaoToken);
 
@@ -74,7 +70,7 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         int ID = (Integer) request.getAttribute("userId");
-//        userLoginService.invalidateRefreshToken(ID);
+        userLoginService.invalidateRefreshToken(ID);
         return ResponseEntity.ok("로그아웃 성공");
     }
 }
