@@ -7,43 +7,23 @@ const KakaoLogin = () => {
         window.Kakao.init(KAKAO_APP_KEY);
     }, []);
 
-    // const handleLogin = () => {
-
-    //     window.Kakao.Auth.login({
-    //         success: async (authObj) => {
-    //             const userInfo = await getKakaoUserInfo(authObj.access_token);
-    //             // 기존 회원인지 확인하는 로직
-    //             const isExistingUser = await checkIfUserExists(userInfo.id);
-
-    //             if (isExistingUser) {
-    //                 // 로그인 처리
-    //                 console.log('로그인 성공', userInfo);
-    //             } else {
-    //                 // 회원가입 처리
-    //                 console.log('회원가입 진행', userInfo);
-    //                 // 회원가입 API 호출
-    //                 await registerUser(userInfo);
-    //             }
-    //         },
-    //         fail: (err) => {
-    //             console.error(err);
-    //         },
-    //     });
-    // };
     const handleLogin = () => {
         window.Kakao.Auth.login({
-            scope: 'account_email', // 동의받을 항목 설정
+            scope: 'account_email, profile_nickname', // 동의받을 항목 설정
             success: async (authObj) => {
                 const userInfo = await getKakaoUserInfo(authObj.access_token);
                 const isExistingUser = await checkIfUserExists(userInfo.id);
+                console.log('유저정보');
+                console.log(authObj.access_token);
+                console.log(userInfo);
 
-                if (isExistingUser) {
-                    console.log('로그인 성공', userInfo);
-                } else {
-                    // 회원가입 처리
-                    console.log('회원가입 진행', userInfo);
-                    await registerUser(userInfo);
-                }
+                // if (isExistingUser) {
+                //     console.log('로그인 성공', userInfo);
+                // } else {
+                //     // 회원가입 처리
+                //     console.log('회원가입 진행', userInfo);
+                //     await registerUser(userInfo);
+                // }
             },
             fail: (err) => {
                 console.error(err);
