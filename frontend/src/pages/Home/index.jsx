@@ -1,5 +1,12 @@
+import KakaoLogin from '../../KaKaoLogin';
+
 function Home() {
-    return <>Home</>;
+    return (
+        <>
+            <>asd</>
+            <KakaoLogin />
+        </>
+    );
 }
 
 export default Home;
