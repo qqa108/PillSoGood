@@ -1,10 +1,11 @@
-// import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { CiPill } from 'react-icons/ci';
 import { IoMdAlarm } from 'react-icons/io';
 import { AiFillHome } from 'react-icons/ai';
 import { FaClipboardList } from 'react-icons/fa';
 import { CgProfile } from 'react-icons/cg';
+import { useNavigate, useLocation } from 'react-router-dom';
+import colors from '../assets/colors';
 
 const FooterContainer = styled.div`
     display: flex;
@@ -23,10 +24,10 @@ const FooterItem = styled.div`
     flex-direction: column;
     align-items: center;
     flex: 1;
-    /* color: ${(props) => (props.active ? 'blue' : 'gray')}; */
     cursor: pointer;
     width: 70px;
     font-weight: 600;
+    color: ${(props) => (props.active ? colors.point1 : colors.point4)}; /* 활성화된 아이템 색상 */
 `;
 
 const ItemName = styled.div`
@@ -38,23 +39,29 @@ const ItemIcon = styled.div`
 `;
 
 function Footer() {
-    // const location = useLocation();
-    // const navigate = useNavigate();
-    // const movePage = (page) => {
-    //     navigate(page);
-    // };
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const movePage = (page) => {
+        navigate(page);
+    };
+
     const footerList = [
-        { name: '복용 중인 약', url: 'MyPills', icon: <CiPill /> },
-        { name: '알림', url: 'Notification', icon: <IoMdAlarm /> }, // 다른 아이콘으로 바꿀 수 있음
-        { name: '홈', url: 'Home', icon: <AiFillHome /> },
-        { name: '복약 기록', url: 'History', icon: <FaClipboardList /> },
-        { name: '내 정보', url: 'Profile', icon: <CgProfile /> },
+        { name: '복용 중인 약', url: 'mypills', icon: <CiPill /> },
+        { name: '알림', url: 'notification', icon: <IoMdAlarm /> },
+        { name: '홈', url: 'home', icon: <AiFillHome /> },
+        { name: '복약 기록', url: 'history', icon: <FaClipboardList /> },
+        { name: '내 정보', url: 'profile', icon: <CgProfile /> },
     ];
 
     return (
         <FooterContainer>
             {footerList.map((item) => (
-                <FooterItem key={item}>
+                <FooterItem
+                    key={item.url}
+                    onClick={() => movePage(item.url)}
+                    active={location.pathname.includes(item.url)} // 현재 경로에 따라 active 상태 설정
+                >
                     <ItemIcon>{item.icon}</ItemIcon>
                     <ItemName>{item.name}</ItemName>
                 </FooterItem>
