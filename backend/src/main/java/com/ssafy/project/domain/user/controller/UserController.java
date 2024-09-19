@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "카카오 로그인")
+@Tag (name = "카카오 로그인")
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping (value = "/api")
 public class UserController {
     private final KakaoService kakaoService;
     private final UserLoginService userLoginService;
@@ -31,8 +31,8 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
-    @Operation(summary = "카카오 로그인")
-    @PostMapping("/login")
+    @Operation (summary = "카카오 로그인")
+    @PostMapping ("/login")
     public ResponseEntity<?> kakaoLogin(@RequestBody String kakaoToken) {
 
         try {
@@ -49,27 +49,30 @@ public class UserController {
 
             // JWT 토큰 반환
             return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
+            System.out.println(kakaoToken);
             return ResponseEntity.status(401).body("카카오 로그인 실패");
         }
     }
 
-    @Operation(summary = "액세스 토큰 재발급")
-    @PostMapping("/refresh")
+    @Operation (summary = "액세스 토큰 재발급")
+    @PostMapping ("/refresh")
     public ResponseEntity<?> refreshAccessToken(@RequestBody String refreshToken) {
         if (jwtUtil.validateToken(refreshToken, true)) {
             int userId = jwtUtil.getUserIdFromRefreshToken(refreshToken);
             String newAccessToken = jwtUtil.createAccessToken(userId);
             return ResponseEntity.ok(new JwtResponse(newAccessToken, refreshToken));
-        } else {
+        }
+        else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("유효하지 않은 리프레시 토큰");
         }
     }
 
-    @Operation(summary = "로그아웃")
-    @PostMapping("/logout")
+    @Operation (summary = "로그아웃")
+    @PostMapping ("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        int ID = (Integer) request.getAttribute("userId");
+        int ID = (Integer)request.getAttribute("userId");
         userLoginService.invalidateRefreshToken(ID);
         return ResponseEntity.ok("로그아웃 성공");
     }
