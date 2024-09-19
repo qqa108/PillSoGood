@@ -1,30 +1,33 @@
 import styled from 'styled-components';
-import SocialLogin from './KaKaoLogin';
-import KakaoSignOut from './KaKaoSignOut';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import colors from './assets/colors';
+import { Outlet } from 'react-router-dom';
 
-const Div = styled.div`
-    padding-top: 40px;
-    padding-bottom: 60px;
+const AppContainer = styled.div`
     width: 100vw;
-    background-color: ${colors.point4};
-    min-height: calc(100vh - 100px);
+    min-height: 100vh;
+    background-color: ${colors.background};
 `;
 
-const TestDiv = styled.div``;
+const OutletContainer = styled.div`
+    padding-top: 60px;
+    padding-bottom: 80px;
+    /* min-height: calc(100vh - 140px); */
+    /* height: 300vh; */
+    width: 80%;
+    margin: 0px auto;
+`;
 
 function App() {
     return (
-        <TestDiv>
+        <AppContainer>
             <Header />
-            <Div>
-                <SocialLogin />
-                <KakaoSignOut />
-            </Div>
+            <OutletContainer>
+                <Outlet />
+            </OutletContainer>
             <Footer />
-        </TestDiv>
+        </AppContainer>
     );
 }
 

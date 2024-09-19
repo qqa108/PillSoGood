@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import colors from '../assets/colors';
 import { IoMdArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const HeaderContainer = styled.div`
     width: 100vw;
