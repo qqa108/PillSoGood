@@ -5,7 +5,9 @@ import com.ssafy.project.domain.userMedication.entity.UserMedication;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -23,7 +25,7 @@ public class UserDetail {
     private String family; //가족 정보
 
     @Column(name = "birth")
-    private LocalDateTime birth;
+    private LocalDate birth;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "gender")
@@ -48,4 +50,14 @@ public class UserDetail {
 
     @OneToMany(mappedBy = "userDetail", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<UserMedication> userMedicationList;
+
+    // 알러지 리스트
+    public List<String> getAllergies() {
+        return Arrays.asList(this.allergy.split(","));
+    }
+
+    // 가족 리스트
+    public List<String>getFamily() {
+        return Arrays.asList(this.family.split(","));
+    }
 }
