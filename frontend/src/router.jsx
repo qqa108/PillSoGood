@@ -8,7 +8,8 @@ import History from './pages/History';
 import Profile from './pages/Profile';
 import Survey from './pages/Survey/survey';
 import SurveyEdit from './pages/Survey/surveyEdit';
-
+import Login from './pages/member/Login';
+import SignUp from './pages/member/Join';
 
 const router = createBrowserRouter([
     {
@@ -35,10 +36,9 @@ const router = createBrowserRouter([
                 path: '/profile',
                 element: <Profile />,
             },
-            { 
-                path: '/survey', 
-                element: <Survey />, 
-
+            {
+                path: '/survey',
+                element: <Survey />,
             },
             {
                 path: '/surveyEdit',
@@ -48,7 +48,11 @@ const router = createBrowserRouter([
     },
     {
         path: '/login',
-        // element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
+        element: <Login />,
+    },
+    {
+        path: '/signup',
+        element: <SignUp />,
     },
 ]);
 
