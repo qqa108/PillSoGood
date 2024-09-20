@@ -4,12 +4,8 @@ import pillImage from '@/assets/pill_image.png';
 import KakaoLogin from '../../../KaKaoLogin';
 
 const LoginContainer = styled.div`
-    width: 100vw;
-    height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    background-color: ${colors.background};
 `;
 
 const LoginText = styled.div`
