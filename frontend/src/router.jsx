@@ -10,6 +10,7 @@ import Survey from './pages/Survey/survey';
 import SurveyEdit from './pages/Survey/surveyEdit';
 import Login from './pages/member/Login';
 import SignUp from './pages/member/Join';
+import Member from './pages/Member';
 
 const router = createBrowserRouter([
     {
@@ -17,42 +18,49 @@ const router = createBrowserRouter([
         element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
         children: [
             {
-                path: '/mypills',
+                path: 'mypills',
                 element: <MyPills />,
             },
             {
-                path: '/notification',
+                path: 'notification',
                 element: <Notification />,
             },
             {
-                path: '/home',
+                path: 'home',
                 element: <Home />,
             },
             {
-                path: '/history',
+                path: 'history',
                 element: <History />,
             },
             {
-                path: '/profile',
+                path: 'profile',
                 element: <Profile />,
             },
             {
-                path: '/survey',
+                path: 'survey',
                 element: <Survey />,
             },
             {
-                path: '/surveyEdit',
+                path: 'surveyEdit',
                 element: <SurveyEdit />,
             },
         ],
     },
+
     {
-        path: '/login',
-        element: <Login />,
-    },
-    {
-        path: '/signup',
-        element: <SignUp />,
+        path: '/member',
+        element: <Member />,
+        children: [
+            {
+                path: 'login',
+                element: <Login />,
+            },
+            {
+                path: 'signup',
+                element: <SignUp />,
+            },
+        ],
     },
 ]);
 
