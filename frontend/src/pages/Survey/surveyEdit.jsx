@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { surveyAnswersState } from '../../atoms/surveyState'; // Recoil 상태 import
 import TextInput from '../../components/TextInput'; // TextInput 컴포넌트 import
 import OptionButton from '../../components/OptionButton'; // OptionButton 컴포넌트 import
-import styled from 'styled-components';
+import LongNextButton from '../../components/LongNextButton';
+import AddPillButton_ver1 from '../../components/AddPillButton_ver1';
+import colors from '../../assets/colors';
 
 const SurveyEditContainer = styled.div`
     display: flex;
@@ -33,6 +37,9 @@ const ButtonContainer = styled.div`
     width: 100%;
     max-width: 400px;
 `;
+const AddPillButtonContainer = styled.div`
+  margin-top: 1rem;
+`;
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -40,7 +47,7 @@ const HeaderContainer = styled.div`
     align-items: center;
     width: 100%;
     max-width: 400px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.125rem;
 `;
 
 const QuestionText = styled.div`
@@ -51,16 +58,17 @@ const QuestionText = styled.div`
     line-height: normal;
 `;
 
-const SaveButton = styled.button`
+const PreviousButton = styled.button`
     background-color: #3382E9;
     color: white;
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    margin-top: 1rem;
-    width: 100%;
-    max-width: 400px;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+    position: sticky;
+    top: 0;
 
     &:disabled {
         background-color: #ccc;
@@ -69,18 +77,29 @@ const SaveButton = styled.button`
 `;
 
 function SurveyEdit() {
+    const navigate = useNavigate();
     const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
-    const [localAnswers, setLocalAnswers] = useState([...surveyAnswers]); // 로컬 상태로 관리
+    const [localAnswers, setLocalAnswers] = useState(() => {
+        const savedAnswers = localStorage.getItem('localAnswers');
+        return savedAnswers ? JSON.parse(savedAnswers) : [...surveyAnswers];
+    });
 
-    // 설문 데이터
     const questions = [
         {
-            question: 'Q1. 생년월일을 입력해주세요.',
+            question: 'Q1. 이름과 관계를 입력해주세요.',
+            type: 'multiple',
+            fields: [
+              { label: '이름', placeholder: '이름을 입력하세요', type: 'text' },
+              { label: '관계', placeholder: '관계를 입력하세요', type: 'text' },
+          ]
+        },
+        {
+            question: 'Q2. 생년월일을 입력해주세요.',
             type: 'date',
             label: '생년월일',
         },
         {
-            question: 'Q2. 키와 몸무게를 입력해주세요.',
+            question: 'Q3. 키와 몸무게를 입력해주세요.',
             type: 'multiple',
             fields: [
                 { label: '키', placeholder: '키를 입력하세요', type: 'number', unit: 'cm', step: '0.01' },
@@ -88,18 +107,21 @@ function SurveyEdit() {
             ]
         },
         {
-            question: 'Q3. 임신여부를 입력해주세요.',
+            question: 'Q4. 임신여부를 입력해주세요.',
             type: 'option',
             options: ['계획없음', '임신 준비중', '임신 중', '수유 중'],
         },
         {
-            question: 'Q4. 약물 알러지를 입력해주세요',
+            question: 'Q5. 약물 알러지를 입력해주세요',
             type: 'option',
             options: ['없음'],
         },
     ];
 
-    // 입력값 변경 핸들러
+    const handlePreviousClick = () => {
+      navigate(-1);
+    };
+
     const handleInputChange = (e, index, fieldIndex = 0) => {
         const updatedAnswers = [...localAnswers];
 
@@ -114,32 +136,40 @@ function SurveyEdit() {
         setLocalAnswers(updatedAnswers);
     };
 
-    // 옵션 선택 핸들러
     const handleOptionClick = (option, index) => {
         const updatedAnswers = [...localAnswers];
         updatedAnswers[index] = { ...updatedAnswers[index], answer: option };
+
         setLocalAnswers(updatedAnswers);
     };
 
-    // 저장 버튼 핸들러
     const handleSave = () => {
-        setSurveyAnswers(localAnswers); // 최종 수정 사항 저장
+        setSurveyAnswers(localAnswers); 
         alert('설문 응답이 성공적으로 수정되었습니다.');
     };
 
+    useEffect(() => {
+        localStorage.setItem('localAnswers', JSON.stringify(localAnswers));
+    }, [localAnswers]);
+
     return (
         <SurveyEditContainer>
+            <PreviousButton onClick={handlePreviousClick}>
+                이전
+            </PreviousButton>
             {questions.map((question, index) => (
                 <QuestionContainer key={index}>
                     <HeaderContainer>
                         <QuestionText>{question.question}</QuestionText>
                     </HeaderContainer>
-                    {question.type === 'date' || question.type === 'text' ? (
+
+                    {question.type === 'date' ? (
                         <TextInput
                             label={question.label}
-                            placeholder="입력해주세요"
+                            placeholder="yyyy-mm-dd"
                             value={localAnswers[index]?.answer || ''}
                             onChange={(e) => handleInputChange(e, index)}
+                            isDateInput
                         />
                     ) : question.type === 'multiple' ? (
                         question.fields.map((field, fieldIndex) => (
@@ -154,21 +184,47 @@ function SurveyEdit() {
                                 step={field.step}
                             />
                         ))
-                    ) : question.type === 'option' ? (
+                    ) : question.type === 'option' && index === questions.length-1 ? (
+                      <div>
                         <ButtonContainer>
-                            {question.options.map((option, optionIndex) => (
-                                <OptionButton
-                                    key={optionIndex}
-                                    label={option}
-                                    onClick={() => handleOptionClick(option, index)}
-                                    isSelected={localAnswers[index]?.answer === option}
-                                />
-                            ))}
+                              {question.options.map((option, optionIndex) => (
+                                  <OptionButton
+                                      key={optionIndex}
+                                      label={option}
+                                      onClick={() => handleOptionClick(option, index)}
+                                      isSelected={localAnswers[index]?.answer === option}
+                                  />
+                              ))}
                         </ButtonContainer>
-                    ) : null}
+                        <AddPillButtonContainer>
+                          <AddPillButton_ver1 text="알러지 추가" />
+                        </AddPillButtonContainer>
+                        </div>
+                    ) :  
+                    question.type === 'option' ? (
+                      <ButtonContainer>
+                          {question.options.map((option, optionIndex) => (
+                              <OptionButton
+                                  key={optionIndex}
+                                  label={option}
+                                  onClick={() => handleOptionClick(option, index)}
+                                  isSelected={localAnswers[index]?.answer === option}
+                              />
+                          ))}
+                      </ButtonContainer>
+                  ) : null}
                 </QuestionContainer>
             ))}
-            <SaveButton onClick={handleSave}>저장</SaveButton>
+
+            <LongNextButton
+              label="등록하기"
+              onClick={handleSave}
+              isSelected={true}
+              bgColor={colors.main}
+              borderColor={colors.main}
+              textColor="white"
+              width={'100%'}
+            />
         </SurveyEditContainer>
     );
 }

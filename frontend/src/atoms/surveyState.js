@@ -10,9 +10,10 @@ export const currentStepState = atom({
 export const surveyAnswersState = atom({
     key: 'surveyAnswersState',
     default: [
-        { type: 'text', answer: '' },   // Q1: 생년월일
-        { type: 'multiple', answer: ['', ''] }, // Q2: 키, 몸무게
-        { type: 'option', answer: '' }, // Q3: 임신여부
-        { type: 'option', answer: '' }, // Q4: 약물 알러지
+        { type:'multiple', answer: ['', ''] }, // Q1: 이름, 관계
+        { type: 'text', answer: '' },   // Q2: 생년월일
+        { type: 'multiple', answer: ['', ''] }, // Q3: 키, 몸무게
+        { type: 'option', answer: '' }, // Q4: 임신여부
+        { type: 'option', answer: '' }, // Q5: 약물 알러지
     ],
 });

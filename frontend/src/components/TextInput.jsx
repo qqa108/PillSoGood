@@ -5,11 +5,17 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import CustomCalendar from './CustomCalendar';  // 커스텀 헤더 컴포넌트 임포트
 
+const TextInputContainer = styled.div`
+    width: 100%;
+    margin-top: 0.825rem;
+`;
+
 // 소제목 스타일 정의
 const Label = styled.div`
     display: flex;
-    width: 17rem;
+    width: 100%;
     height: 1.75rem;
+    margin-bottom: 0.3rem;
     flex-direction: column;
     justify-content: center;
     flex-shrink: 0;
@@ -89,7 +95,7 @@ function TextInput({ label, value, onChange, placeholder, isDateInput, type = 't
     };
 
     return (
-        <div>
+        <TextInputContainer>
             {label && <Label>{label}</Label>}
             <InputContainer>
                 <InputBox
@@ -121,7 +127,7 @@ function TextInput({ label, value, onChange, placeholder, isDateInput, type = 't
                     </>
                 )}
             </InputContainer>
-        </div>
+        </TextInputContainer>
     );
 }
 

@@ -13,14 +13,12 @@ const SurveyContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80vw;
-    margin: 2vh auto 0;
+    margin: 2vh 0 0;
     position: relative;
 `;
 
 const ContentContainer = styled.div`
     width: 100%;
-    max-width: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,7 +45,6 @@ const HeaderContainer = styled.div`
 
 const QuestionText = styled.div`
     color: #000;
-    font-family: 'NanumGothic', sans-serif;
     font-size: 1.125rem;
     font-weight: 700;
     line-height: normal;
@@ -55,13 +52,12 @@ const QuestionText = styled.div`
 
 const PageIndicator = styled.div`
     color: #3382E9;
-    font-family: 'NanumGothic', sans-serif;
     font-size: 1rem;
     font-weight: 400;
     line-height: normal;
 `;
 
-const NavigationButton = styled.button`
+const PreviousButton = styled.button`
     background-color: #3382E9;
     color: white;
     padding: 0.5rem 1rem;
@@ -78,7 +74,7 @@ const NavigationButton = styled.button`
     }
 `;
 
-const Footer = styled.div`
+const NextButton = styled.div`
     width: 100%;
     position: fixed;
     bottom: 3rem;
@@ -89,7 +85,6 @@ const Footer = styled.div`
 
 const StyledTextInputContainer = styled.div`
     width: 100%;
-    max-width: 400px;
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
@@ -97,7 +92,7 @@ const StyledTextInputContainer = styled.div`
 
 const AddPillButtonContainer = styled.div`
   margin-top: 1rem;
-`
+`;
 
 function Survey() {
     const [currentStep, setCurrentStep] = useRecoilState(currentStepState);
@@ -106,13 +101,21 @@ function Survey() {
 
     // 설문 데이터
     const questions = [
+        {   // 이전 경로가 회원가입이거나 가족이면 자동 입력되게 하기
+            question: 'Q1. 이름과 관계를 입력해주세요.',
+            type: 'multiple',
+            fields: [
+              { label: '이름', placeholder: '이름을 입력하세요', type: 'text' },
+              { label: '관계', placeholder: '관계를 입력하세요', type: 'text' },
+          ]
+        },
         {
-            question: 'Q1. 생년월일을 입력해주세요.',
+            question: 'Q2. 생년월일을 입력해주세요.',
             type: 'date',
             label: '생년월일',
         },
         {
-            question: 'Q2. 키와 몸무게를 입력해주세요.',
+            question: 'Q3. 키와 몸무게를 입력해주세요.',
             type: 'multiple',
             fields: [
                 { label: '키', placeholder: '키를 입력하세요', type: 'number', unit: 'cm', step: '0.01' },
@@ -120,12 +123,12 @@ function Survey() {
             ]
         },
         {
-            question: 'Q3. 임신여부를 입력해주세요.',
+            question: 'Q4. 임신여부를 입력해주세요.',
             type: 'option',
             options: ['계획없음', '임신 준비중', '임신 중', '수유 중'],
         },
         {
-            question: 'Q4. 약물 알러지를 입력해주세요',
+            question: 'Q5. 약물 알러지를 입력해주세요',
             type: 'option',
             options: ['없음'],
         },
@@ -148,45 +151,93 @@ function Survey() {
         localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
     }, [currentStep, surveyAnswers]);
 
+    // const handleInputChange = (e, index = 0) => {
+    //     const updatedAnswers = [...surveyAnswers];
+
+    //     if (currentQuestion.type === 'multiple') {
+    //         const multipleAnswers = [...(updatedAnswers[currentStep - 1].answer || ['', ''])];
+    //         multipleAnswers[index] = e.target.value;
+    //         updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: multipleAnswers };
+    //     } else {
+    //         updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: e.target.value };
+    //     }
+
+    //     setSurveyAnswers(updatedAnswers);
+    // };
+
+    // const handleOptionClick = (option) => {
+    //     const updatedAnswers = [...surveyAnswers];
+    //     updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: option };
+
+    //     setSurveyAnswers(updatedAnswers);
+    // };
     const handleInputChange = (e, index = 0) => {
-        const updatedAnswers = [...surveyAnswers];
+      const updatedAnswers = [...surveyAnswers];
+  
+      // 현재 step의 답변이 존재하는지 확인, 없으면 기본값 설정
+      if (!updatedAnswers[currentStep - 1]) {
+          updatedAnswers[currentStep - 1] = { answer: '' };
+      }
+  
+      if (currentQuestion.type === 'multiple') {
+          const multipleAnswers = [...(updatedAnswers[currentStep - 1].answer || ['', ''])];
+          multipleAnswers[index] = e.target.value;
+          updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: multipleAnswers };
+      } else {
+          updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: e.target.value };
+      }
+  
+      setSurveyAnswers(updatedAnswers);
+  };
+  
+  const handleOptionClick = (option) => {
+      const updatedAnswers = [...surveyAnswers];
+  
+      // 현재 step의 답변이 존재하는지 확인, 없으면 기본값 설정
+      if (!updatedAnswers[currentStep - 1]) {
+          updatedAnswers[currentStep - 1] = { answer: '' };
+      }
+  
+      updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: option };
+  
+      setSurveyAnswers(updatedAnswers);
+  };
 
-        if (currentQuestion.type === 'multiple') {
-            const multipleAnswers = [...(updatedAnswers[currentStep - 1].answer || ['', ''])];
-            multipleAnswers[index] = e.target.value;
-            updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: multipleAnswers };
-        } else {
-            updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: e.target.value };
-        }
-
-        setSurveyAnswers(updatedAnswers);
-    };
-
-    const handleOptionClick = (option) => {
-        const updatedAnswers = [...surveyAnswers];
-        updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: option };
-
-        setSurveyAnswers(updatedAnswers);
-    };
-
+    // const isNextButtonActive = (() => {
+    //     const currentAnswer = surveyAnswers[currentStep - 1].answer;
+    //     if (Array.isArray(currentAnswer)) {
+    //         return currentAnswer.every((answer) => answer !== '');
+    //     }
+    //     return currentAnswer !== '';
+    // })();
     const isNextButtonActive = (() => {
-        const currentAnswer = surveyAnswers[currentStep - 1].answer;
-        if (Array.isArray(currentAnswer)) {
-            return currentAnswer.every((answer) => answer !== '');
-        }
-        return currentAnswer !== '';
-    })();
+      const currentAnswer = surveyAnswers[currentStep - 1]?.answer;
+      if (Array.isArray(currentAnswer)) {
+          return currentAnswer.every((answer) => answer !== '');
+      }
+      return currentAnswer !== '';
+  })();
 
+    // const handleNextClick = () => {
+    //     if (currentStep < questions.length) {
+    //         setCurrentStep(currentStep + 1);
+    //     }
+    //     else if (currentStep === questions.length) {
+    //       // 마지막 단계에서 surveyEdit 페이지로 이동
+    //       navigate('/surveyEdit');
+    //     }
+    // };
     const handleNextClick = () => {
-        if (currentStep < questions.length) {
-            setCurrentStep(currentStep + 1);
-        }
-        else if (currentStep === questions.length) {
-          // 마지막 단계에서 surveyEdit 페이지로 이동
+      if (currentStep < questions.length) {
+          setCurrentStep(currentStep + 1);
+      } else if (currentStep === questions.length) {
+          // 마지막 단계에서 surveyAnswers가 충분한지 확인
+          if (!surveyAnswers[currentStep - 1]) {
+              setSurveyAnswers([...surveyAnswers, { answer: '' }]);
+          }
           navigate('/surveyEdit');
-        }
-    };
-
+      }
+  };
     const handlePreviousClick = () => {
         if (currentStep > 1) {
             setCurrentStep(currentStep - 1);
@@ -195,9 +246,9 @@ function Survey() {
 
     return (
         <SurveyContainer>
-            <NavigationButton onClick={handlePreviousClick} disabled={currentStep === 1}>
+            <PreviousButton onClick={handlePreviousClick} disabled={currentStep === 1}>
                 이전
-            </NavigationButton>
+            </PreviousButton>
             <HeaderContainer>
                 <QuestionText>{currentQuestion.question}</QuestionText>
                 <PageIndicator>{`${currentStep}/${questions.length}`}</PageIndicator>
@@ -237,7 +288,7 @@ function Survey() {
                             />
                         </StyledTextInputContainer>
                     ))
-                ) : currentQuestion.type === 'option' && currentStep === 4 ? (
+                ) : currentQuestion.type === 'option' && currentStep === questions.length ? (
                     <div>
                         <ButtonContainer>
                             {currentQuestion.options.map((option, index) => (
@@ -267,13 +318,13 @@ function Survey() {
                 ) : null}
             </ContentContainer>
 
-            <Footer>
+            <NextButton>
                 <LongNextButton
                     label="다음"
                     onClick={handleNextClick}
                     isSelected={isNextButtonActive}
                 />
-            </Footer>
+            </NextButton>
         </SurveyContainer>
     );
 }
