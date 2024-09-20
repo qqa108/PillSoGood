@@ -1,0 +1,50 @@
+import React from 'react';
+import styled from 'styled-components';
+import AddIcon from '../assets/add-button1.png';  // assets 폴더에서 아이콘을 가져옵니다
+
+// 버튼 스타일 정의
+const Button = styled.button`
+  width: 305px;
+  height: 42.743px;
+  flex-shrink: 0;
+  border-radius: 60px;
+  border: 1px solid #033075;
+  background: #FFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px; /* 텍스트와 아이콘 사이 여백 */
+`;
+
+// 버튼 내 텍스트 스타일 정의
+const ButtonText = styled.div`
+  width: 270.565px;
+  height: 21.982px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  text-align: center;
+  font-family: 'NanumGothic', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+// 아이콘을 위한 컨테이너
+const IconContainer = styled.img`
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+`;
+
+const AddPillButton_ver1 = ({ text }) => {
+  return (
+    <Button>
+      <ButtonText>{text}</ButtonText>
+      <IconContainer src={AddIcon} alt="Add Icon" />
+    </Button>
+  );
+};
+
+export default AddPillButton_ver1;

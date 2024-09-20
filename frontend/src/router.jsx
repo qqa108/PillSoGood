@@ -6,6 +6,9 @@ import Notification from './pages/Notification';
 import Home from './pages/Home';
 import History from './pages/History';
 import Profile from './pages/Profile';
+import Survey from './pages/Survey/survey';
+import SurveyEdit from './pages/Survey/surveyEdit';
+
 
 const router = createBrowserRouter([
     {
@@ -31,6 +34,15 @@ const router = createBrowserRouter([
             {
                 path: '/profile',
                 element: <Profile />,
+            },
+            { 
+                path: '/survey', 
+                element: <Survey />, 
+
+            },
+            {
+                path: '/surveyEdit',
+                element: <SurveyEdit />,
             },
         ],
     },
