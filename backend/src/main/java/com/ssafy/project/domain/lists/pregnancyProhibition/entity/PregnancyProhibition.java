@@ -15,7 +15,7 @@ public class PregnancyProhibition {
     @Column (name = "id")
     private int id;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "medicine_id", referencedColumnName = "id")
     private Medicine medicine;
 
