@@ -9,8 +9,8 @@ import Profile from './pages/Profile';
 import Survey from './pages/Survey/survey';
 import SurveyEdit from './pages/Survey/surveyEdit';
 import Login from './pages/member/Login';
-import SignUp from './pages/member/Join';
 import Member from './pages/Member';
+import Join from './pages/member/Join';
 
 const router = createBrowserRouter([
     {
@@ -57,8 +57,8 @@ const router = createBrowserRouter([
                 element: <Login />,
             },
             {
-                path: 'signup',
-                element: <SignUp />,
+                path: 'join',
+                element: <Join />,
             },
         ],
     },

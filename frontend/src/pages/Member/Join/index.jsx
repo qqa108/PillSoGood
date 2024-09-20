@@ -2,16 +2,14 @@ import styled from 'styled-components';
 import colors from '@/assets/colors';
 import pillImage from '@/assets/pill_image.png';
 
-const SignUpContainer = styled.div`
-    width: 100vw;
-    height: 100vh;
+const JoinContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     background-color: ${colors.background};
 `;
 
-const SignUpText = styled.div`
+const JoinText = styled.div`
     display: flex;
     justify-content: center;
     color: ${colors.main};
@@ -44,10 +42,10 @@ const Image = styled.img`
     width: 200px;
 `;
 
-function SignUp() {
+function Join() {
     return (
-        <SignUpContainer>
-            <SignUpText>회원가입이 완료되었습니다!</SignUpText>
+        <JoinContainer>
+            <JoinText>회원가입이 완료되었습니다!</JoinText>
             <ImageWrapper>
                 <Image src={pillImage} />
             </ImageWrapper>
@@ -55,7 +53,7 @@ function SignUp() {
                 내 정보를 입력하고 <br /> 상세하게 안내 받을래요
             </Button>
             <Button>다음에 입력할래요</Button>
-        </SignUpContainer>
+        </JoinContainer>
     );
 }
-export default SignUp;
+export default Join;
