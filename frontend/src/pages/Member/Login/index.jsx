@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import colors from '../../../assets/colors';
-import pillImage from '../../assets/pill_image.png';
+import colors from '@/assets/colors';
+import pillImage from '@/assets/pill_image.png';
 import KakaoLogin from '../../../KaKaoLogin';
 
 const LoginContainer = styled.div`
