@@ -9,7 +9,7 @@ const Button = styled.button`
   height: 42.743px;
   flex-shrink: 0;
   border-radius: 60px;
-  border: 1px solid #033075;
+  border: 0.06rem solid #033075;
   background: #FFF;
   display: flex;
   justify-content: space-between;

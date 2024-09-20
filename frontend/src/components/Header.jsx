@@ -12,6 +12,7 @@ const HeaderContainer = styled.div`
     background-color: ${colors.main};
     color: white;
     position: fixed;
+    z-index:3000;
 `;
 
 const PageName = styled.div`
