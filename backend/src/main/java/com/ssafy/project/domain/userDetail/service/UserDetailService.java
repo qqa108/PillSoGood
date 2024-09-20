@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserDetailService {
@@ -17,7 +20,6 @@ public class UserDetailService {
     private final UserDetailRepository userDetailRepository;
 
     // 사용자 조회
-    @Transactional
     public UserDetailResponse getUser(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -26,6 +28,21 @@ public class UserDetailService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자 세부 정보를 찾을 수 없습니다."));
 
         return UserDetailResponse.fromEntity(userDetail);
+    }
+
+    // 사용자 가족 조회
+    @Transactional(readOnly = true)
+    public List<UserDetailResponse> getUserFamily(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        List<UserDetail> userDetails = userDetailRepository.findAllByUser(user);
+
+        List<UserDetailResponse> familyList = new ArrayList<>();
+        for (UserDetail userDetail : userDetails) {
+            familyList.add(UserDetailResponse.fromEntity(userDetail));
+        }
+        return familyList;
     }
 
     // 사용자 등록
