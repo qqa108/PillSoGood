@@ -1,12 +1,29 @@
 import { useEffect } from 'react';
+import { RiKakaoTalkFill } from 'react-icons/ri';
+import styled from 'styled-components';
 
 const KAKAO_APP_KEY = 'e0b82853f928fa73b89ecc0a4fc4dc82';
 
+const LoginContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    background-color: #fee500;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    & > svg {
+        margin-right: 0.75rem;
+    }
+    padding: 1rem;
+    width: 70%;
+    margin: 0px auto;
+`;
+
 const KakaoLogin = () => {
     useEffect(() => {
-        window.Kakao.init(KAKAO_APP_KEY);
+        if (!window.Kakao.isInitialized()) {
+            window.Kakao.init(KAKAO_APP_KEY);
+        }
     }, []);
-
     const handleLogin = () => {
         window.Kakao.Auth.login({
             scope: 'account_email, profile_nickname', // 동의받을 항목 설정
@@ -51,7 +68,12 @@ const KakaoLogin = () => {
         // 예시: return await fetch('/api/register', { method: 'POST', body: JSON.stringify(userInfo) });
     };
 
-    return <button onClick={handleLogin}>카카오 로그인</button>;
+    return (
+        <LoginContainer onClick={handleLogin}>
+            <RiKakaoTalkFill />
+            카카오로 시작하기
+        </LoginContainer>
+    );
 };
 
 export default KakaoLogin;

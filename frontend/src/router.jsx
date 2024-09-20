@@ -8,7 +8,9 @@ import History from './pages/History';
 import Profile from './pages/Profile';
 import Survey from './pages/Survey/survey';
 import SurveyEdit from './pages/Survey/surveyEdit';
-
+import Login from './pages/member/Login';
+import Member from './pages/Member';
+import Join from './pages/member/Join';
 
 const router = createBrowserRouter([
     {
@@ -16,39 +18,49 @@ const router = createBrowserRouter([
         element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
         children: [
             {
-                path: '/mypills',
+                path: 'mypills',
                 element: <MyPills />,
             },
             {
-                path: '/notification',
+                path: 'notification',
                 element: <Notification />,
             },
             {
-                path: '/home',
+                path: 'home',
                 element: <Home />,
             },
             {
-                path: '/history',
+                path: 'history',
                 element: <History />,
             },
             {
-                path: '/profile',
+                path: 'profile',
                 element: <Profile />,
             },
-            { 
-                path: '/survey', 
-                element: <Survey />, 
-
+            {
+                path: 'survey',
+                element: <Survey />,
             },
             {
-                path: '/surveyEdit',
+                path: 'surveyEdit',
                 element: <SurveyEdit />,
             },
         ],
     },
+
     {
-        path: '/login',
-        // element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
+        path: '/member',
+        element: <Member />,
+        children: [
+            {
+                path: 'login',
+                element: <Login />,
+            },
+            {
+                path: 'join',
+                element: <Join />,
+            },
+        ],
     },
 ]);
 

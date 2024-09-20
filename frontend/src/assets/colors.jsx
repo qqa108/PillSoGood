@@ -1,5 +1,6 @@
 const colors = {
     main: '#033075',
+    background: '#f3f5f7',
     text: '#000000',
     disableText: '#9c9c9c',
     point1: '#3382e9',
