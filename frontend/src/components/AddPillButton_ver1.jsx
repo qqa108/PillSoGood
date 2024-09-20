@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import AddIcon from '../assets/add-button1.png';  // assets 폴더에서 아이콘을 가져옵니다
+import { FaCirclePlus } from "react-icons/fa6";
+import colors from '../assets/colors';
 
 // 버튼 스타일 정의
 const Button = styled.button`
@@ -26,23 +27,30 @@ const ButtonText = styled.div`
   color: #000;
   text-align: center;
   font-family: 'NanumGothic', sans-serif;
-  font-size: 12px;
+  font-size: 1rem;
   font-weight: 400;
   line-height: normal;
 `;
 
 // 아이콘을 위한 컨테이너
-const IconContainer = styled.img`
-  width: 22px;
-  height: 22px;
+const IconContainer = styled.div`
+  width: 1.25rem;
+  height: 1.25rem;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  & > svg {
+   font-size: 1.25rem;
+   color: ${colors.point2}
+  }
+
 `;
 
 const AddPillButton_ver1 = ({ text }) => {
   return (
     <Button>
       <ButtonText>{text}</ButtonText>
-      <IconContainer src={AddIcon} alt="Add Icon" />
+      <IconContainer alt="Add Icon" ><FaCirclePlus /></IconContainer>
     </Button>
   );
 };
