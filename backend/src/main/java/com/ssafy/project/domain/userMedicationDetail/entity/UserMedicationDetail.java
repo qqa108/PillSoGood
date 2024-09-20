@@ -5,6 +5,8 @@ import com.ssafy.project.domain.userMedication.entity.UserMedication;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,10 +22,9 @@ public class UserMedicationDetail {
     private int remain;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medicine_id", referencedColumnName = "id")
-    private Medicine medicine;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_medication_id", nullable = false)
+    @JoinColumn(name = "user_medicine_id", referencedColumnName = "id")
     private UserMedication userMedication;
+
+    @OneToMany(mappedBy = "userMedicationDetail", fetch = FetchType.LAZY)
+    private List<Medicine> medicines;
 }
