@@ -1,28 +1,8 @@
 import styled from 'styled-components';
-import colors from '@/assets/colors';
-import pillImage from '@/assets/pill_image.png';
+import ContentContainer from '../ContentContainer';
+import ContentText from '../ContentText';
+import PillImage from '../PillImage';
 
-const JoinContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: ${colors.background};
-`;
-
-const JoinText = styled.div`
-    display: flex;
-    justify-content: center;
-    color: ${colors.main};
-    font-weight: 700;
-    font-size: 1.25rem;
-    margin-bottom: 30px;
-`;
-
-const ImageWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-`;
 const Button = styled.div`
     display: flex;
     justify-content: center;
@@ -38,22 +18,16 @@ const Button = styled.div`
     margin-bottom: 30px;
 `;
 
-const Image = styled.img`
-    width: 200px;
-`;
-
 function Join() {
     return (
-        <JoinContainer>
-            <JoinText>회원가입이 완료되었습니다!</JoinText>
-            <ImageWrapper>
-                <Image src={pillImage} />
-            </ImageWrapper>
+        <ContentContainer>
+            <ContentText>회원가입이 완료되었습니다!</ContentText>
+            <PillImage />
             <Button>
                 내 정보를 입력하고 <br /> 상세하게 안내 받을래요
             </Button>
             <Button>다음에 입력할래요</Button>
-        </JoinContainer>
+        </ContentContainer>
     );
 }
 export default Join;
