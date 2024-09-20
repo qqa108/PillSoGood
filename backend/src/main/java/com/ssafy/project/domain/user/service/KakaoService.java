@@ -39,5 +39,4 @@ public class KakaoService {
                 .name(kakaoUserDto.getProperties().getNickname())  // 닉네임 가져오기
                 .build();
     }
-
 }
