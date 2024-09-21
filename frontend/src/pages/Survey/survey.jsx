@@ -1,12 +1,11 @@
 import styled from 'styled-components';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
-import { currentStepState, surveyAnswersState } from '../../atoms/surveyState'; // Recoil 상태 import
-import TextInput from '../../components/TextInput'; // TextInput 컴포넌트를 가져옵니다
-import OptionButton from '../../components/OptionButton'; // OptionButton 컴포넌트를 가져옵니다
-import LongNextButton from '../../components/LongNextButton'; // LongNextButton을 가져옵니다
-import AddPillButton_ver1 from '../../components/AddPillButton_ver1'; // 방금 만든 AddPillButton 가져오기
+import { currentStepState, surveyAnswersState } from '../../atoms/surveyState'; 
+import LongNextButton from '../../components/LongNextButton'; 
+import questions from './components/Questions'
+import QuestionRender from './components/QuestionsRender';
 
 const SurveyContainer = styled.div`
     display: flex;
@@ -23,15 +22,6 @@ const ContentContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-`;
-
-const ButtonContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 0.8rem;
-    margin-top: 1rem;
-    width: 100%;
-    max-width: 400px;
 `;
 
 const HeaderContainer = styled.div`
@@ -83,56 +73,10 @@ const NextButton = styled.div`
     padding: 3rem 0;
 `;
 
-const StyledTextInputContainer = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-`;
-
-const AddPillButtonContainer = styled.div`
-  margin-top: 1rem;
-`;
-
 function Survey() {
     const [currentStep, setCurrentStep] = useRecoilState(currentStepState);
     const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
     const navigate = useNavigate();
-
-    // 설문 데이터
-    const questions = [
-        {   // 이전 경로가 회원가입이거나 가족이면 자동 입력되게 하기
-            question: 'Q1. 이름과 관계를 입력해주세요.',
-            type: 'multiple',
-            fields: [
-              { label: '이름', placeholder: '이름을 입력하세요', type: 'text' },
-              { label: '관계', placeholder: '관계를 입력하세요', type: 'text' },
-          ]
-        },
-        {
-            question: 'Q2. 생년월일을 입력해주세요.',
-            type: 'date',
-            label: '생년월일',
-        },
-        {
-            question: 'Q3. 키와 몸무게를 입력해주세요.',
-            type: 'multiple',
-            fields: [
-                { label: '키', placeholder: '키를 입력하세요', type: 'number', unit: 'cm', step: '0.01' },
-                { label: '몸무게', placeholder: '몸무게를 입력하세요', type: 'number', unit: 'kg', step: '0.01' },
-            ]
-        },
-        {
-            question: 'Q4. 임신여부를 입력해주세요.',
-            type: 'option',
-            options: ['계획없음', '임신 준비중', '임신 중', '수유 중'],
-        },
-        {
-            question: 'Q5. 약물 알러지를 입력해주세요',
-            type: 'option',
-            options: ['없음'],
-        },
-    ];
 
     const currentQuestion = questions[currentStep - 1];
 
@@ -151,26 +95,7 @@ function Survey() {
         localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
     }, [currentStep, surveyAnswers]);
 
-    // const handleInputChange = (e, index = 0) => {
-    //     const updatedAnswers = [...surveyAnswers];
 
-    //     if (currentQuestion.type === 'multiple') {
-    //         const multipleAnswers = [...(updatedAnswers[currentStep - 1].answer || ['', ''])];
-    //         multipleAnswers[index] = e.target.value;
-    //         updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: multipleAnswers };
-    //     } else {
-    //         updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: e.target.value };
-    //     }
-
-    //     setSurveyAnswers(updatedAnswers);
-    // };
-
-    // const handleOptionClick = (option) => {
-    //     const updatedAnswers = [...surveyAnswers];
-    //     updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: option };
-
-    //     setSurveyAnswers(updatedAnswers);
-    // };
     const handleInputChange = (e, index = 0) => {
       const updatedAnswers = [...surveyAnswers];
   
@@ -203,13 +128,7 @@ function Survey() {
       setSurveyAnswers(updatedAnswers);
   };
 
-    // const isNextButtonActive = (() => {
-    //     const currentAnswer = surveyAnswers[currentStep - 1].answer;
-    //     if (Array.isArray(currentAnswer)) {
-    //         return currentAnswer.every((answer) => answer !== '');
-    //     }
-    //     return currentAnswer !== '';
-    // })();
+
     const isNextButtonActive = (() => {
       const currentAnswer = surveyAnswers[currentStep - 1]?.answer;
       if (Array.isArray(currentAnswer)) {
@@ -218,15 +137,6 @@ function Survey() {
       return currentAnswer !== '';
   })();
 
-    // const handleNextClick = () => {
-    //     if (currentStep < questions.length) {
-    //         setCurrentStep(currentStep + 1);
-    //     }
-    //     else if (currentStep === questions.length) {
-    //       // 마지막 단계에서 surveyEdit 페이지로 이동
-    //       navigate('/surveyEdit');
-    //     }
-    // };
     const handleNextClick = () => {
       if (currentStep < questions.length) {
           setCurrentStep(currentStep + 1);
@@ -255,67 +165,13 @@ function Survey() {
             </HeaderContainer>
 
             <ContentContainer>
-                {currentQuestion.type === 'text' ? (
-                    <StyledTextInputContainer>
-                        <TextInput
-                            label={currentQuestion.label}
-                            placeholder="입력해주세요"
-                            value={surveyAnswers[currentStep - 1]?.answer || ''}
-                            onChange={handleInputChange}
-                        />
-                    </StyledTextInputContainer>
-                ) : currentQuestion.type === 'date' ? (
-                    <StyledTextInputContainer>
-                        <TextInput
-                            label={currentQuestion.label}
-                            placeholder="yyyy-mm-dd"
-                            value={surveyAnswers[currentStep - 1]?.answer || ''}
-                            onChange={handleInputChange}
-                            isDateInput
-                        />
-                    </StyledTextInputContainer>
-                ) : currentQuestion.type === 'multiple' ? (
-                    currentQuestion.fields.map((field, index) => (
-                        <StyledTextInputContainer key={index}>
-                            <TextInput
-                                label={field.label}
-                                placeholder={field.placeholder}
-                                value={surveyAnswers[currentStep - 1]?.answer[index] || ''}
-                                onChange={(e) => handleInputChange(e, index)}
-                                type={field.type}
-                                unit={field.unit}
-                                step={field.step}
-                            />
-                        </StyledTextInputContainer>
-                    ))
-                ) : currentQuestion.type === 'option' && currentStep === questions.length ? (
-                    <div>
-                        <ButtonContainer>
-                            {currentQuestion.options.map((option, index) => (
-                                <OptionButton
-                                    key={index}
-                                    label={option}
-                                    onClick={() => handleOptionClick(option)}
-                                    isSelected={surveyAnswers[currentStep - 1]?.answer === option}
-                                />
-                            ))}
-                        </ButtonContainer>
-                        <AddPillButtonContainer>
-                          <AddPillButton_ver1 text="알러지 추가" /> {/* AddPillButton 추가 */}
-                        </AddPillButtonContainer>
-                    </div>
-                ) : currentQuestion.type === 'option' ? (
-                    <ButtonContainer>
-                        {currentQuestion.options.map((option, index) => (
-                            <OptionButton
-                                key={index}
-                                label={option}
-                                onClick={() => handleOptionClick(option)}
-                                isSelected={surveyAnswers[currentStep - 1]?.answer === option}
-                            />
-                        ))}
-                    </ButtonContainer>
-                ) : null}
+            <QuestionRender
+                currentQuestion={currentQuestion}
+                surveyAnswers={surveyAnswers}
+                handleInputChange={handleInputChange}
+                handleOptionClick={handleOptionClick}
+                currentStep={currentStep}
+            />
             </ContentContainer>
 
             <NextButton>
