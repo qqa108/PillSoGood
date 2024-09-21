@@ -1,11 +1,10 @@
 package com.ssafy.project.domain.userMedication.entity;
 
 import com.ssafy.project.domain.userDetail.entity.UserDetail;
-import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@ToString
 public class UserMedication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,19 +23,27 @@ public class UserMedication {
     private String name;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "flag", nullable = false)
+    @Column(name = "is_take", nullable = false)
     private Status status;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt; // 복약 시작일
+    @Column(name = "intake_at")
+    private String intakeAt;
 
-    @Column(name = "end_at")
-    private LocalDateTime endAt;
+    @Column(name = "prescription_day")
+    private int prescriptionDay;
+
+    @Column(name = "hospital_name")
+    private String hospitalName;
+
+    @Column(name = "pharmacy_name")
+    private String pharmacyName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_detail_id", nullable = false)
     private UserDetail userDetail;
 
-    @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<UserMedicationDetail> userMedicationDetailList;
+    @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<UserMedicationDetail> userMedicationDetailList = new ArrayList<>();
+
+
 }

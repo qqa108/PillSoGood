@@ -25,11 +25,4 @@ public class MedicineInformation {
     @JoinColumn(name = "medicine_id", referencedColumnName = "id")
     private Medicine medicine;
 
-    // MedicineInformation 엔티티를 MedicineInformationDTO로 변환하는 메서드
-    public MedicineInformationDTO toDTO() {
-        return MedicineInformationDTO.builder()
-                .id(this.id)
-                .information(this.information)
-                .build();
-    }
 }

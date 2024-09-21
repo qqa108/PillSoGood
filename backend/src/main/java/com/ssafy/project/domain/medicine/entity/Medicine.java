@@ -5,15 +5,12 @@ import com.ssafy.project.domain.lists.amountProhibition.entity.AmountProhibition
 import com.ssafy.project.domain.lists.medicineInformation.entity.MedicineInformation;
 import com.ssafy.project.domain.lists.pregnancyProhibition.entity.PregnancyProhibition;
 import com.ssafy.project.domain.lists.seniorProhibition.entity.SeniorProhibition;
-import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
-import com.ssafy.project.domain.medicine.dto.MedicineDTO;
-import com.ssafy.project.domain.lists.medicineInformation.dto.MedicineInformationDTO;
+import com.ssafy.project.domain.userMedication.entity.UserMedicationDetail;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -79,25 +76,4 @@ public class Medicine {
 
     @OneToOne(mappedBy = "medicine", fetch = FetchType.LAZY)
     private SeniorProhibition seniorProhibition;
-
-    // Medicine 엔티티를 DTO로 변환하는 메서드
-    public MedicineDTO toDTO() {
-        return MedicineDTO.builder()
-                .id(this.id)
-                .code(this.code)
-                .korName(this.korName)
-                .engName(this.engName)
-                .category(this.category.toString())
-                .company(this.company)
-                .drugForm(this.drugForm)
-                .characters(this.characters)
-                .kind(this.kind)
-                .effect(this.effect)
-                .usages(this.usages)
-                .imageUrl(this.imageUrl)
-                .medicineInformation(this.medicineInformation.stream()
-                        .map(MedicineInformation::toDTO) // MedicineInformation을 DTO로 변환
-                        .collect(Collectors.toList()))
-                .build();
-    }
 }

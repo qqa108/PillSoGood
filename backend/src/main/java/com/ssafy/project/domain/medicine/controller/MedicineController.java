@@ -1,6 +1,7 @@
 package com.ssafy.project.domain.medicine.controller;
 
 import com.ssafy.project.domain.medicine.dto.MedicineDTO;
+import com.ssafy.project.domain.medicine.dto.MedicinePreviewDTO;
 import com.ssafy.project.domain.medicine.entity.Medicine;
 import com.ssafy.project.domain.medicine.service.MedicineService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,17 +22,17 @@ public class MedicineController {
     private final MedicineService medicineService;
     private final HttpServletRequest request;
 
+    //알약 전체조회
     @GetMapping("")
-    public ResponseEntity<List<MedicineDTO>> getMedicines() {
+    public ResponseEntity<List<MedicinePreviewDTO>> getMedicines() {
         return ResponseEntity.ok(medicineService.findAll());
     }
 
+    //알약상세조회
     @GetMapping("/{medicineId}")
     public ResponseEntity<MedicineDTO> getMedicineById(@PathVariable Integer medicineId) {
         int id = (Integer) request.getAttribute("userId");
         System.out.println(id);
         return ResponseEntity.ok(medicineService.findById(medicineId));
     }
-
-
 }
