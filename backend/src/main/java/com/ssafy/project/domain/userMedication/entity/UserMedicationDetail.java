@@ -29,4 +29,5 @@ public class UserMedicationDetail {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false)
     private Medicine medicine;
+
 }

@@ -15,13 +15,12 @@ public class UserMedicationDetailDTO {
     private int perAmount;
     private int medicineId; // JSON에서 받아올 medicineId
 
-    // toEntity 함수 구현
-    public UserMedicationDetail toEntity(UserMedication userMedication, Medicine medicine) {
+    public UserMedicationDetail toEntity(Medicine medicine, UserMedication userMedication) {
         return UserMedicationDetail.builder()
                 .dailyIntakeFrequency(this.dailyIntakeFrequency)
                 .perAmount(this.perAmount)
-                .userMedication(userMedication) // 부모 UserMedication 설정
-                .medicine(medicine) // Medicine 설정
+                .medicine(medicine)
+                .userMedication(userMedication)
                 .build();
     }
 }

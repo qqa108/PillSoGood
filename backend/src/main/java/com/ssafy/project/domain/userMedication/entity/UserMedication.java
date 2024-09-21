@@ -45,5 +45,4 @@ public class UserMedication {
     @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<UserMedicationDetail> userMedicationDetailList = new ArrayList<>();
 
-
 }

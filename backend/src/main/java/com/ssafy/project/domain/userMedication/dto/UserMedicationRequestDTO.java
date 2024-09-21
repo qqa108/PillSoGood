@@ -24,11 +24,11 @@ public class UserMedicationRequestDTO {
     private String pharmacyName;
     private List<UserMedicationDetailDTO> userMedicationDetailList = new ArrayList<>();
 
-    public UserMedication toEntity(UserDetail userDetail, List<UserMedicationDetail> userMedicationDetail) {
+    public UserMedication toEntity(List<UserMedicationDetail> userMedicationDetail, UserDetail userDetail) {
         return UserMedication.builder()
                 .name(this.name)
-                .userDetail(userDetail)
                 .status(this.status)
+                .userDetail(userDetail)
                 .intakeAt(this.intakeAt)
                 .prescriptionDay(this.prescriptionDay)
                 .hospitalName(this.hospitalName)
