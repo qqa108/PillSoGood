@@ -25,4 +25,21 @@ public class ApiResponse<T> {
         this.resultMsg = resultMsg;
     }
 
+    // 성공 응답을 쉽게 생성할 수 있는 메서드
+    public static <T> ApiResponse<T> success(T result, SuccessCode code) {
+        return ApiResponse.<T>builder()
+                .result(result)
+                .resultCode(code.getStatus())
+                .resultMsg(code.getMessage())
+                .build();
+    }
+
+    // 에러 응답을 쉽게 생성할 수 있는 메서드
+    public static <T> ApiResponse<T> error(ErrorCode code, String errorMsg) {
+        return ApiResponse.<T>builder()
+                .result(null)
+                .resultCode(code.getStatus())
+                .resultMsg(errorMsg != null ? errorMsg : code.getMessage())
+                .build();
+    }
 }

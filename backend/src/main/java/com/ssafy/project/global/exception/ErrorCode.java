@@ -47,6 +47,10 @@ public enum ErrorCode {
     // 인증되지 않은 경우
     UNAUTHORIZED_ERROR(401, "G013", "Unauthorized Exception"),
 
+    // 비즈니스 로직에 맞는 추가 에러 코드
+    BAD_CREDENTIALS(401, "G014", "Invalid Credentials"),
+    ACCESS_DENIED(403, "G015", "Access Denied"),
+
     // 권한이 없음
     FORBIDDEN_ERROR(403, "G008", "Forbidden Exception"),
 
