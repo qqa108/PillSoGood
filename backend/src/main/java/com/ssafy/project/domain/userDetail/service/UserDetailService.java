@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +21,16 @@ public class UserDetailService {
     private final UserDetailRepository userDetailRepository;
 
     // 사용자 조회
-    public UserDetailResponse getUser(int userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    @Transactional(readOnly = true)
+    public UserDetailResponse getUser(int userId, String family) {
+        if (family != null) {
+            UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, family)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 가족 정보를 찾을 수 없습니다."));
+            return UserDetailResponse.fromEntity(userDetail);
+        }
 
-        UserDetail userDetail = userDetailRepository.findByUser(user)
+        UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, "나")
                 .orElseThrow(() -> new IllegalArgumentException("사용자 세부 정보를 찾을 수 없습니다."));
-
         return UserDetailResponse.fromEntity(userDetail);
     }
 
@@ -51,18 +55,19 @@ public class UserDetailService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        UserDetail userDetail = userDetailDto.toEntity(user);
+        Optional<UserDetail> existingUserDetail = userDetailRepository.findByUserIdAndFamily(userId, userDetailDto.getFamily());
 
+        if (existingUserDetail.isPresent()) {
+            throw new IllegalArgumentException("이미 등록된 사용자 정보가 있습니다.");
+        }
+        UserDetail userDetail = userDetailDto.toEntity(user);
         userDetailRepository.save(userDetail);
     }
 
     // 사용자 정보 수정
     @Transactional
     public void modifyUserDetail(int userId, UserDetailDto userDetailDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        UserDetail userDetail = userDetailRepository.findByUser(user)
+        UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, userDetailDto.getFamily())
                 .orElseThrow(() -> new IllegalArgumentException("사용자 세부 정보를 찾을 수 없습니다."));
 
         userDetailDto.updateUserDetail(userDetail);
@@ -75,10 +80,15 @@ public class UserDetailService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        UserDetail userDetail = userDetailRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+        userRepository.delete(user);
+    }
+
+    // 개별 가족 정보 삭제
+    @Transactional
+    public void deleteFamily(int userId, String family) {
+        UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, family)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가족 정보를 찾을 수 없습니다."));
 
         userDetailRepository.delete(userDetail);
-        userRepository.delete(user);
     }
 }
