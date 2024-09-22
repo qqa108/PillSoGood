@@ -66,8 +66,8 @@ public class UserDetailService {
 
     // 사용자 정보 수정
     @Transactional
-    public void modifyUserDetail(int userId, UserDetailDto userDetailDto) {
-        UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, userDetailDto.getFamily())
+    public void modifyUserDetail(int userId, String family, UserDetailDto userDetailDto) {
+        UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, family)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 세부 정보를 찾을 수 없습니다."));
 
         userDetailDto.updateUserDetail(userDetail);

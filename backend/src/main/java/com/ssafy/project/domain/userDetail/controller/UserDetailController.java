@@ -37,9 +37,9 @@ public class UserDetailController {
 
     // 정보 수정
     @PatchMapping("/modify")
-    public ResponseEntity<?> modifyUserDetail(HttpServletRequest request, @RequestBody UserDetailDto userDetailDto) {
+    public ResponseEntity<?> modifyUserDetail(HttpServletRequest request, @RequestParam String family, @RequestBody UserDetailDto userDetailDto) {
         int userId = (Integer) request.getAttribute("userId");
-        userDetailService.modifyUserDetail(userId, userDetailDto);
+        userDetailService.modifyUserDetail(userId, family, userDetailDto);
         return ResponseEntity.ok("User details modified successfully.");
     }
 
@@ -51,7 +51,7 @@ public class UserDetailController {
         return ResponseEntity.ok("User deleted successfully.");
     }
 
-    //가족 정보 조회
+    //사용자의 전체 가족 정보 조회
     @GetMapping("/family")
     public ResponseEntity<?> getUserFamily(HttpServletRequest request) {
         int userId = (Integer) request.getAttribute("userId");
