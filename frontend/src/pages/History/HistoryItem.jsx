@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import colors from '../../assets/colors';
+import DetailModal from './DetailModal';
+import { useState } from 'react';
 
 // {
 //     date: '2024.09.06',
@@ -33,6 +35,7 @@ const Date = styled.div`
 
 const Detail = styled.div`
     font-size: 0.8rem;
+    cursor: pointer;
 `;
 
 const HospitalName = styled.div`
@@ -50,18 +53,24 @@ const PillsListItem = styled.li`
 `;
 
 function HistoryItem({ item }) {
+    const [isModalOpen, setModalOpen] = useState(false);
+    const handleOpenModal = () => setModalOpen(true);
+    const handleCloseModal = () => setModalOpen(false);
     return (
-        <ItemContainer>
-            <TopWrapper>
-                <Date>{item.date}</Date>
-                <Detail>자세히 보기</Detail>
-            </TopWrapper>
-            <HospitalName>{item.hospitalName}</HospitalName>
-            <PillsNickName>{item.pillsNickName}</PillsNickName>
-            {item.pillsList.map((e) => (
-                <PillsListItem key={e}>{e}</PillsListItem>
-            ))}
-        </ItemContainer>
+        <>
+            <ItemContainer>
+                <TopWrapper>
+                    <Date>{item.date}</Date>
+                    <Detail onClick={handleOpenModal}>자세히 보기</Detail>
+                </TopWrapper>
+                <HospitalName>{item.hospitalName}</HospitalName>
+                <PillsNickName>{item.pillsNickName}</PillsNickName>
+                {item.pillsList.map((e) => (
+                    <PillsListItem key={e}>{e}</PillsListItem>
+                ))}
+            </ItemContainer>
+            {isModalOpen && <DetailModal detailInfo={1} onClose={handleCloseModal} />}
+        </>
     );
 }
 
