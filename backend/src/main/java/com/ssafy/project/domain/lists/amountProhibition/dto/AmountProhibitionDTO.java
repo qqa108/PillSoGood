@@ -2,12 +2,9 @@ package com.ssafy.project.domain.lists.amountProhibition.dto;
 
 import com.ssafy.project.domain.lists.amountProhibition.entity.AmountProhibition;
 import com.ssafy.project.domain.lists.amountProhibition.entity.Field;
-import com.ssafy.project.domain.medicine.entity.Medicine;
-import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

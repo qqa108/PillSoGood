@@ -3,7 +3,6 @@ package com.ssafy.project.domain.medicine.dto;
 import com.ssafy.project.domain.lists.ageProhibition.dto.AgeProhibitionDTO;
 import com.ssafy.project.domain.lists.amountProhibition.dto.AmountProhibitionDTO;
 import com.ssafy.project.domain.lists.medicineInformation.dto.MedicineInformationDTO;
-import com.ssafy.project.domain.lists.medicineInformation.entity.MedicineInformation;
 import com.ssafy.project.domain.lists.pregnancyProhibition.dto.PregnancyProhibitionDTO;
 import com.ssafy.project.domain.lists.seniorProhibition.dto.SeniorProhibitionDTO;
 import com.ssafy.project.domain.medicine.entity.Medicine;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

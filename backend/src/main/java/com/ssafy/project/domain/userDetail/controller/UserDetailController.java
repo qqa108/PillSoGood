@@ -1,7 +1,7 @@
 package com.ssafy.project.domain.userDetail.controller;
 
-import com.ssafy.project.domain.userDetail.dto.UserDetailDto;
-import com.ssafy.project.domain.userDetail.dto.UserDetailResponse;
+import com.ssafy.project.domain.userDetail.dto.UserDetailRequestDTO;
+import com.ssafy.project.domain.userDetail.dto.UserDetailResponseDTO;
 import com.ssafy.project.domain.userDetail.service.UserDetailService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,24 +22,24 @@ public class UserDetailController {
     public ResponseEntity<?> getUserDetail(HttpServletRequest request, @RequestParam(value = "family", required = false) String family) {
         int userId = (int) request.getAttribute("userId");
 
-        UserDetailResponse userDetail = userDetailService.getUser(userId, family);
+        UserDetailResponseDTO userDetail = userDetailService.getUser(userId, family);
         return ResponseEntity.ok(userDetail);
     }
 
 
     // 사용자 정보 등록
     @PostMapping("/register")
-    public ResponseEntity<?> registerUserDetail(HttpServletRequest request, @RequestBody UserDetailDto userDetailDto) {
+    public ResponseEntity<?> registerUserDetail(HttpServletRequest request, @RequestBody UserDetailRequestDTO userDetailRequestDTO) {
         int userId = (Integer) request.getAttribute("userId");
-        userDetailService.registerUserDetail(userId, userDetailDto); // userId를 Service에 전달
+        userDetailService.registerUserDetail(userId, userDetailRequestDTO); // userId를 Service에 전달
         return ResponseEntity.ok("User registered successfully.");
     }
 
     // 정보 수정
     @PatchMapping("/modify")
-    public ResponseEntity<?> modifyUserDetail(HttpServletRequest request, @RequestParam String family, @RequestBody UserDetailDto userDetailDto) {
+    public ResponseEntity<?> modifyUserDetail(HttpServletRequest request, @RequestParam String family, @RequestBody UserDetailRequestDTO userDetailRequestDTO) {
         int userId = (Integer) request.getAttribute("userId");
-        userDetailService.modifyUserDetail(userId, family, userDetailDto);
+        userDetailService.modifyUserDetail(userId, family, userDetailRequestDTO);
         return ResponseEntity.ok("User details modified successfully.");
     }
 
@@ -55,7 +55,7 @@ public class UserDetailController {
     @GetMapping("/family")
     public ResponseEntity<?> getUserFamily(HttpServletRequest request) {
         int userId = (Integer) request.getAttribute("userId");
-        List<UserDetailResponse> familyDetails = userDetailService.getUserFamily(userId); // 서비스에서 UserDetailResponse 리스트 반환
+        List<UserDetailResponseDTO> familyDetails = userDetailService.getUserFamily(userId); // 서비스에서 UserDetailResponse 리스트 반환
         return ResponseEntity.ok(familyDetails);
     }
 

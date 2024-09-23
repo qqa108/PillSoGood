@@ -5,7 +5,6 @@ import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

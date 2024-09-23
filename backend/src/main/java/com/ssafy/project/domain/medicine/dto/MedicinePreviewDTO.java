@@ -8,7 +8,6 @@ import com.ssafy.project.domain.medicine.entity.Medicine;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

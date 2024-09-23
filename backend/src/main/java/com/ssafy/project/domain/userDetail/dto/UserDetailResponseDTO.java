@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UserDetailResponse {
+public class UserDetailResponseDTO {
     private String name;
     private String email;
     private LocalDate birth;
@@ -24,8 +24,8 @@ public class UserDetailResponse {
     private List<String> allergies;
     private String family;
 
-    public static UserDetailResponse fromEntity(UserDetail userDetail) {
-        return new UserDetailResponse(
+    public static UserDetailResponseDTO fromEntity(UserDetail userDetail) {
+        return new UserDetailResponseDTO(
                 userDetail.getUser().getName(),
                 userDetail.getUser().getEmail(),
                 userDetail.getBirth(),

@@ -1,6 +1,5 @@
 package com.ssafy.project.domain.userMedicationDetail.controller;
 
-import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
 import com.ssafy.project.domain.userMedicationDetail.dto.UserMedicationDetailRequestDTO;
 import com.ssafy.project.domain.userMedicationDetail.service.UserMedicationDetailService;
 import lombok.RequiredArgsConstructor;

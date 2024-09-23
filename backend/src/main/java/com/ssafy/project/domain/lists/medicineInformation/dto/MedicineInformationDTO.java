@@ -4,7 +4,6 @@ import com.ssafy.project.domain.lists.medicineInformation.entity.MedicineInforma
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

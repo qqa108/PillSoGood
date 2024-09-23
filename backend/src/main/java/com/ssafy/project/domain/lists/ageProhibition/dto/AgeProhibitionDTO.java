@@ -3,15 +3,12 @@ package com.ssafy.project.domain.lists.ageProhibition.dto;
 import com.ssafy.project.domain.lists.ageProhibition.entity.AgeField;
 import com.ssafy.project.domain.lists.ageProhibition.entity.AgeProhibition;
 import com.ssafy.project.domain.lists.ageProhibition.entity.AgeRange;
-import com.ssafy.project.domain.medicine.entity.Medicine;
-import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AgeProhibitionDTO {
 
     private int id;

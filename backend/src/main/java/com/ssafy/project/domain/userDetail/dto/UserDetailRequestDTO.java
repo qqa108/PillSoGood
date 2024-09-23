@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UserDetailDto {
+public class UserDetailRequestDTO {
 
     private LocalDate birth;
     private double height;

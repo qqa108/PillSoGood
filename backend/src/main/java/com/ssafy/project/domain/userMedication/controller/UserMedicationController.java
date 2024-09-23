@@ -29,7 +29,7 @@ public class UserMedicationController {
         return ResponseEntity.ok(userMedicationService.getUserMedication(userDetailId));
     }
 
-    //복약카드수
+    //복약카드 수정
     @PutMapping("/{userMedicationId}")
     public ResponseEntity<String> updateUserMedication(@RequestBody UserMedicationRequestDTO userMedicationRequestDTO, @PathVariable int userMedicationId) {
         userMedicationService.updateUserMedication(userMedicationRequestDTO, userMedicationId);

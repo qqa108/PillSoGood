@@ -47,12 +47,12 @@ public class UserMedication {
     @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<UserMedicationDetail> userMedicationDetailList = new ArrayList<>();
 
-    public void updateUserMedication(UserMedicationRequestDTO dto) {
-        this.name = dto.getName();
-        this.intakeAt = dto.getIntakeAt();
-        this.prescriptionDay = dto.getPrescriptionDay();
-        this.hospitalName = dto.getHospitalName();
-        this.pharmacyName = dto.getPharmacyName();
+    public void update(String name, String intakeAt, int prescriptionDay, String hospitalName, String pharmacyName) {
+        this.name = name;
+        this.intakeAt = intakeAt;
+        this.prescriptionDay = prescriptionDay;
+        this.hospitalName = hospitalName;
+        this.pharmacyName = pharmacyName;
     }
 
 }

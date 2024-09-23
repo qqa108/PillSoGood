@@ -1,6 +1,5 @@
 package com.ssafy.project.domain.lists.medicineInformation.entity;
 
-import com.ssafy.project.domain.lists.medicineInformation.dto.MedicineInformationDTO;
 import com.ssafy.project.domain.medicine.entity.Medicine;
 import jakarta.persistence.*;
 import lombok.*;

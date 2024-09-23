@@ -51,46 +51,38 @@ public class UserDetail {
     @OneToMany(mappedBy = "userDetail", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<UserMedication> userMedicationList;
 
-    // 알러지 리스트
     public List<String> getAllergies() {
         return Arrays.asList(this.allergy.split(","));
     }
 
-    // 알러지를 업데이트하는 메서드
     public void updateAllergies(List<String> allergies) {
         this.allergy = String.join(",", allergies);
     }
 
-    // 가족 정보 업데이트 메서드
     public void updateFamily(String family) {
         this.family = family;
     }
 
-    // height 업데이트 메서드
     public void updateHeight(double height) {
         if (height > 0) {
             this.height = height;
         }
     }
 
-    // weight 업데이트 메서드
     public void updateWeight(double weight) {
         if (weight > 0) {
             this.weight = weight;
         }
     }
 
-    // pregnancy 업데이트 메서드
     public void updatePregnancy(Pregnancy pregnancy) {
         this.pregnancy = pregnancy;
     }
 
-    // birth 업데이트 메서드
     public void updateBirth(LocalDate birth) {
         this.birth = birth;
     }
 
-    // 성별 업데이트 메서드
     public void updateGender(Gender gender) {
         this.gender = gender;
     }

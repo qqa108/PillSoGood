@@ -1,12 +1,9 @@
 package com.ssafy.project.domain.lists.seniorProhibition.dto;
 
 import com.ssafy.project.domain.lists.seniorProhibition.entity.SeniorProhibition;
-import com.ssafy.project.domain.medicine.entity.Medicine;
-import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

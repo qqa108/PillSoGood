@@ -5,7 +5,6 @@ import com.ssafy.project.domain.medicine.dto.MedicinePreviewDTO;
 import com.ssafy.project.domain.medicine.entity.Medicine;
 import com.ssafy.project.domain.medicine.repository.MedicineRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

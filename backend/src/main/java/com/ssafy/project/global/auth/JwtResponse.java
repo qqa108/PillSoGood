@@ -1,5 +1,8 @@
 package com.ssafy.project.global.auth;
 
+import lombok.Getter;
+
+@Getter
 public class JwtResponse {
     private final String accessToken;
     private final String refreshToken;
@@ -9,11 +12,4 @@ public class JwtResponse {
         this.refreshToken = refreshToken;
     }
 
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
 }

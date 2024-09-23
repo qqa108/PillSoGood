@@ -2,7 +2,6 @@ package com.ssafy.project.domain.medicine.controller;
 
 import com.ssafy.project.domain.medicine.dto.MedicineDTO;
 import com.ssafy.project.domain.medicine.dto.MedicinePreviewDTO;
-import com.ssafy.project.domain.medicine.entity.Medicine;
 import com.ssafy.project.domain.medicine.service.MedicineService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

@@ -2,8 +2,8 @@ package com.ssafy.project.domain.userDetail.service;
 
 import com.ssafy.project.domain.user.entity.User;
 import com.ssafy.project.domain.user.repository.UserRepository;
-import com.ssafy.project.domain.userDetail.dto.UserDetailDto;
-import com.ssafy.project.domain.userDetail.dto.UserDetailResponse;
+import com.ssafy.project.domain.userDetail.dto.UserDetailRequestDTO;
+import com.ssafy.project.domain.userDetail.dto.UserDetailResponseDTO;
 import com.ssafy.project.domain.userDetail.entity.UserDetail;
 import com.ssafy.project.domain.userDetail.repository.UserDetailRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,55 +22,55 @@ public class UserDetailService {
 
     // 사용자 조회
     @Transactional(readOnly = true)
-    public UserDetailResponse getUser(int userId, String family) {
+    public UserDetailResponseDTO getUser(int userId, String family) {
         if (family != null) {
             UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, family)
                     .orElseThrow(() -> new IllegalArgumentException("해당 가족 정보를 찾을 수 없습니다."));
-            return UserDetailResponse.fromEntity(userDetail);
+            return UserDetailResponseDTO.fromEntity(userDetail);
         }
 
         UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, "나")
                 .orElseThrow(() -> new IllegalArgumentException("사용자 세부 정보를 찾을 수 없습니다."));
-        return UserDetailResponse.fromEntity(userDetail);
+        return UserDetailResponseDTO.fromEntity(userDetail);
     }
 
     // 사용자 가족 조회
     @Transactional(readOnly = true)
-    public List<UserDetailResponse> getUserFamily(int userId) {
+    public List<UserDetailResponseDTO> getUserFamily(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         List<UserDetail> userDetails = userDetailRepository.findAllByUser(user);
 
-        List<UserDetailResponse> familyList = new ArrayList<>();
+        List<UserDetailResponseDTO> familyList = new ArrayList<>();
         for (UserDetail userDetail : userDetails) {
-            familyList.add(UserDetailResponse.fromEntity(userDetail));
+            familyList.add(UserDetailResponseDTO.fromEntity(userDetail));
         }
         return familyList;
     }
 
     // 사용자 등록
     @Transactional
-    public void registerUserDetail(int userId, UserDetailDto userDetailDto) {
+    public void registerUserDetail(int userId, UserDetailRequestDTO userDetailRequestDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        Optional<UserDetail> existingUserDetail = userDetailRepository.findByUserIdAndFamily(userId, userDetailDto.getFamily());
+        Optional<UserDetail> existingUserDetail = userDetailRepository.findByUserIdAndFamily(userId, userDetailRequestDTO.getFamily());
 
         if (existingUserDetail.isPresent()) {
             throw new IllegalArgumentException("이미 등록된 사용자 정보가 있습니다.");
         }
-        UserDetail userDetail = userDetailDto.toEntity(user);
+        UserDetail userDetail = userDetailRequestDTO.toEntity(user);
         userDetailRepository.save(userDetail);
     }
 
     // 사용자 정보 수정
     @Transactional
-    public void modifyUserDetail(int userId, String family, UserDetailDto userDetailDto) {
+    public void modifyUserDetail(int userId, String family, UserDetailRequestDTO userDetailRequestDTO) {
         UserDetail userDetail = userDetailRepository.findByUserIdAndFamily(userId, family)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 세부 정보를 찾을 수 없습니다."));
 
-        userDetailDto.updateUserDetail(userDetail);
+        userDetailRequestDTO.updateUserDetail(userDetail);
         userDetailRepository.save(userDetail);
     }
 
