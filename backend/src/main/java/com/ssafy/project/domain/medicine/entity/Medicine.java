@@ -5,7 +5,7 @@ import com.ssafy.project.domain.lists.amountProhibition.entity.AmountProhibition
 import com.ssafy.project.domain.lists.medicineInformation.entity.MedicineInformation;
 import com.ssafy.project.domain.lists.pregnancyProhibition.entity.PregnancyProhibition;
 import com.ssafy.project.domain.lists.seniorProhibition.entity.SeniorProhibition;
-import com.ssafy.project.domain.userMedication.entity.UserMedicationDetail;
+import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import jakarta.persistence.*;
 import lombok.*;
 

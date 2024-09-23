@@ -1,6 +1,7 @@
-package com.ssafy.project.domain.userMedication.entity;
+package com.ssafy.project.domain.userMedicationDetail.entity;
 
 import com.ssafy.project.domain.medicine.entity.Medicine;
+import com.ssafy.project.domain.userMedication.entity.UserMedication;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,4 +31,9 @@ public class UserMedicationDetail {
     @JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false)
     private Medicine medicine;
 
+    public void update(int dailyIntakeFrequency, int perAmount, Medicine medicine) {
+        this.dailyIntakeFrequency = dailyIntakeFrequency;
+        this.perAmount = perAmount;
+        this.medicine = medicine;
+    }
 }

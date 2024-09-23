@@ -1,6 +1,8 @@
 package com.ssafy.project.domain.userMedication.entity;
 
 import com.ssafy.project.domain.userDetail.entity.UserDetail;
+import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
+import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,5 +46,13 @@ public class UserMedication {
 
     @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<UserMedicationDetail> userMedicationDetailList = new ArrayList<>();
+
+    public void updateUserMedication(UserMedicationRequestDTO dto) {
+        this.name = dto.getName();
+        this.intakeAt = dto.getIntakeAt();
+        this.prescriptionDay = dto.getPrescriptionDay();
+        this.hospitalName = dto.getHospitalName();
+        this.pharmacyName = dto.getPharmacyName();
+    }
 
 }

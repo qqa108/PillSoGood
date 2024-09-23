@@ -1,7 +1,7 @@
-package com.ssafy.project.domain.userMedication.dto;
+package com.ssafy.project.domain.userMedicationDetail.dto;
 
 import com.ssafy.project.domain.medicine.dto.MedicineDTO;
-import com.ssafy.project.domain.userMedication.entity.UserMedicationDetail;
+import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import lombok.*;
 
 @Getter

@@ -1,8 +1,8 @@
-package com.ssafy.project.domain.userMedication.dto;
+package com.ssafy.project.domain.userMedicationDetail.dto;
 
 import com.ssafy.project.domain.medicine.entity.Medicine;
 import com.ssafy.project.domain.userMedication.entity.UserMedication;
-import com.ssafy.project.domain.userMedication.entity.UserMedicationDetail;
+import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import lombok.*;
 
 @Getter
@@ -10,7 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserMedicationDetailDTO {
+public class UserMedicationDetailRequestDTO {
+    private int id;
     private int dailyIntakeFrequency;
     private int perAmount;
     private int medicineId; // JSON에서 받아올 medicineId
