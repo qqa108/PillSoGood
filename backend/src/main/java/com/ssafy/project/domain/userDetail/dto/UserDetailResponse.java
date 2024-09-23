@@ -22,12 +22,12 @@ public class UserDetailResponse {
     private double weight;
     private Pregnancy pregnancy;
     private List<String> allergies;
-    private List<String> family;
+    private String family;
 
     public static UserDetailResponse fromEntity(UserDetail userDetail) {
         return new UserDetailResponse(
-                userDetail.getUser().getEmail(),
                 userDetail.getUser().getName(),
+                userDetail.getUser().getEmail(),
                 userDetail.getBirth(),
                 userDetail.getGender(),
                 userDetail.getHeight(),

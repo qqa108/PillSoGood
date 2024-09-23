@@ -26,6 +26,8 @@ public class UserDetailDto {
 
     // 첫 생성
     public UserDetail toEntity(User user) {
+        String allergyString = (this.allergies == null || this.allergies.isEmpty()) ? "없음" : String.join(",", this.allergies);
+
         return UserDetail.builder()
                 .user(user)
                 .birth(this.birth)
@@ -33,8 +35,8 @@ public class UserDetailDto {
                 .weight(this.weight)
                 .gender(this.gender)
                 .pregnancy(this.pregnancy)
-                .allergy(String.join(",", this.allergies)) // 알러지 리스트를 문자열로 변환하여 저장
-                .family(String.join(",", this.family))
+                .allergy(allergyString) // 알러지 리스트를 문자열로 변환하여 저장
+                .family(this.family)
                 .build();
     }
 
@@ -60,6 +62,8 @@ public class UserDetailDto {
 
         if (this.allergies != null && !this.allergies.isEmpty()) {
             userDetail.updateAllergies(this.allergies);
+        }else {
+            userDetail.updateAllergies(List.of("없음")); // 알러지가 없을 경우 "없음"으로 설정
         }
     }
 }

@@ -55,11 +55,6 @@ public class UserDetail {
         return Arrays.asList(this.allergy.split(","));
     }
 
-    // 가족 리스트
-    public List<String> getFamily() {
-        return Arrays.asList(this.family.split(","));
-    }
-
     // 알러지를 업데이트하는 메서드
     public void updateAllergies(List<String> allergies) {
         this.allergy = String.join(",", allergies);
