@@ -1,7 +1,16 @@
 import styled from 'styled-components';
 import colors from '../../assets/colors';
+import HistoryItem from './HistoryItem';
 
-const history = [1, 2, 3];
+// const history = [1, 2, 3];
+const history = [
+    {
+        date: '2024.09.06',
+        hospitalName: '최용훈 이비인후과',
+        pillsNickName: '코로나 약 (7일분)',
+        pillsList: ['타이레놀', '콘택골드캡슐', '포린정', '그린노즈에스시럽'],
+    },
+];
 
 const HistoryContainer = styled.div`
     min-height: calc(100vh - 140px);
@@ -42,14 +51,12 @@ const HistoryWrapper = styled.div`
     }
 `;
 
-const HistoryItem = styled.div``;
-
 function History() {
     return (
         <HistoryContainer>
             {history.length > 0 ? (
                 history.map((e, i) => {
-                    return <HistoryItem key={e}>{e}</HistoryItem>;
+                    return <HistoryItem item={e} key={e} />;
                 })
             ) : (
                 <HistoryWrapper>
