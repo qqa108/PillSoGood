@@ -11,6 +11,8 @@ import SurveyEdit from './pages/Survey/surveyEdit';
 import Login from './pages/member/Login';
 import Member from './pages/Member';
 import Join from './pages/member/Join';
+import PillCardRegister from './pages/MyPills/PillCardRegister';
+import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
 
 const router = createBrowserRouter([
     {
@@ -51,6 +53,16 @@ const router = createBrowserRouter([
     {
         path: '/member',
         element: <Member />,
+        children: [
+            {
+                path: 'photoGuide',
+                element: <PhotoGuide />,
+            },
+        ],
+    },
+    {
+        path: '/cardRegister',
+        element: <PillCardRegister />,
         children: [
             {
                 path: 'login',

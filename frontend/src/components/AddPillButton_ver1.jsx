@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { FaCirclePlus } from "react-icons/fa6";
 import colors from '../assets/colors';
