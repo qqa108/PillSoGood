@@ -51,17 +51,24 @@ const Button = styled.div`
     border-radius: 6px;
 `;
 
-function NotificationItem({ children }) {
+function NotificationItem({ notificationInfo, setSelectedInfo, onOpen }) {
+    const setModalInfo = () => {
+        setSelectedInfo(notificationInfo);
+        onOpen();
+    };
+    console.log('알림 아이템 생성');
+    console.log(notificationInfo);
+
     return (
         <ItemContainer>
             <TopContainer>
-                <Name>코로나 약 (7일분)</Name>
-                <Setting>알림 설정</Setting>
+                <Name>{notificationInfo.name}</Name>
+                <Setting onClick={setModalInfo}>알림 설정</Setting>
             </TopContainer>
             <ButtonContainer>
-                <Button>8시 30분</Button>
-                <Button>12시 30분</Button>
-                <Button>20시 30분</Button>
+                {notificationInfo.time.map((e) => (
+                    <Button key={e}>{e}</Button>
+                ))}
             </ButtonContainer>
         </ItemContainer>
     );
