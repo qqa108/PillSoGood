@@ -9,6 +9,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Setter
 @Builder
 public class UserMedicationDetail {
     @Id
@@ -16,14 +17,23 @@ public class UserMedicationDetail {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "remain", nullable = false)
-    private int remain;
+    @Column(name = "daily_intake_frequency", nullable = false)
+    private int dailyIntakeFrequency;
+
+    @Column(name = "per_amount")
+    private int perAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medicine_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_medication_id", referencedColumnName = "id")
+    private UserMedication userMedication;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false)
     private Medicine medicine;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_medication_id", nullable = false)
-    private UserMedication userMedication;
+    public void update(int dailyIntakeFrequency, int perAmount, Medicine medicine) {
+        this.dailyIntakeFrequency = dailyIntakeFrequency;
+        this.perAmount = perAmount;
+        this.medicine = medicine;
+    }
 }

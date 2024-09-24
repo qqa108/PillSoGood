@@ -26,10 +26,8 @@ public class UserLoginService {
         Optional<User> existingUser = userRepository.findByKakaoKey(kakaoKey);
 
         if (existingUser.isPresent()) {
-            // User 엔티티를 UserDto로 변환하여 반환
             return toDto(existingUser.get());
         } else {
-            // 신규 사용자 생성 및 저장
             User newUser = User.builder()
                     .kakaoKey(kakaoKey)
                     .email(userDto.getEmail())
@@ -39,7 +37,6 @@ public class UserLoginService {
                     .updatedAt(LocalDateTime.now())
                     .build();
 
-            // 엔티티 저장 후 DTO로 변환하여 반환
             User savedUser = userRepository.save(newUser);
             return toDto(savedUser);
         }
@@ -96,20 +93,6 @@ public class UserLoginService {
                 .refreshToken(user.getRefreshToken())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
-                .build();
-    }
-
-    // UserDto를 User 엔티티로 변환
-    private User toEntity(UserDto userDto) {
-        return User.builder()
-                .id(userDto.getId())
-                .email(userDto.getEmail())
-                .name(userDto.getName())
-                .kakaoKey(userDto.getKakaoKey())
-                .flag(userDto.isFlag())
-                .refreshToken(userDto.getRefreshToken())
-                .createdAt(userDto.getCreatedAt())
-                .updatedAt(userDto.getUpdatedAt())
                 .build();
     }
 }

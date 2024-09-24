@@ -5,7 +5,8 @@ import com.ssafy.project.domain.userMedication.entity.UserMedication;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@ToString
 public class UserDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +25,7 @@ public class UserDetail {
     private String family; //가족 정보
 
     @Column(name = "birth")
-    private LocalDateTime birth;
+    private LocalDate birth;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "gender")
@@ -48,4 +50,40 @@ public class UserDetail {
 
     @OneToMany(mappedBy = "userDetail", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<UserMedication> userMedicationList;
+
+    public List<String> getAllergies() {
+        return Arrays.asList(this.allergy.split(","));
+    }
+
+    public void updateAllergies(List<String> allergies) {
+        this.allergy = String.join(",", allergies);
+    }
+
+    public void updateFamily(String family) {
+        this.family = family;
+    }
+
+    public void updateHeight(double height) {
+        if (height > 0) {
+            this.height = height;
+        }
+    }
+
+    public void updateWeight(double weight) {
+        if (weight > 0) {
+            this.weight = weight;
+        }
+    }
+
+    public void updatePregnancy(Pregnancy pregnancy) {
+        this.pregnancy = pregnancy;
+    }
+
+    public void updateBirth(LocalDate birth) {
+        this.birth = birth;
+    }
+
+    public void updateGender(Gender gender) {
+        this.gender = gender;
+    }
 }

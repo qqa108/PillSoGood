@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
                     corsConfiguration.setAllowedOriginPatterns(List.of("https://j11b308.p.ssafy.io", "http://j11b308.p.ssafy.io", "http://localhost:3000")); // 적절히 도메인 설정
-                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                     corsConfiguration.setAllowedHeaders(List.of("*"));
                     corsConfiguration.setAllowCredentials(true);
                     corsConfiguration.setMaxAge(3600L);
@@ -55,7 +55,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(
                                         // 경로 추가 ex) "/api/user/**",
-                                        "/**"
+                                        "/api/login"
                                 ).permitAll() // 인증 없이 접근 가능한 경로 설정
                                 .anyRequest().authenticated()) // 그 외 모든 요청은 인증 필요
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userLoginService), UsernamePasswordAuthenticationFilter.class);
@@ -77,7 +77,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(
                 // 경로 추가 ex) "/api/user/**",
-                "/**"
+                "/api/login"
         );
     }
 

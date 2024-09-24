@@ -10,13 +10,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
 
-    public JwtAuthenticationToken(Object principal, Object credentials) {
-        super(null);
-        this.principal = principal;
-        this.credentials = credentials;
-        setAuthenticated(false); // 이 토큰은 인증되지 않은 상태로 생성됨
-    }
-
     public JwtAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
