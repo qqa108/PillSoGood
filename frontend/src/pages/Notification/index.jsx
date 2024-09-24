@@ -1,5 +1,7 @@
+import NotificationItem from './NotificationItem';
+
 function Notification() {
-    return <>Notification</>;
+    return <NotificationItem></NotificationItem>;
 }
 
 export default Notification;
