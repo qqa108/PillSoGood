@@ -3,6 +3,7 @@ package com.ssafy.project.domain.medicine.controller;
 import com.ssafy.project.domain.medicine.dto.MedicineDTO;
 import com.ssafy.project.domain.medicine.dto.MedicinePreviewDTO;
 import com.ssafy.project.domain.medicine.service.MedicineService;
+import com.ssafy.project.global.utils.ElasticsearchService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,18 @@ public class MedicineController {
 
     private final MedicineService medicineService;
     private final HttpServletRequest request;
+    private final ElasticsearchService elasticsearchService;
 
     //알약 전체조회
     @GetMapping("")
     public ResponseEntity<List<MedicinePreviewDTO>> getMedicines() {
+//        return ResponseEntity.ok(elasticsearchService.searchMedicinePreview());
         return ResponseEntity.ok(medicineService.findAll());
+    }
+    @GetMapping("/d")
+    public ResponseEntity<List<MedicinePreviewDTO>> getMedicinestmp() {
+        return ResponseEntity.ok(elasticsearchService.searchMedicinePreview());
+//        return ResponseEntity.ok(medicineService.findAll());
     }
 
     //알약상세조회

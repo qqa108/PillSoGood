@@ -1,5 +1,6 @@
 package com.ssafy.project.domain.medicine.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ssafy.project.domain.lists.ageProhibition.dto.AgeProhibitionDTO;
 import com.ssafy.project.domain.lists.amountProhibition.dto.AmountProhibitionDTO;
 import com.ssafy.project.domain.lists.pregnancyProhibition.dto.PregnancyProhibitionDTO;
@@ -11,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties (ignoreUnknown = true)  // 알 수 없는 필드 무시
 public class MedicinePreviewDTO {
 
     private int id;
