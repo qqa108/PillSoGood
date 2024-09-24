@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import colors from './assets/colors';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 const AppContainer = styled.div`
     width: 100vw;
@@ -20,6 +20,7 @@ const OutletContainer = styled.div`
 `;
 
 function App() {
+    const location = useLocation();
     return (
         <AppContainer>
             <Header />

@@ -55,6 +55,9 @@ a{
     text-decoration: none;
     color: inherit;
 }
+input, textarea, button {
+    font-family: 'Nanum Gothic', sans-serif;
+}
 `;
 
 export default GlobalStyle;
