@@ -33,8 +33,9 @@ const Setting = styled.div`
 
 const ButtonContainer = styled.div`
     display: flex;
+    width: 100%;
     & > div:not(:last-child) {
-        margin-right: 10px;
+        margin-right: 25px;
     }
 `;
 
