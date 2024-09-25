@@ -69,15 +69,15 @@ const FilterGroup = styled.div`
 `;
 
 const FilterButtonContainer = styled.div`
-  display: flex; // Flexbox를 사용하여 정렬
-  justify-content: flex-end; // 컨테이너 내의 요소를 오른쪽으로 정렬
-  margin-top: 0.25rem; // 위쪽 여백 추가
+  display: flex;
+  justify-content: space-between; // 버튼을 양쪽으로 배치
+  margin-top: 0.25rem;
 `;
 
 const FilterButton = styled.button`
   background-color: ${(props) => (props.active ? colors.point1 : "white")};
   color: ${(props) => (props.active ? "white" : colors.text)};
-  padding: 0.25rem 0.5rem; // 가로 패딩 조정
+  padding: 0.25rem 0.5rem;
   border: 1px solid ${colors.point4};
   border-radius: 0.75rem;
   cursor: pointer;
@@ -112,14 +112,14 @@ const MainToggleButton = styled.button`
 `;
 
 const ResultCount = styled.p`
-  color: ${colors.text}; // 기본 텍스트 색상
+  color: ${colors.text};
 `;
 
 const CountSpan = styled.span`
-  color: ${colors.point1}; // point1 색상
+  color: ${colors.point1};
 `;
 
-const Filter = ({ onFilterChange }) => {
+const Filter = ({ onFilterChange, onResetFilter }) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isShapeOpen, setIsShapeOpen] = useState(false);
@@ -128,7 +128,6 @@ const Filter = ({ onFilterChange }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedShape, setSelectedShape] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-  const [filteredCount, setFilteredCount] = useState(0); // 필터링된 개수 상태 추가
 
   const toggleCategory = (category) => {
     setSelectedCategory((prev) => (prev === category ? "" : category));
@@ -149,30 +148,35 @@ const Filter = ({ onFilterChange }) => {
       color: selectedColor ? color_mapping[selectedColor] : [],
     };
 
-    // 필터링된 개수 계산
-    const count = setFilteredCount(count); // 여기서 데이터의 개수를 계산하는 로직 추가 // 필터링된 개수 상태 업데이트
-
     onFilterChange(filterOptions);
+  };
+
+  // 필터 옵션을 초기화하는 함수
+  const resetFilter = () => {
+    setSelectedCategory("");
+    setSelectedShape("");
+    setSelectedColor("");
+    onResetFilter(); // 상위 컴포넌트에서 필터 초기화 처리
   };
 
   return (
     <MainFilterContainer>
       <MainToggleButton
-        onClick={() => setIsFilterOpen(!isFilterOpen)}
+        onTouchStart={() => setIsFilterOpen(!isFilterOpen)}
         isOpen={isFilterOpen}
       >
         <span>필터</span>
         <span>{isFilterOpen ? " 접기" : " 펼치기"}</span>
       </MainToggleButton>
+
       {isFilterOpen && (
         <>
-          {/* 구분 필터 */}
           <FilterSection>
             <FilterHeader>
               <h3>구분</h3>
               <ToggleButton
                 isOpen={isCategoryOpen}
-                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                onTouchStart={() => setIsCategoryOpen(!isCategoryOpen)}
               >
                 {isCategoryOpen ? "접기" : "펼치기"}
               </ToggleButton>
@@ -181,26 +185,26 @@ const Filter = ({ onFilterChange }) => {
               <FilterGroup>
                 <FilterButton
                   active={selectedCategory === "전문"}
-                  onClick={() => toggleCategory("전문")}
+                  onTouchStart={() => toggleCategory("전문")}
                 >
                   전문
                 </FilterButton>
                 <FilterButton
                   active={selectedCategory === "일반"}
-                  onClick={() => toggleCategory("일반")}
+                  onTouchStart={() => toggleCategory("일반")}
                 >
                   일반
                 </FilterButton>
               </FilterGroup>
             )}
           </FilterSection>
-          {/* 모양 필터 */}
+
           <FilterSection>
             <FilterHeader>
               <h3>모양</h3>
               <ToggleButton
                 isOpen={isShapeOpen}
-                onClick={() => setIsShapeOpen(!isShapeOpen)}
+                onTouchStart={() => setIsShapeOpen(!isShapeOpen)}
               >
                 {isShapeOpen ? "접기" : "펼치기"}
               </ToggleButton>
@@ -211,7 +215,7 @@ const Filter = ({ onFilterChange }) => {
                   <FilterButton
                     key={shape}
                     active={selectedShape === shape}
-                    onClick={() => toggleShape(shape)}
+                    onTouchStart={() => toggleShape(shape)}
                   >
                     {shape}
                   </FilterButton>
@@ -219,13 +223,13 @@ const Filter = ({ onFilterChange }) => {
               </FilterGroup>
             )}
           </FilterSection>
-          {/* 색상 필터 */}
+
           <FilterSection>
             <FilterHeader>
               <h3>색상</h3>
               <ToggleButton
                 isOpen={isColorOpen}
-                onClick={() => setIsColorOpen(!isColorOpen)}
+                onTouchStart={() => setIsColorOpen(!isColorOpen)}
               >
                 {isColorOpen ? "접기" : "펼치기"}
               </ToggleButton>
@@ -236,7 +240,7 @@ const Filter = ({ onFilterChange }) => {
                   <FilterButton
                     key={color}
                     active={selectedColor === color}
-                    onClick={() => toggleColor(color)}
+                    onTouchStart={() => toggleColor(color)}
                   >
                     {color}
                   </FilterButton>
@@ -244,19 +248,12 @@ const Filter = ({ onFilterChange }) => {
               </FilterGroup>
             )}
           </FilterSection>
-          {/* 필터 적용 버튼 컨테이너 */}
+
+          {/* 필터 적용 및 초기화 버튼 */}
           <FilterButtonContainer>
-            <FilterButton
-              onClick={applyFilter}
-              style={{ marginTop: "0.25rem" }}
-            >
-              필터 적용
-            </FilterButton>
+            <FilterButton onTouchStart={applyFilter}>필터 적용</FilterButton>
+            <FilterButton onTouchStart={resetFilter}>필터 초기화</FilterButton>
           </FilterButtonContainer>
-          {/* 필터링된 결과 개수 출력 */}
-          <ResultCount>
-            총 <CountSpan>{filteredCount}</CountSpan> 건의 약이 있어요.
-          </ResultCount>
         </>
       )}
     </MainFilterContainer>
