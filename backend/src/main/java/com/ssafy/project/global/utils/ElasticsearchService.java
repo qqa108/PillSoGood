@@ -11,6 +11,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +34,13 @@ public class ElasticsearchService {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);  // 알 수 없는 필드 무시
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);  // 필드명 매칭 설정
 
-
         try {
             // medicine_index 인덱스에서 모든 데이터를 조회
             SearchRequest searchRequest = new SearchRequest("medicine_index");
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
             searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+            searchSourceBuilder.sort("id", SortOrder.ASC);  // id를 기준으로 오름차순 정렬
+            searchSourceBuilder.size(20);  // 20개의 문서를 반환
             searchRequest.source(searchSourceBuilder);
 
             // Elasticsearch에서 검색 결과 가져오기
@@ -48,7 +50,6 @@ public class ElasticsearchService {
                 MedicinePreviewDTO medicinePreviewDTO = objectMapper.readValue(hit.getSourceAsString(), MedicinePreviewDTO.class);
                 resultList.add(medicinePreviewDTO);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
