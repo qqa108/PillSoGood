@@ -1,34 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import SearchBox from "@/components/SearchBox";
-import Filter from "@/components/Filter";
-import SearchResult from "@/components/SearchResult";
-import colors from "@/assets/colors";
-
-const SelectedPillsContainer = styled.div`
-  margin-top: 1rem;
-`;
-
-const PillsList = styled.div`
-  margin-top: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px; /* 약물 간 간격 조정 */
-`;
-
-const PillItem = styled.span`
-  background-color: #fff;
-  padding: 5px 10px;
-  border-radius: 12px;
-  border: 1px solid ${colors.point1};
-  font-size: 14px;
-  color: #333;
-`;
-
-const NoPillsText = styled.p`
-  margin-top: 1rem;
-  color: #888;
-`;
+import SearchBox from "../../components/SearchBox";
+import Filter from "../../components/Filter";
+import SearchResult from "../../components/SearchResult";
 
 const pillData = [
   { id: 1, name: "타이레놀", category: "일반", color: "흰색", shape: "원형" },
@@ -44,7 +18,7 @@ const pillData = [
   // 더 많은 약물 데이터 추가 가능
 ];
 
-const RegisterPillContainer = styled.div`
+const DrugSearchContainer = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -55,12 +29,11 @@ const SearchResultsContainer = styled.div`
   margin-top: 1rem;
 `;
 
-const RegisterPill = () => {
+const DrugSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOptions, setFilterOptions] = useState({});
   const [filteredPills, setFilteredPills] = useState([]); // 초기 상태를 빈 배열로 설정
   const [filteredCount, setFilteredCount] = useState(0); // 필터링된 개수 상태
-  const [selectedPills, setSelectedPills] = useState([]); // 선택된 약물 관리
 
   const filterAndUpdatePills = (searchTerm, filterOptions) => {
     let filtered = pillData;
@@ -101,19 +74,8 @@ const RegisterPill = () => {
     filterAndUpdatePills(searchTerm, options);
   };
 
-  // 약물 선택 핸들러
-  const handlePillSelect = (pillName) => {
-    setSelectedPills((prevSelected) => {
-      if (prevSelected.includes(pillName)) {
-        return prevSelected.filter((p) => p !== pillName); // 이미 선택된 약물은 해제
-      } else {
-        return [...prevSelected, pillName]; // 선택되지 않은 약물 추가
-      }
-    });
-  };
-
   return (
-    <RegisterPillContainer>
+    <DrugSearchContainer>
       {/* 검색바 */}
       <SearchBox value={searchTerm} onSearch={handleSearch} />
 
@@ -131,29 +93,16 @@ const RegisterPill = () => {
                 <SearchResult
                   key={pill.id}
                   text={pill.name}
-                  isActive={selectedPills.includes(pill.name)} // 선택된 약물 상태 반영
-                  onSelect={() => handlePillSelect(pill.name)} // 약물 선택 핸들러 연결
+                  isActive={false} // 체크 기능 없으므로 항상 false
+                  onSelect={() => {}} // 선택 핸들러 필요 없음
+                  hideCheckbox={true} // 체크박스 숨기기 위한 prop 전달
                 />
               ))
             : searchTerm && <p>검색된 약물이 없습니다.</p> // 검색어가 있을 때만 표시
         }
       </SearchResultsContainer>
-
-      {/* 선택된 약물 목록 */}
-      <SelectedPillsContainer>
-        <h3>[선택된 약물]</h3>
-        {selectedPills.length > 0 ? (
-          <PillsList>
-            {selectedPills.map((pillName, index) => (
-              <PillItem key={index}>{pillName}</PillItem>
-            ))}
-          </PillsList>
-        ) : (
-          <NoPillsText>선택된 약물이 없습니다.</NoPillsText>
-        )}
-      </SelectedPillsContainer>
-    </RegisterPillContainer>
+    </DrugSearchContainer>
   );
 };
 
-export default RegisterPill;
+export default DrugSearch;
