@@ -1,5 +1,6 @@
 import Modal from 'react-modal';
 import styled from 'styled-components';
+import { useNavigate, Outlet } from 'react-router-dom';
 import colors from '../../../assets/colors';
 import MedicineBag from '../../../assets/medicine_bag.svg'
 import Prescription from '../../../assets/prescription.svg'
@@ -72,34 +73,43 @@ const IconWrapper = styled.div`
   /* left: 15; */
 `;
 
+
 const items = [
-  { icon: MedicineBag, text: "약봉투 등록" },
-  { icon: Medicine, text: "약사진 등록" },
-  { icon: Prescription, text: "내 진로내역 등록" },
-  { icon: Pencil, text: "직접 등록" },
+  { icon: MedicineBag, text: "약봉투 등록", path: '/cardRegister/photoGuide'},
+  { icon: Medicine, text: "약사진 등록", path: '/cardRegister/photoGuide' },
+  { icon: Prescription, text: "내 진로내역 등록",  path: '/cardRegister/photoGuide' },
+  { icon: Pencil, text: "직접 등록", path: '/cardRegister/photoGuide' },
 ];
 
 // 클래스 네임을 통해 모달 스타일을 적용
 export default function PillCardRegister({ isModalOpen, closeModal }) {
-  return (
-    <Modal
-      isOpen={isModalOpen}
-      onRequestClose={closeModal}
-      className="StyledModal"    
-      style={customModalStyles}
-      
-    > 
-      <ModalContent>
-      {items.map((item, index) => (
-          <Rectangle key={index}>
-            <IconWrapper>
-              <img src={item.icon} alt={item.text} width={"80%"} />
-            </IconWrapper>
-            <RectangleText>{item.text}</RectangleText>
-          </Rectangle>
-        ))}
-      </ModalContent>
+  const navigate = useNavigate();
 
-    </Modal>
+  return (
+    <>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        className="StyledModal"    
+        style={customModalStyles}
+        
+      > 
+        <ModalContent>
+        {items.map((item, index) => (
+            <Rectangle key={index} onClick={() => {
+              navigate(item.path);
+              closeModal(); 
+            }}>
+              <IconWrapper>
+                <img src={item.icon} alt={item.text} width={"80%"} />
+              </IconWrapper>
+              <RectangleText>{item.text}</RectangleText>
+            </Rectangle>
+          ))}
+        </ModalContent>
+
+      </Modal>
+      <Outlet />
+     </>
   );
 }

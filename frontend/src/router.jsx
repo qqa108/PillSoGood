@@ -58,6 +58,16 @@ const router = createBrowserRouter([
                 path: 'login',
                 element: <Login />,
             },
+        ],
+    },
+    {
+        path: '/cardRegister',
+        element: <PillCardRegister />,
+        children: [
+            {
+                path: 'photoGuide',
+                element: <PhotoGuide />,
+            },
             {
                 path: 'join',
                 element: <Join />,
