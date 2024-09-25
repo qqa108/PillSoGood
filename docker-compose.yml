@@ -1,0 +1,21 @@
+services:
+  backend:
+    image: pill/backend
+    build:
+      context: ./backend
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    ports:
+      - "8080:8080"    # 스프링부트 포트 (필요에 따라 수정)
+    networks:
+      - pill-net
+    restart: always
+
+networks:
+  pill-net:
+    driver: bridge
+
+volumes:
+  db_data:
