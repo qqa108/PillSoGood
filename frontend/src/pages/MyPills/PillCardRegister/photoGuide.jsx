@@ -1,9 +1,20 @@
 import React, { useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import Webcam from 'react-webcam';
 import styled from 'styled-components';
 
-export default function PhotoGuide() {
-  const Container = styled.div`
+const guides = {
+  "medicine-bag": {
+    title: "처방전 촬영 가이드",
+    description: "처방전 전체가 보이도록 촬영해주세요."
+  },
+  "medicine": {
+    title: "약사진 촬영 가이드",
+    description: "약 사진을 촬영하기 전에 가이드에 맞춰주세요."
+  }
+};
+
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,6 +26,11 @@ export default function PhotoGuide() {
   const GuideText = styled.h2`
   margin-bottom: 20px;
   color: #333;
+  `;
+
+  const GuideDescription = styled.p`
+  margin-bottom: 20px;
+  color: #666;
   `;
 
   const WebcamWrapper = styled.div`
@@ -44,8 +60,14 @@ export default function PhotoGuide() {
   }
   `;
 
+export default function PhotoGuide() {
   const webcamRef = useRef(null);
+  const location = useLocation(); 
 
+  console.log('Location state:', location.state);
+  const selectedItem = location.state?.selectedItem || "medicine";
+  console.log('Selected item:', selectedItem);
+  
   // 사진 찍기 함수
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -55,7 +77,8 @@ export default function PhotoGuide() {
   return (
     <Container>
       {/* 가이드 화면 */}
-      <GuideText>약 사진을 촬영하기 전에 가이드에 맞춰주세요</GuideText>
+      <GuideText>{guides[selectedItem].title}</GuideText>
+      <GuideDescription>{guides[selectedItem].description}</GuideDescription>
 
       {/* 카메라 미리보기 */}
       <WebcamWrapper>
