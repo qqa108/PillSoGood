@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import colors from '../../assets/colors';
-import HistoryItem from './HistoryItem';
+import { Children, useState } from 'react';
+import PillsItem from '../../components/PillsItem';
+import Modal from '../../components/Modal';
+import HistoryDetail from './HistoryDetail';
 
 // const history = [1, 2, 3];
 const history = [
@@ -9,6 +12,12 @@ const history = [
         hospitalName: '최용훈 이비인후과',
         pillsNickName: '코로나 약 (7일분)',
         pillsList: ['타이레놀', '콘택골드캡슐', '포린정', '그린노즈에스시럽'],
+    },
+    {
+        date: '2024.09.01',
+        hospitalName: '한지훈 안과',
+        pillsNickName: '눈병 약 (3일분)',
+        pillsList: ['안약', '안대', '인공눈물'],
     },
 ];
 
@@ -52,19 +61,29 @@ const HistoryWrapper = styled.div`
 `;
 
 function History() {
+    const [isModalOpen, setModalOpen] = useState(false);
+    const handleOpenModal = () => setModalOpen(true);
+    const handleCloseModal = () => setModalOpen(false);
     return (
-        <HistoryContainer>
-            {history.length > 0 ? (
-                history.map((e, i) => {
-                    return <HistoryItem item={e} key={e} />;
-                })
-            ) : (
-                <HistoryWrapper>
-                    <Text>등록된 복약 기록이 없습니다.</Text>
-                    <Button>복약 기록 불러오기</Button>
-                </HistoryWrapper>
+        <>
+            <HistoryContainer>
+                {history.length > 0 ? (
+                    history.map((e, i) => {
+                        return <PillsItem item={e} key={e} handleOpenModal={handleOpenModal} />;
+                    })
+                ) : (
+                    <HistoryWrapper>
+                        <Text>등록된 복약 기록이 없습니다.</Text>
+                        <Button>복약 기록 불러오기</Button>
+                    </HistoryWrapper>
+                )}
+            </HistoryContainer>
+            {isModalOpen && (
+                <Modal detailInfo={1} onClose={handleCloseModal}>
+                    <HistoryDetail />
+                </Modal>
             )}
-        </HistoryContainer>
+        </>
     );
 }
 
