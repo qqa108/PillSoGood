@@ -118,3 +118,40 @@
 | 이용성 | Front-End 팀장 | --   |
 | 장유진 | Front-End 팀원 | --   |
 | 박선민 | Front-End 팀원 | --   |
+
+## 5. 시스템 아키텍처0
+![image.png](./image.png)
+
+## 6. 주요 화면
+
+### 메인 화면
+![주요 화면 1](./image-6.png)
+
+### 회원가입 화면
+![image-26.png](./image-26.png)
+
+### 약 정보
+![image-15.png](./image-15.png)
+
+### 약 상세정보
+![image-9.png](./image-9.png)
+
+### 복약 정보 등록 방법
+![image-14.png](./image-14.png)
+
+### 처방전 사진으로 등록
+![image-16.png](./image-16.png)
+
+### 알약 사진 등록 
+![image-21.png](./image-21.png)
+
+### 복약카드 직접 입력
+![image-22.png](./image-22.png)
+
+### 복약키드 조회
+![image-23.png](./image-23.png)
+
+### 복약 알림
+![image-24.png](./image-24.png)
+
+### 
