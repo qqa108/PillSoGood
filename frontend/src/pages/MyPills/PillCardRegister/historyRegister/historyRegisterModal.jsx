@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Modal from '../../../components/Modal';  
-import TextInput from '../../../components/TextInput';
-import colors from '../../../assets/colors';
+import Modal from '../../../../components/Modal';  
+import TextInput from '../../../../components/TextInput';
+import colors from '../../../../assets/colors';
 
 const Dropdown = styled.select`
   height: 2.75rem;
@@ -63,6 +64,7 @@ const Label = styled.div`
 `;
 
 export default function HistoryRegister() {
+  const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(true);  
   const [formData, setFormData] = useState({
     name: '',
@@ -100,6 +102,7 @@ export default function HistoryRegister() {
     e.preventDefault(); // 기본 동작(페이지 리로드) 방지
     if (isFormValid()) {
       console.log('폼 제출:', formData);  // 여기서 폼 데이터를 처리하거나 서버로 전송
+      navigate('/mypills/historyReguister')
       setIsModalOpen(false); // 모달 닫기
     } else {
       alert('모든 필드를 채워주세요.');

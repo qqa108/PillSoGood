@@ -13,7 +13,9 @@ import Member from './pages/Member';
 import Join from './pages/member/Join';
 import PillCardRegister from './pages/MyPills/PillCardRegister';
 import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
-import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister';
+import HistoryRegisterModal from './pages/MyPills/PillCardRegister/historyRegister/historyRegisterModal';
+import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister/historyRegister';
+import RegisterCard from './pages/MyPills/PillCardRegister/registerCard';
 
 const router = createBrowserRouter([
     {
@@ -23,6 +25,25 @@ const router = createBrowserRouter([
             {
                 path: 'mypills',
                 element: <MyPills />,
+                // 엥쓰붸리
+                children: [
+                    {
+                        path: 'photoGuide',
+                        element: <PhotoGuide />,
+                    },
+                    {
+                        path: 'historyReguisterModal', 
+                        element: <HistoryRegisterModal />,
+                    },
+                    {
+                        path: 'historyReguister', 
+                        element: <HistoryRegister />,
+                    },
+                    {
+                        path: 'registerCard',
+                        element: <RegisterCard />,
+                    }
+                ],
             },
             {
                 path: 'notification',
@@ -64,20 +85,6 @@ const router = createBrowserRouter([
                 element: <Join />,
             },
 
-        ],
-    },
-    {
-        path: '/cardRegister',
-        element: <PillCardRegister />,
-        children: [
-            {
-                path: 'photoGuide',
-                element: <PhotoGuide />,
-            },
-            {
-                path: 'historyReguister',
-                element: <HistoryRegister />
-            },
         ],
     },
 ]);

@@ -1,4 +1,3 @@
-// src/constants/questions.js
 const questions = [
   {
       question: 'Q1. 이름과 관계를 입력해주세요.',
