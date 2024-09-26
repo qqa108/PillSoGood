@@ -13,6 +13,7 @@ import Member from './pages/Member';
 import Join from './pages/member/Join';
 import PillCardRegister from './pages/MyPills/PillCardRegister';
 import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
+import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister';
 
 const router = createBrowserRouter([
     {
@@ -58,20 +59,11 @@ const router = createBrowserRouter([
                 path: 'login',
                 element: <Login />,
             },
-        ],
-    },
-    {
-        path: '/cardRegister',
-        element: <PillCardRegister />,
-        children: [
-            {
-                path: 'photoGuide',
-                element: <PhotoGuide />,
-            },
             {
                 path: 'join',
                 element: <Join />,
             },
+
         ],
     },
     {
@@ -81,6 +73,10 @@ const router = createBrowserRouter([
             {
                 path: 'photoGuide',
                 element: <PhotoGuide />,
+            },
+            {
+                path: 'historyReguister',
+                element: <HistoryRegister />
             },
         ],
     },
