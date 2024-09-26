@@ -1,4 +1,3 @@
-// src/router.js
 import { createBrowserRouter } from 'react-router-dom';
 import App from './App'; // App 컴포넌트 import
 import MyPills from './pages/MyPills';
@@ -16,6 +15,8 @@ import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
 import HistoryRegisterModal from './pages/MyPills/PillCardRegister/historyRegister/historyRegisterModal';
 import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister/historyRegister';
 import RegisterCard from './pages/MyPills/PillCardRegister/registerCard';
+import RegisterPill from "./pages/Search/searchForRegister";
+import DrugSearch from "./pages/Search/searchforAll";
 
 const router = createBrowserRouter([
     {
@@ -68,6 +69,14 @@ const router = createBrowserRouter([
             {
                 path: 'surveyEdit',
                 element: <SurveyEdit />,
+            },
+            {
+              path: "/search/register",
+              element: <RegisterPill />,
+            },
+            {
+              path: "/search",
+              element: <DrugSearch />,
             },
         ],
     },
