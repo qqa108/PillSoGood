@@ -51,7 +51,7 @@ public class UserController {
         userLoginService.storeRefreshToken(user.getId(), refreshToken);
 
         // JWT 토큰 반환
-        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken, user.isNewUser()));
     }
 
     @Operation(summary = "액세스 토큰 재발급")
