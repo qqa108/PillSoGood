@@ -27,7 +27,7 @@ const FooterItem = styled.div`
     cursor: pointer;
     width: 70px;
     font-weight: 600;
-    color: ${(props) => (props.active ? colors.point1 : colors.point4)}; /* 활성화된 아이템 색상 */
+    color: ${(props) => (props.$active === 'true' ? colors.point1 : colors.point4)}; /* 활성화된 아이템 색상 */
 `;
 
 const ItemName = styled.div`
@@ -60,7 +60,7 @@ function Footer() {
                 <FooterItem
                     key={item.url}
                     onClick={() => movePage(item.url)}
-                    active={location.pathname.includes(item.url)} // 현재 경로에 따라 active 상태 설정
+                    $active={'location.pathname.includes(item.url)'} // 현재 경로에 따라 active 상태 설정
                 >
                     <ItemIcon>{item.icon}</ItemIcon>
                     <ItemName>{item.name}</ItemName>
