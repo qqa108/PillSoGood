@@ -69,7 +69,7 @@ function History() {
             <HistoryContainer>
                 {history.length > 0 ? (
                     history.map((e, i) => {
-                        return <PillsItem item={e} key={e} handleOpenModal={handleOpenModal} />;
+                        return <PillsItem type="history" item={e} key={`${e}${i}`} handleOpenModal={handleOpenModal} />;
                     })
                 ) : (
                     <HistoryWrapper>

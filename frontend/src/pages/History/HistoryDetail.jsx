@@ -89,6 +89,7 @@ const StateButton = styled.div`
 `;
 
 function HistoryDetail({ detailInfo, onClose }) {
+    console.log('디테일 로드');
     const [pillState, setPillstate] = useState([
         { stateName: '복약중', active: true, color: colors.taking },
         { stateName: '복약중단', active: false, color: colors.paused },
@@ -117,12 +118,7 @@ function HistoryDetail({ detailInfo, onClose }) {
             </ContentWrapper>
             <ButtonContainer>
                 {pillState.map((e, i) => (
-                    <StateButton
-                        key={e.stateName}
-                        active={e.active}
-                        color={e.color}
-                        onClick={() => handleButtonState(i)}
-                    >
+                    <StateButton key={i} active={e.active} color={e.color} onClick={() => handleButtonState(i)}>
                         {e.stateName}
                     </StateButton>
                 ))}
