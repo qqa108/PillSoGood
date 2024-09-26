@@ -60,7 +60,7 @@ function Footer() {
                 <FooterItem
                     key={item.url}
                     onClick={() => movePage(item.url)}
-                    $active={'location.pathname.includes(item.url)'} // 현재 경로에 따라 active 상태 설정
+                    $active={location.pathname.includes(item.url).toString()} // 현재 경로에 따라 active 상태 설정
                 >
                     <ItemIcon>{item.icon}</ItemIcon>
                     <ItemName>{item.name}</ItemName>
