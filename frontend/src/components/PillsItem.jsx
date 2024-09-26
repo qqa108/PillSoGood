@@ -51,7 +51,6 @@ const PillsList = styled.ul`
 
 function PillsItem({ info, type, handleOpenModal }) {
     const [bellState, setBellState] = useState(false);
-    console.log('아이템로드');
     // useEffect()
 
     return (

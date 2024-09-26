@@ -89,7 +89,6 @@ const StateButton = styled.div`
 `;
 
 function HistoryDetail({ detailInfo, onClose }) {
-    console.log('디테일 로드');
     const [pillState, setPillstate] = useState([
         { stateName: '복약중', active: true, color: colors.taking },
         { stateName: '복약중단', active: false, color: colors.paused },

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import colors from '../../assets/colors';
-import { Children, useState } from 'react';
+import { useState } from 'react';
 import PillsItem from '../../components/PillsItem';
 import Modal from '../../components/Modal';
 import HistoryDetail from './HistoryDetail';
