@@ -1,5 +1,9 @@
+import { Outlet } from 'react-router-dom';
+
 function PillCardRegister() {
-  return <>Notification</>;
+  return <>
+    <Outlet />
+  </>
 }
 
 export default PillCardRegister;
