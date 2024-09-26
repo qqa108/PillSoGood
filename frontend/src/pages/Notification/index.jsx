@@ -31,10 +31,8 @@ function Notification() {
     const [isModalOpen, setModalOpen] = useState(false);
     const handleOpenModal = () => setModalOpen(true);
     const handleCloseModal = () => {
-        console.log('닫기 시도');
         setModalOpen(false);
     };
-    console.log('알림 페이지 로드');
 
     return (
         <>
