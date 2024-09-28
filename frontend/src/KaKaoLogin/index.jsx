@@ -27,28 +27,22 @@ const KakaoLogin = () => {
         }
     }, []);
 
-    const [accessToken, setAccessToken] = useState(null);
+    const [kakaoToken, setKaKaoToken] = useState(null);
 
     useEffect(() => {
-        if (accessToken) {
-            axios.post(
-                LOGIN,
-                { data: accessToken },
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`, // Bearer 토큰 형식으로 설정
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+        if (kakaoToken) {
+            axios.post(LOGIN, { kakaoToken: kakaoToken }).then((e) => {
+                localStorage.setItem('accessToken', e.data.accessToken);
+                localStorage.setItem('refreshToken', e.data.refreshToken);
+            });
         }
-    }, [accessToken]);
+    }, [kakaoToken]);
 
     const handleLogin = () => {
         window.Kakao.Auth.login({
             scope: 'account_email, profile_nickname',
             success: async (authObj) => {
-                setAccessToken(authObj.access_token); // accessToken 상태 업데이트
+                setKaKaoToken(authObj.access_token); // accessToken 상태 업데이트
             },
             fail: (err) => {
                 console.error(err);
