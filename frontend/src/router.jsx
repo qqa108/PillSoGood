@@ -15,8 +15,9 @@ import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
 import HistoryRegisterModal from './pages/MyPills/PillCardRegister/historyRegister/historyRegisterModal';
 import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister/historyRegister';
 import RegisterCard from './pages/MyPills/PillCardRegister/registerCard';
-import RegisterPill from "./pages/Search/searchForRegister";
-import DrugSearch from "./pages/Search/searchforAll";
+import RegisterPill from './pages/Search/searchForRegister';
+import DrugSearch from './pages/Search/searchforAll';
+import Test from './pages/Member/test';
 
 const router = createBrowserRouter([
     {
@@ -33,17 +34,17 @@ const router = createBrowserRouter([
                         element: <PhotoGuide />,
                     },
                     {
-                        path: 'historyReguisterModal', 
+                        path: 'historyReguisterModal',
                         element: <HistoryRegisterModal />,
                     },
                     {
-                        path: 'historyReguister', 
+                        path: 'historyReguister',
                         element: <HistoryRegister />,
                     },
                     {
                         path: 'registerCard',
                         element: <RegisterCard />,
-                    }
+                    },
                 ],
             },
             {
@@ -71,12 +72,12 @@ const router = createBrowserRouter([
                 element: <SurveyEdit />,
             },
             {
-              path: "/search/register",
-              element: <RegisterPill />,
+                path: '/search/register',
+                element: <RegisterPill />,
             },
             {
-              path: "/search",
-              element: <DrugSearch />,
+                path: '/search',
+                element: <DrugSearch />,
             },
         ],
     },
@@ -93,7 +94,10 @@ const router = createBrowserRouter([
                 path: 'join',
                 element: <Join />,
             },
-
+            {
+                path: 'test',
+                element: <Test />,
+            },
         ],
     },
 ]);
