@@ -21,7 +21,7 @@ public class UserDetail {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "family", nullable = false)
+    @Column(name = "family")
     private String family; //가족 정보
 
     @Column(name = "birth")
@@ -43,6 +43,9 @@ public class UserDetail {
 
     @Column(name = "allergy")
     private String allergy;
+
+    @Column(name = "fcm_token")
+    private String fcmToken;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -85,5 +88,10 @@ public class UserDetail {
 
     public void updateGender(Gender gender) {
         this.gender = gender;
+    }
+
+    // FCM 토큰 업데이트 메서드
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
