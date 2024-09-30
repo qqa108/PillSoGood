@@ -17,6 +17,6 @@ function KakaoSignOut() {
         document.cookie = 'authorize-access-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
 
-    return <button onClick={unlinkApp}>앱탈퇴</button>;
+    return <button onClick={unlinkApp}>회원탈퇴</button>;
 }
 export default KakaoSignOut;
