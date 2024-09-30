@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import styled from 'styled-components';
 import { LOGIN } from '../assets/apis';
+import { useNavigate } from 'react-router-dom';
 
 const KAKAO_APP_KEY = 'e0b82853f928fa73b89ecc0a4fc4dc82';
 
@@ -21,6 +22,7 @@ const LoginContainer = styled.div`
 `;
 
 const KakaoLogin = () => {
+    const navigate = useNavigate();
     useEffect(() => {
         if (!window.Kakao.isInitialized()) {
             window.Kakao.init(KAKAO_APP_KEY);
@@ -31,12 +33,17 @@ const KakaoLogin = () => {
 
     useEffect(() => {
         if (kakaoToken) {
-            axios.post(LOGIN, { kakaoToken: kakaoToken }).then((e) => {
-                localStorage.setItem('accessToken', e.data.accessToken);
-                localStorage.setItem('refreshToken', e.data.refreshToken);
-            });
+            axios
+                .post(LOGIN, { kakaoToken: kakaoToken })
+                .then((e) => {
+                    localStorage.setItem('accessToken', e.data.accessToken);
+                    localStorage.setItem('refreshToken', e.data.refreshToken);
+                })
+                .then((e) => {
+                    navigate('/');
+                });
         }
-    }, [kakaoToken]);
+    }, [kakaoToken, navigate]);
 
     const handleLogin = () => {
         window.Kakao.Auth.login({
