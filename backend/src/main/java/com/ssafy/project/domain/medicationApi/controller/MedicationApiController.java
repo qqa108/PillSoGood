@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/medication-api")
@@ -17,8 +19,15 @@ public class MedicationApiController {
 
     private final MedicationApiService medicationApiService;
 
-    @PostMapping("")
-    public ResponseEntity<String> requestMedication(@RequestBody MedicationApiRequestDto request) {
-        return ResponseEntity.ok(medicationApiService.sendMedicationApiRequest(request));
+    @PostMapping("/certify")
+    public ResponseEntity<String> certifyKakao(@RequestBody MedicationApiRequestDto request) {
+        System.out.println(request.toString());
+        return ResponseEntity.ok(medicationApiService.sendKakaoAuthentication(request));
+    }
+
+    @PostMapping("/request")
+    public ResponseEntity<?> requestMedication(@RequestBody String callbackId) {
+        // 서비스 호출 후 필요한 필드만 추출
+        return ResponseEntity.ok(medicationApiService.requestMedication(callbackId));
     }
 }
