@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SearchBox from "@/components/SearchBox";
 import Filter from "@/components/Filter";
 import SearchResult from "@/components/SearchResult";
 import colors from "@/assets/colors";
+import { useRecoilState } from 'recoil';
+import { surveyAnswersState } from '../../atoms/surveyState';
+
 
 const SelectedPillsContainer = styled.div`
   margin-top: 1rem;
@@ -28,6 +32,21 @@ const PillItem = styled.span`
 const NoPillsText = styled.p`
   margin-top: 1rem;
   color: #888;
+`;
+
+const ReguisterButton = styled.button`
+  margin-top: 1rem;
+  height: 2.7rem;
+  padding: 10px 20px;
+  background-color: ${colors.point1};
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${colors.point1};
+  }
 `;
 
 const pillData = [
@@ -61,7 +80,8 @@ const RegisterPill = () => {
   const [filteredPills, setFilteredPills] = useState([]); // 초기 상태를 빈 배열로 설정
   const [filteredCount, setFilteredCount] = useState(0); // 필터링된 개수 상태
   const [selectedPills, setSelectedPills] = useState([]); // 선택된 약물 관리
-
+  const navigate = useNavigate();
+  
   const filterAndUpdatePills = (searchTerm, filterOptions) => {
     let filtered = pillData;
 
@@ -112,6 +132,54 @@ const RegisterPill = () => {
     });
   };
 
+  const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
+
+  const handleRegister = () => {
+    // navigate('/survey', { state: { selectedPills } });
+    // // navigate(-1, { state: { selectedPills } });
+    // console.log('약 검색 등록', selectedPills)
+    // const updatedAnswers = [...surveyAnswers];
+    // updatedAnswers[4] = {
+    //     type: 'option-pill',
+    //     answer: selectedPills.length > 0 ? selectedPills : ['없음'],
+    //     addedPills: selectedPills, // 추가된 약물도 관리
+    // };
+    // setSurveyAnswers(updatedAnswers);
+
+    // // 2. localStorage에 저장 (필요시)
+    // localStorage.setItem('selectedPills', JSON.stringify(selectedPills));
+
+    // // 3. 이전 페이지로 이동
+    // navigate(-1);
+
+    // // 4. 콘솔 출력 (디버깅용)
+    // console.log('약 검색 등록', selectedPills);
+     // 기존에 로컬 스토리지에 저장된 약물 목록 가져오기
+     const storedPills = localStorage.getItem('selectedPills');
+     const existingPills = storedPills ? JSON.parse(storedPills) : [];
+ 
+     // 새로운 약물을 기존 약물에 추가 (중복 제거)
+     const updatedPills = [...new Set([...existingPills, ...selectedPills])];
+ 
+     // Recoil 상태 업데이트
+     const updatedAnswers = [...surveyAnswers];
+     updatedAnswers[4] = {
+         type: 'option-pill',
+         answer: updatedPills.length > 0 ? updatedPills : ['없음'],
+         addedPills: updatedPills, // 추가된 약물 관리
+     };
+     setSurveyAnswers(updatedAnswers);
+ 
+     // 로컬 스토리지에 저장
+     localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
+ 
+     // 이전 페이지로 이동
+     navigate(-1);
+ 
+     // 디버깅용 콘솔 출력
+     console.log('약 검색 등록', updatedPills);
+  };
+
   return (
     <RegisterPillContainer>
       {/* 검색바 */}
@@ -152,6 +220,10 @@ const RegisterPill = () => {
           <NoPillsText>선택된 약물이 없습니다.</NoPillsText>
         )}
       </SelectedPillsContainer>
+
+      <ReguisterButton onClick={handleRegister}>
+        등록하기
+      </ReguisterButton>
     </RegisterPillContainer>
   );
 };
