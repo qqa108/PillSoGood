@@ -11,10 +11,11 @@ const useAxios = (url, method, body = null) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     useEffect(() => {
-        if (!accessToken) {
-            navigator('/member/login');
-            return;
-        }
+        // 잠깐 페이지 이동떔에 주석
+        // if (!accessToken) {
+        //     navigator('/member/login');
+        //     return;
+        // }
         const fetchData = async () => {
             try {
                 setLoading(true);
