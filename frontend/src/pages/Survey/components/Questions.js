@@ -27,8 +27,11 @@ const questions = [
   },
   {
       question: 'Q5. 약물 알러지를 입력해주세요',
-      type: 'option',
-      options: ['없음'],
+    //   type: 'option',
+    //   options: ['없음'],
+    type: 'option-pill',  // 약물 추가 가능 타입
+    options: ['없음'],  // 기본적으로 "없음" 옵션 제공
+    allowPillAddition: true,  // 약물 추가 기능 활성화 플래그
   },
 ];
 
