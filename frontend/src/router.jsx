@@ -84,7 +84,10 @@ const router = createBrowserRouter([
             },
         ],
     },
-
+    {
+        path: '/medicine/:id',
+        element: <DrugDetail />,
+    },
     {
         path: '/member',
         element: <Member />,
