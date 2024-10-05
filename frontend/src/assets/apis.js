@@ -20,7 +20,7 @@ export const ADDDETAIL = (userMedicationId) => `${MEDICATIONADD}-detail/${userMe
 export const MODIFYDETAIL = (userMedicationDetailId) => `${MEDICATIONADD}-detail/${userMedicationDetailId}`; //디테일 수정, 삭제
 
 //복약기록
-export const HISTORY = `${ENDPOINT}history`;
+// export const HISTORY = `${ENDPOINT}history`;
 
 //알약조회
 export const MEDICINE = `${ENDPOINT}medicine`; //알약 전체 조회
