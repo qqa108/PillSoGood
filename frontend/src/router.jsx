@@ -15,6 +15,7 @@ import PillCardRegister from "./pages/MyPills/PillCardRegister";
 import PhotoGuide from "./pages/MyPills/PillCardRegister/photoGuide";
 import RegisterPill from "./pages/Search/searchForRegister";
 import DrugSearch from "./pages/Search/searchforAll";
+import DrugDetail from "./pages/Search/DrugDetail";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <DrugSearch />,
+      },
+      {
+        path: "/medicine/:id",
+        element: <DrugDetail />,
       },
     ],
   },
