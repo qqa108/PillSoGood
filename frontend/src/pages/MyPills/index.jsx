@@ -7,6 +7,14 @@ import PillCardRegister from './PillCardRegister/RegisterModal';
 import PillsItem from '../../components/PillsItem';
 import Modal from '../../components/Modal';
 import HistoryDetail from '../History/HistoryDetail';
+import Warn from '../../components/Warn';
+import { testData } from './testData';
+
+const MyPillContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
 
 const IconContainer = styled.div`
     width: 2rem;
@@ -50,7 +58,11 @@ function MyPills() {
     const closeRegisterModal = () => setIsRegisterModalOpen(false);
 
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const handleOpenModal = () => setIsDetailModalOpen(true);
+    const [detail, setDetail] = useState();
+    const handleOpenModal = (detailInfo) => {
+        setDetail(detailInfo);
+        setIsDetailModalOpen(true);
+    };
     const handleCloseModal = () => setIsDetailModalOpen(false);
     return (
     <>

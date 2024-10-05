@@ -1,43 +1,7 @@
 import styled from 'styled-components';
-import { IoClose } from 'react-icons/io5';
 import colors from '../../assets/colors';
 import { useState } from 'react';
 import Pill from '../../components/Pill';
-
-const Overlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const ModalContainer = styled.div`
-    background-color: white;
-    width: 80%;
-    height: 400px;
-    padding: 10px;
-    border-radius: 6px;
-`;
-
-const CloseWrapper = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    font-size: 1.5rem;
-    color: ${colors.main};
-    & > svg {
-        transition: 0.2s ease-in-out;
-        cursor: pointer;
-        &:hover {
-            color: ${colors.point1};
-        }
-    }
-`;
 
 const ContentWrapper = styled.div`
     display: flex;
@@ -88,7 +52,7 @@ const StateButton = styled.div`
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
-function HistoryDetail({ detailInfo, onClose }) {
+function HistoryDetail({ detailInfo }) {
     const [pillState, setPillstate] = useState([
         { stateName: '복약중', active: true, color: colors.taking },
         { stateName: '복약중단', active: false, color: colors.paused },
@@ -105,15 +69,19 @@ function HistoryDetail({ detailInfo, onClose }) {
         setPillstate(tempState);
     };
 
+    console.log(detailInfo);
+
     return (
         <>
             <ContentWrapper>
-                <PillNickNameWrapper>코로나 약 (7일분)</PillNickNameWrapper>
+                <PillNickNameWrapper>{detailInfo?.name}</PillNickNameWrapper>
                 <TopWrapper>
-                    <HospitalName>최용훈 이비인후과</HospitalName>
-                    <Date>2024.09.06</Date>
+                    <HospitalName>{detailInfo?.hospitalName}</HospitalName>
+                    <Date>{detailInfo?.intakeAt}</Date>
                 </TopWrapper>
-                <Pill pillInfo={1} />
+                {detailInfo?.userMedicationDetailList?.map((e, i) => (
+                    <Pill key={i} pillInfo={e.medicineDTO} />
+                ))}
             </ContentWrapper>
             <ButtonContainer>
                 {pillState.map((e, i) => (
