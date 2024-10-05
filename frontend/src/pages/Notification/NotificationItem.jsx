@@ -38,6 +38,7 @@ const ButtonContainer = styled.div`
     & > div:not(:last-child) {
         margin-right: 25px;
     }
+    /* justify-content: space-evenly; */
 `;
 
 const Button = styled.div`

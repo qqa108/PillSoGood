@@ -6,6 +6,14 @@ import PillCardRegister from './PillCardRegister/RegisterModal';
 import PillsItem from '../../components/PillsItem';
 import Modal from '../../components/Modal';
 import HistoryDetail from '../History/HistoryDetail';
+import Warn from '../../components/Warn';
+import { testData } from './testData';
+
+const MyPillContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
 
 const IconContainer = styled.div`
     width: 2rem;
@@ -24,39 +32,37 @@ const IconContainer = styled.div`
 `;
 
 function MyPills() {
-    const myPillsList = [
-        {
-            name: '코로나약',
-            date: '2024-09-05',
-            pillList: ['타이레놀', '리마드린정', '아토스포정'],
-        },
-    ];
+    // const [myPills, setMyPills] = useState();
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const openRegisterModal = () => setIsRegisterModalOpen(true);
     const closeRegisterModal = () => setIsRegisterModalOpen(false);
 
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const handleOpenModal = () => setIsDetailModalOpen(true);
+    const [detail, setDetail] = useState();
+    const handleOpenModal = (detailInfo) => {
+        setDetail(detailInfo);
+        setIsDetailModalOpen(true);
+    };
     const handleCloseModal = () => setIsDetailModalOpen(false);
     return (
-        <>
-            <PillsItem type="mypliis" item={1} key={1} handleOpenModal={handleOpenModal} />
-            <PillsItem type="mypliis" item={1} key={2} handleOpenModal={handleOpenModal} />
-            <PillsItem type="mypliis" item={1} key={3} handleOpenModal={handleOpenModal} />
-            <PillsItem type="mypliis" item={1} key={4} handleOpenModal={handleOpenModal} />
+        <MyPillContainer>
+            {testData.map((e, i) => (
+                <PillsItem type="mypliis" info={e} key={i} handleOpenModal={() => handleOpenModal(e)} />
+            ))}
 
-            <IconContainer alt="Add Icon" onClick={openRegisterModal}>
+            {/* <IconContainer alt="Add Icon" onClick={openRegisterModal}>
                 <FaCirclePlus />
-            </IconContainer>
+            </IconContainer> */}
 
-            <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} />
+            {/* <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} /> */}
 
             {isDetailModalOpen && (
-                <Modal detailInfo={1} onClose={handleCloseModal}>
-                    <HistoryDetail />
+                <Modal onClose={handleCloseModal}>
+                    <HistoryDetail detailInfo={detail} />
                 </Modal>
             )}
-        </>
+            <Warn />
+        </MyPillContainer>
     );
 }
 

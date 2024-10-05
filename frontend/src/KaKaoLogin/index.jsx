@@ -33,6 +33,7 @@ const KakaoLogin = () => {
 
     useEffect(() => {
         if (kakaoToken) {
+            console.log(kakaoToken);
             axios
                 .post(LOGIN, { kakaoToken: kakaoToken })
                 .then((e) => {

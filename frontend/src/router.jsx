@@ -17,6 +17,7 @@ import RegisterCard from './pages/MyPills/PillCardRegister/registerCard';
 import RegisterPill from './pages/Search/searchForRegister';
 import DrugSearch from './pages/Search/searchforAll';
 import Test from './pages/Member/test';
+import Compare from './pages/Compare';
 
 const router = createBrowserRouter([
     {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
             {
                 path: '/search',
                 element: <DrugSearch />,
+            },
+            {
+                path: '/home/compare',
+                element: <Compare />,
             },
         ],
     },
