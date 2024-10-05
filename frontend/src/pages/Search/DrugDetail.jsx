@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import colors from "@/assets/colors"; // colors.js에서 색상 가져오기
 
 // 전체 컨테이너: 가로 길이 통일을 위한 컨테이너
@@ -84,16 +85,9 @@ const DrugDetail = ({ drugId }) => {
   const [drugDetail, setDrugDetail] = useState(null);
 
   useEffect(() => {
-    // 주석 처리된 API 호출 부분
-    /*
     const fetchDrugDetail = async () => {
       try {
-        const response = await axios.get(`/api/drug/${drugId}`, {
-          headers: {
-            Authorization: `Bearer ${yourAccessToken}`, // 실제 토큰을 전달
-            RefreshToken: yourRefreshToken, // 실제 리프레시 토큰을 전달
-          },
-        });
+        const response = await axios.get(`/api/drug/${drugId}`);
         setDrugDetail(response.data);
       } catch (error) {
         console.error("Failed to fetch drug detail:", error);
@@ -101,21 +95,6 @@ const DrugDetail = ({ drugId }) => {
     };
 
     fetchDrugDetail();
-    */
-    // 임시로 데이터를 넣어두기
-    setDrugDetail({
-      korName: "임시 약물 이름",
-      imageUrl: "https://via.placeholder.com/150",
-      category: "전문",
-      company: "임시 제조사",
-      characters: "임시 성상",
-      effect: "임시 효과",
-      usages: "임시 용법",
-      medicineInformation: [
-        { informationId: 1, information: "임시 복약 정보 1" },
-        { informationId: 2, information: "임시 복약 정보 2" },
-      ],
-    });
   }, [drugId]);
 
   if (!drugDetail) {
@@ -165,6 +144,47 @@ const DrugDetail = ({ drugId }) => {
         {drugDetail.medicineInformation?.map((info) => (
           <InfoText key={info.informationId}>{info.information}</InfoText>
         ))}
+
+        {/* 추가 정보: 연령 금기, 용량 금기, 임부 금기, 노인 금기 */}
+        {drugDetail.ageProhibition && (
+          <div>
+            <InfoTitleTab>
+              <InfoTitleText>연령 금기</InfoTitleText>
+            </InfoTitleTab>
+            <InfoText>{drugDetail.ageProhibition.age}세 이하 금기</InfoText>
+          </div>
+        )}
+
+        {drugDetail.amountProhibition && (
+          <div>
+            <InfoTitleTab>
+              <InfoTitleText>용량 금기</InfoTitleText>
+            </InfoTitleTab>
+            <InfoText>
+              {drugDetail.amountProhibition.name} - 하루 최대{" "}
+              {drugDetail.amountProhibition.limits}
+              {drugDetail.amountProhibition.field}
+            </InfoText>
+          </div>
+        )}
+
+        {drugDetail.pregnancyProhibition && (
+          <div>
+            <InfoTitleTab>
+              <InfoTitleText>임부 금기</InfoTitleText>
+            </InfoTitleTab>
+            <InfoText>{drugDetail.pregnancyProhibition.effect}</InfoText>
+          </div>
+        )}
+
+        {drugDetail.seniorProhibition && (
+          <div>
+            <InfoTitleTab>
+              <InfoTitleText>노인 금기</InfoTitleText>
+            </InfoTitleTab>
+            <InfoText>{drugDetail.seniorProhibition.effect}</InfoText>
+          </div>
+        )}
       </DrugInfoContainer>
     </Container>
   );
