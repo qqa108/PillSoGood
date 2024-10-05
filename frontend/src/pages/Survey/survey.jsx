@@ -1,10 +1,11 @@
+
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { currentStepState, surveyAnswersState } from '../../atoms/surveyState'; 
 import LongNextButton from '../../components/LongNextButton'; 
-import questions from './components/Questions'
+import questions from './components/Questions';
 import QuestionRender from './components/QuestionsRender';
 
 const SurveyContainer = styled.div`
@@ -76,78 +77,159 @@ const NextButton = styled.div`
 function Survey() {
     const [currentStep, setCurrentStep] = useRecoilState(currentStepState);
     const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
+    const [selectedPills, setSelectedPills] = useState([]);
+    const location = useLocation();
     const navigate = useNavigate();
 
-    const currentQuestion = questions[currentStep - 1];
-
-    // 새로고침 시 로컬 스토리지에서 값 로드
+    useEffect(() => {
+        console.log('설문',surveyAnswers)
+    })
+    // 로컬 저장된 데이터 불러오기 (현재 단계, 답변)
     useEffect(() => {
         const savedStep = localStorage.getItem('currentStep');
         const savedAnswers = localStorage.getItem('surveyAnswers');
+        const savedPills = localStorage.getItem('selectedPills');
 
-        if (savedStep) setCurrentStep(JSON.parse(savedStep));
-        if (savedAnswers) setSurveyAnswers(JSON.parse(savedAnswers));
-    }, [setCurrentStep, setSurveyAnswers]);
+        if (savedStep) {
+            setCurrentStep(parseInt(savedStep, 10));
+        }
 
-    // 상태가 변경될 때 로컬 스토리지에 저장
+        if (savedAnswers) {
+            setSurveyAnswers(JSON.parse(savedAnswers));
+        }
+
+        if (savedPills) {
+            setSelectedPills(JSON.parse(savedPills));
+        }
+    }, []);
+
+    // 현재 상태를 로컬에 저장
     useEffect(() => {
-        localStorage.setItem('currentStep', JSON.stringify(currentStep));
+        localStorage.setItem('currentStep', currentStep);
         localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
-    }, [currentStep, surveyAnswers]);
+        localStorage.setItem('selectedPills', JSON.stringify(selectedPills));
+    }, [currentStep, surveyAnswers, selectedPills]);
 
+    const handlePillSelect = (pill) => {
+        setSelectedPills((prevSelected) => {
+            if (prevSelected.includes('없음')) {
+                const updatedPills = [pill];
+                localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
+                return updatedPills; 
+            }
+            const updatedPills = [...new Set([...prevSelected, pill])];
+            localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
+            return updatedPills;
+        });
+    };
+
+    useEffect(() => {
+        const passedPills = location.state?.selectedPills || [];
+        if (passedPills.length > 0) {
+            setSelectedPills((prevSelected) => {
+                const updatedPills = [...new Set([...prevSelected, ...passedPills])];
+                localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
+                updateSurveyAnswersWithPills(updatedPills);
+                return updatedPills;
+            });
+        }
+    }, [location.state?.selectedPills]);
+    
+    // 상태와 로컬 스토리지에 약물 저장하는 함수
+    const savePillsToStateAndLocalStorage = (updatedPills) => {
+        // Recoil 상태 업데이트
+        const updatedAnswers = [...surveyAnswers];
+        updatedAnswers[4] = {
+            type: 'option-pill',
+            answer: updatedPills,
+            addedPills: updatedPills,
+        };
+        setSurveyAnswers(updatedAnswers);
+    
+        // 로컬 스토리지에도 저장
+        localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
+        localStorage.setItem('surveyAnswers', JSON.stringify(updatedAnswers));
+    };
+
+    // '없음'을 선택하면 약물 목록 초기화
+    const handleNoneSelected = () => {
+        setSelectedPills([]); // 약물 초기화
+        updateSurveyAnswersWithPills(['없음']); // '없음'만 선택
+    };
+
+    const updateSurveyAnswersWithPills = (pills) => {
+        const updatedAnswers = [...surveyAnswers];
+        updatedAnswers[4] = {
+            type: 'option-pill',
+            answer: pills.length > 0 ? pills : ['없음'],
+            addedPills: pills,
+        };
+        setSurveyAnswers(updatedAnswers);
+    };
+
+    const currentQuestion = questions[currentStep - 1];  // 현재 질문 가져오기
 
     const handleInputChange = (e, index = 0) => {
-      const updatedAnswers = [...surveyAnswers];
-  
-      // 현재 step의 답변이 존재하는지 확인, 없으면 기본값 설정
-      if (!updatedAnswers[currentStep - 1]) {
-          updatedAnswers[currentStep - 1] = { answer: '' };
-      }
-  
-      if (currentQuestion.type === 'multiple') {
-          const multipleAnswers = [...(updatedAnswers[currentStep - 1].answer || ['', ''])];
-          multipleAnswers[index] = e.target.value;
-          updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: multipleAnswers };
-      } else {
-          updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: e.target.value };
-      }
-  
-      setSurveyAnswers(updatedAnswers);
-  };
-  
-  const handleOptionClick = (option) => {
-      const updatedAnswers = [...surveyAnswers];
-  
-      // 현재 step의 답변이 존재하는지 확인, 없으면 기본값 설정
-      if (!updatedAnswers[currentStep - 1]) {
-          updatedAnswers[currentStep - 1] = { answer: '' };
-      }
-  
-      updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: option };
-  
-      setSurveyAnswers(updatedAnswers);
-  };
+        const updatedAnswers = [...surveyAnswers];
 
+        if (!updatedAnswers[currentStep - 1]) {
+            updatedAnswers[currentStep - 1] = { answer: '' };
+        }
 
+        if (currentQuestion.type === 'multiple') {
+            const multipleAnswers = [...(updatedAnswers[currentStep - 1].answer || ['', ''])];
+            multipleAnswers[index] = e.target.value;
+            updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: multipleAnswers };
+        } else {
+            updatedAnswers[currentStep - 1] = { ...updatedAnswers[currentStep - 1], answer: e.target.value };
+        }
+
+        setSurveyAnswers(updatedAnswers);
+    };
+
+    const handleOptionClick = (option) => {
+        const updatedAnswers = [...surveyAnswers];
+    
+        if (currentStep === 4) { // 질문 4에 대한 응답 처리 (임신 여부)
+            updatedAnswers[3] = { type: 'option', answer: option };
+            setSurveyAnswers(updatedAnswers);
+        } else if (currentStep === 5) { // 질문 5 (약물 알러지) 처리
+            if (option === '없음') {
+                handleNoneSelected(); // '없음' 선택 시 약물 초기화
+            } else {
+                handlePillSelect(option); // 약물 선택 처리
+            }
+    
+            // 질문 5의 선택 상태를 저장
+            updatedAnswers[4] = { type: 'option-pill', answer: option };
+            setSurveyAnswers(updatedAnswers);
+        } else {
+            updatedAnswers[currentStep - 1] = { type: 'option', answer: option };
+            setSurveyAnswers(updatedAnswers);
+        }
+    };
+
+    
     const isNextButtonActive = (() => {
-      const currentAnswer = surveyAnswers[currentStep - 1]?.answer;
-      if (Array.isArray(currentAnswer)) {
-          return currentAnswer.every((answer) => answer !== '');
-      }
-      return currentAnswer !== '';
-  })();
+        const currentAnswer = surveyAnswers[currentStep - 1]?.answer;
+        if (Array.isArray(currentAnswer)) {
+            return currentAnswer.every((answer) => answer !== '');
+        }
+        return currentAnswer !== '';
+    })();
+  
+      const handleNextClick = () => {
+        if (currentStep < questions.length) {
+            setCurrentStep(currentStep + 1);
+        } else if (currentStep === questions.length) {
+            // 마지막 단계에서 surveyAnswers가 충분한지 확인
+            if (!surveyAnswers[currentStep - 1]) {
+                setSurveyAnswers([...surveyAnswers, { answer: '' }]);
+            }
+            navigate('/surveyEdit');
+        }
+    };
 
-    const handleNextClick = () => {
-      if (currentStep < questions.length) {
-          setCurrentStep(currentStep + 1);
-      } else if (currentStep === questions.length) {
-          // 마지막 단계에서 surveyAnswers가 충분한지 확인
-          if (!surveyAnswers[currentStep - 1]) {
-              setSurveyAnswers([...surveyAnswers, { answer: '' }]);
-          }
-          navigate('/surveyEdit');
-      }
-  };
     const handlePreviousClick = () => {
         if (currentStep > 1) {
             setCurrentStep(currentStep - 1);
@@ -165,13 +247,15 @@ function Survey() {
             </HeaderContainer>
 
             <ContentContainer>
-            <QuestionRender
-                currentQuestion={currentQuestion}
-                surveyAnswers={surveyAnswers}
-                handleInputChange={handleInputChange}
-                handleOptionClick={handleOptionClick}
-                currentStep={currentStep}
-            />
+                <QuestionRender
+                    currentQuestion={currentQuestion}
+                    surveyAnswers={surveyAnswers}
+                    handleInputChange={handleInputChange}
+                    handleOptionClick={handleOptionClick}
+                    currentStep={currentStep}
+                    selectedPills={selectedPills}  // 배열 전달
+                    handlePillSelect={handlePillSelect}  // 배열에 값 추가하는 함수 전달
+                />
             </ContentContainer>
 
             <NextButton>
@@ -186,3 +270,4 @@ function Survey() {
 }
 
 export default Survey;
+

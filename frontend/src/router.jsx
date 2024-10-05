@@ -10,7 +10,7 @@ import SurveyEdit from './pages/Survey/surveyEdit';
 import Login from './pages/member/Login';
 import Member from './pages/Member';
 import Join from './pages/member/Join';
-import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
+import PhotoGuide from './pages/MyPills/PillCardRegister/photoRegister/photoGuide';
 import HistoryRegisterModal from './pages/MyPills/PillCardRegister/historyRegister/historyRegisterModal';
 import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister/historyRegister';
 import RegisterCard from './pages/MyPills/PillCardRegister/registerCard';
@@ -27,7 +27,6 @@ const router = createBrowserRouter([
             {
                 path: 'mypills',
                 element: <MyPills />,
-                // 엥쓰붸리
                 children: [
                     {
                         path: 'photoGuide',

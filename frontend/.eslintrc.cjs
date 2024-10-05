@@ -14,7 +14,8 @@ module.exports = {
     rules: {
         'no-var': 'error',
         'no-multiple-empty-lines': 'warn',
-        'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+        'no-console':'off',
+        // 'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
         eqeqeq: 'error',
         'no-unused-vars': 'warn',
         'react/prop-types': 'off',
