@@ -27,7 +27,6 @@ const PerTime = styled.div``;
 
 const NotificationTime = styled.div``;
 function NotificationForm({ formInfo }) {
-    console.log('폼 오픈');
     return (
         <FormContainer>
             <Title>복약 알림 등록</Title>

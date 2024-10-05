@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import colors from '../../assets/colors';
+import { memo } from 'react';
 
 const ItemContainer = styled.div`
     width: 100%;
@@ -37,6 +38,7 @@ const ButtonContainer = styled.div`
     & > div:not(:last-child) {
         margin-right: 25px;
     }
+    /* justify-content: space-evenly; */
 `;
 
 const Button = styled.div`
@@ -57,8 +59,6 @@ function NotificationItem({ notificationInfo, setSelectedInfo, onOpen }) {
         setSelectedInfo(notificationInfo);
         onOpen();
     };
-    console.log('알림 아이템 생성');
-    console.log(notificationInfo);
 
     return (
         <ItemContainer>
@@ -75,4 +75,6 @@ function NotificationItem({ notificationInfo, setSelectedInfo, onOpen }) {
     );
 }
 
-export default NotificationItem;
+export default memo(NotificationItem, (prevProps, nextProps) => {
+    return prevProps.notificationInfo === nextProps.notificationInfo;
+});

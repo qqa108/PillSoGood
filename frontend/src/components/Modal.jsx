@@ -18,7 +18,7 @@ const Overlay = styled.div`
 const ModalContainer = styled.div`
     background-color: white;
     width: 80%;
-    height: 400px;
+    min-height: 400px;
     padding: 10px;
     border-radius: 6px;
 `;
@@ -38,7 +38,6 @@ const CloseWrapper = styled.div`
 `;
 
 function Modal({ children, onClose }) {
-    console.log('모달 오픈');
     return (
         <Overlay onClick={onClose}>
             <ModalContainer onClick={(e) => e.stopPropagation()}>

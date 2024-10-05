@@ -14,6 +14,6 @@ export const surveyAnswersState = atom({
         { type: 'text', answer: '' },   // Q2: 생년월일
         { type: 'multiple', answer: ['', ''] }, // Q3: 키, 몸무게
         { type: 'option', answer: '' }, // Q4: 임신여부
-        { type: 'option', answer: '' }, // Q5: 약물 알러지
+        { type: 'option-pill', answer: ['없음'], addedPills: [] }, // Q5: 약물 알러지
     ],
 });
