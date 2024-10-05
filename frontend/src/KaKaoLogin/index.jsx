@@ -34,15 +34,15 @@ const KakaoLogin = () => {
     useEffect(() => {
         if (kakaoToken) {
             console.log(kakaoToken);
-            axios
-                .post(LOGIN, { kakaoToken: kakaoToken })
-                .then((e) => {
-                    localStorage.setItem('accessToken', e.data.accessToken);
-                    localStorage.setItem('refreshToken', e.data.refreshToken);
-                })
-                .then((e) => {
+            axios.post(LOGIN, { kakaoToken: kakaoToken }).then((e) => {
+                localStorage.setItem('accessToken', e.data.accessToken);
+                localStorage.setItem('refreshToken', e.data.refreshToken);
+                if (e.data.newUser) {
+                    navigate('/member/join');
+                } else {
                     navigate('/');
-                });
+                }
+            });
         }
     }, [kakaoToken, navigate]);
 

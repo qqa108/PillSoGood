@@ -78,6 +78,12 @@ const router = createBrowserRouter([
             {
                 path: '/search',
                 element: <DrugSearch />,
+                children: [
+                    {
+                        path: 'medicine/:id',
+                        element: <DrugDetail />,
+                    },
+                ],
             },
             {
                 path: '/home/compare',
@@ -85,10 +91,7 @@ const router = createBrowserRouter([
             },
         ],
     },
-    {
-        path: '/medicine/:id',
-        element: <DrugDetail />,
-    },
+
     {
         path: '/member',
         element: <Member />,
