@@ -56,27 +56,26 @@ function PillsItem({ info, type, handleOpenModal }) {
     return (
         <ItemContainer onClick={handleOpenModal}>
             {/* <Date>{info?.date}</Date> */}
-            <Date>날짜</Date>
+            <Date>{info?.intakeAt}</Date>
             <ContentContainer>
                 <TopWrapper>
                     {/* <PillsNickName>{info.pillsNickName}</PillsNickName> */}
-                    <PillsNickName>약 이름</PillsNickName>
+                    <PillsNickName>{info?.name}</PillsNickName>
                     <NotificationWrapper
                         onClick={(e) => {
                             e.stopPropagation();
                             setBellState(() => !bellState);
                         }}
                     >
-                        {/* {type !== 'history' ? info?.state === 'active' ? <FaBell /> : <FaBellSlash /> : null} */}
                         {type !== 'history' ? bellState === true ? <FaBell /> : <FaBellSlash /> : null}
                     </NotificationWrapper>
                 </TopWrapper>
-                <div>약리스트</div>
-                {/* <PillsList>
-                    {info.pillsList.map((e) => (
-                        <Pill key={e}></Pill>
+                {/* <div>약리스트</div> */}
+                <PillsList>
+                    {info?.userMedicationDetailList?.map((e, i) => (
+                        <Pill key={i} pillInfo={e.medicineDTO} />
                     ))}
-                </PillsList> */}
+                </PillsList>
             </ContentContainer>
         </ItemContainer>
     );

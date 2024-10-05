@@ -7,8 +7,8 @@ const PillContainer = styled.div`
     display: flex;
 `;
 
-const PillImageWrapper = styled.div`
-    width: 40px;
+const PillImageWrapper = styled.img`
+    /* width: 40px; */
     height: 40px;
     background-color: tomato;
     margin-right: 10px;
@@ -51,9 +51,9 @@ const TimePer = styled.div`
 function Pill({ pillInfo }) {
     return (
         <PillContainer>
-            <PillImageWrapper></PillImageWrapper>
+            <PillImageWrapper src={pillInfo?.imageUrl} alt="" />
             <PillInfomation>
-                <PillName>타이레놀</PillName>
+                <PillName>{pillInfo?.korName}</PillName>
                 <PerContainer>
                     <DayPer>1일3회</DayPer>
                     <TimePer>2정</TimePer>
