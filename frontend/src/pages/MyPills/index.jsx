@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../../assets/colors';
@@ -9,6 +9,9 @@ import Modal from '../../components/Modal';
 import HistoryDetail from '../History/HistoryDetail';
 import Warn from '../../components/Warn';
 import { testData } from './testData';
+import { mediListState } from '../../atoms/mediListState';
+import { useRecoilValue } from 'recoil';
+import LoadMyPill from '../../components/LoadMyPill';
 
 const MyPillContainer = styled.div`
     display: flex;
@@ -46,12 +49,12 @@ function MyPills() {
         }
     }, [location.pathname]);
 
-  useEffect(() => {
-    // localStorage.removeItem('selectedPills');
-    
-    // 현재 경로가 부모 경로(`/mypills`)가 아니면 자식 라우트로 간주
-    setIsChildRoute(location.pathname !== '/mypills');
-  }, [location]);
+    useEffect(() => {
+        // localStorage.removeItem('selectedPills');
+
+        // 현재 경로가 부모 경로(`/mypills`)가 아니면 자식 라우트로 간주
+        setIsChildRoute(location.pathname !== '/mypills');
+    }, [location]);
 
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const openRegisterModal = () => setIsRegisterModalOpen(true);
@@ -64,30 +67,37 @@ function MyPills() {
         setIsDetailModalOpen(true);
     };
     const handleCloseModal = () => setIsDetailModalOpen(false);
+
+    const mediListInfo = useRecoilValue(mediListState);
     return (
-    <>
-        {!isChildRoute && (
-            <>
-                <PillsItem type="mypliis" item={1} key={1} handleOpenModal={handleOpenModal} />
-                <PillsItem type="mypliis" item={1} key={2} handleOpenModal={handleOpenModal} />
-                <PillsItem type="mypliis" item={1} key={3} handleOpenModal={handleOpenModal} />
-                <PillsItem type="mypliis" item={1} key={4} handleOpenModal={handleOpenModal} />
+        <>
+            {!isChildRoute && (
+                <>
+                    <LoadMyPill />
+                    {mediListInfo?.map((e) => {
+                        return (
+                            <PillsItem type="mypliis" info={e} key={e?.id} handleOpenModal={() => handleOpenModal(e)} />
+                        );
+                    })}
+                    {/* <PillsItem type="mypliis" item={1} key={1} handleOpenModal={handleOpenModal} />
+                    <PillsItem type="mypliis" item={1} key={2} handleOpenModal={handleOpenModal} />
+                    <PillsItem type="mypliis" item={1} key={3} handleOpenModal={handleOpenModal} /> */}
 
-                <IconContainer alt="Add Icon" onClick={openRegisterModal}>
-                    <FaCirclePlus />
-                </IconContainer>
+                    <IconContainer alt="Add Icon" onClick={openRegisterModal}>
+                        <FaCirclePlus />
+                    </IconContainer>
 
-                <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} />
+                    <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} />
 
-                {isDetailModalOpen && (
-                    <Modal detailInfo={1} onClose={handleCloseModal}>
-                    <HistoryDetail />
-                    </Modal>
-                )}
-            </>
-        )}
-        <Outlet />
-    </>
+                    {isDetailModalOpen && (
+                        <Modal onClose={handleCloseModal}>
+                            <HistoryDetail detailInfo={detail} />
+                        </Modal>
+                    )}
+                </>
+            )}
+            <Outlet />
+        </>
     );
 }
 
