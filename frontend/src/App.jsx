@@ -31,8 +31,13 @@ function App() {
     useEffect(() => {
         if (data) {
             setUserState({
-                name: data.name,
+                allergies: data.allergies,
+                birth: data.birth,
                 email: data.email,
+                gender: data.gender,
+                height: data.height,
+                name: data.name,
+                pregnancy: data.pregnancy,
                 userDetailId: data.userDetailId,
             });
         }
