@@ -9,6 +9,8 @@ import eatingDrugIcon from "@/assets/eatingdrug.svg"; // 복용약 아이콘 경
 import addDrugPlusIcon from "@/assets/adddrugplus.svg"; // 복용약 추가 버튼 플러스 아이콘 경로
 import colors from "../../assets/colors";
 import { MAIN } from "@/assets/apis"; // API 경로 추가
+import { useRecoilValue } from "recoil";
+import { userState } from "../../atoms/userState";
 
 // Part 1: 헤더
 const Header = styled.div`
@@ -297,11 +299,23 @@ const MedicationIconText = styled.span`
 `;
 
 // 사용자 관리 컴포넌트
-const UserManagement = ({ users, selectedUser, onUserSelect, addUser }) => {
+const UserManagement = ({ users, selectedUser, onUserSelect }) => {
   const navigate = useNavigate(); // useNavigate hook 사용
+  const userInfo = useRecoilValue(userState); // Recoil에서 userState 가져오기
 
   return (
     <UserContainer>
+      {/* 현재 사용자를 맨 앞에 표시 */}
+      <UserButton
+        isSelected={selectedUser === userInfo.name}
+        onClick={() => onUserSelect(userInfo.name)}
+      >
+        <UserNameDisplay isSelected={selectedUser === userInfo.name}>
+          {userInfo.name}
+        </UserNameDisplay>
+      </UserButton>
+
+      {/* 나머지 사용자들 */}
       {users.map((user, index) => (
         <UserButton
           key={index}
@@ -313,7 +327,9 @@ const UserManagement = ({ users, selectedUser, onUserSelect, addUser }) => {
           </UserNameDisplay>
         </UserButton>
       ))}
-      <AddUserButton onClick={() => navigate("/survery")}>
+
+      {/* 사용자 추가 버튼 */}
+      <AddUserButton onClick={() => navigate("/survey")}>
         사용자 추가
       </AddUserButton>
     </UserContainer>
@@ -416,6 +432,7 @@ const MainPage = () => {
   const [selectedUser, setSelectedUser] = useState("");
   const [drugs, setDrugs] = useState([]); // 복용 중인 약물
   const [medications, setMedications] = useState([]); // 복약 정보
+  const userInfo = useRecoilValue(userState); // Recoil에서 userState 가져오기
 
   useEffect(() => {
     const fetchData = async () => {
@@ -434,7 +451,7 @@ const MainPage = () => {
         );
 
         setUsers(familyMembers);
-        setSelectedUser(familyMembers[0]?.name || ""); // 첫 번째 사용자를 기본 선택
+        setSelectedUser(userInfo.name || familyMembers[0]?.name || ""); // userInfo.name을 기본 선택
 
         const pills = response.data.pill.map((pill) => pill.name);
         setDrugs(pills);
@@ -446,7 +463,7 @@ const MainPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [userInfo.name]); // userInfo.name이 변경될 때도 다시 데이터 가져오기
 
   const handleUserSelect = (userName) => {
     setSelectedUser(userName);
@@ -457,7 +474,8 @@ const MainPage = () => {
       <Header>
         <Logo src={logoImage} alt="Logo" />
         <UserNameContainer>
-          <UserName>{selectedUser}</UserName>
+          <UserName>{userInfo.name}</UserName>{" "}
+          {/* '님' 앞에 userInfo.name 표시 */}
           <UserSuffix>님</UserSuffix>
         </UserNameContainer>
       </Header>
