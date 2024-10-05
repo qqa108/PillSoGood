@@ -36,20 +36,26 @@ const CheckBoxIcon = styled.img`
   height: 1.5rem;
 `;
 
-const SearchResult = ({ text = "임시텍스트" }) => {
-  const [isActive, setIsActive] = useState(false);
-
-  const toggleActive = () => {
-    setIsActive((prevState) => !prevState);
+const SearchResult = ({
+  text = "임시텍스트",
+  isActive,
+  onSelect,
+  hideCheckbox,
+}) => {
+  // 선택 상태를 상위 컴포넌트에서 관리하도록 수정
+  const handleSelect = () => {
+    onSelect(text); // 상위 컴포넌트에 선택된 항목을 전달
   };
 
   return (
-    <SearchResultContainer isActive={isActive} onClick={toggleActive}>
+    <SearchResultContainer isActive={isActive} onClick={handleSelect}>
       <SearchResultText>{text}</SearchResultText>
-      <CheckBoxIcon
-        src={isActive ? ActiveCheckIcon : InactiveCheckIcon}
-        alt="check icon"
-      />
+      {!hideCheckbox && (
+        <CheckBoxIcon
+          src={isActive ? ActiveCheckIcon : InactiveCheckIcon}
+          alt="check icon"
+        />
+      )}
     </SearchResultContainer>
   );
 };

@@ -53,7 +53,10 @@ function LongNextButton({ label, onClick, isSelected, width, bgColor, borderColo
             {label}
         </EnabledButton>
     ) : (
-        <DisabledButton disabled={!isSelected}>
+        <DisabledButton 
+            disabled={!isSelected}
+            width={width}
+        >
             {label}
         </DisabledButton>
     );

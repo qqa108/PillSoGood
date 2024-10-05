@@ -20,7 +20,6 @@ const Label = styled.div`
     justify-content: center;
     flex-shrink: 0;
     color: #000;
-    font-family: 'NanumGothic', sans-serif;
     font-size: 1rem;
     font-weight: 400;
     line-height: normal;

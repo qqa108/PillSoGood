@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { FaCirclePlus } from "react-icons/fa6";
 import colors from '../assets/colors';
+import { useNavigate } from 'react-router-dom';
 
 // 버튼 스타일 정의
 const Button = styled.button`
@@ -45,12 +46,38 @@ const IconContainer = styled.div`
 
 `;
 
+const PillList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+`;
+
+const PillItem = styled.li`
+  background-color: ${colors.background};
+  padding: 5px 10px;
+  border-radius: 12px;
+  border: 1px solid ${colors.point1};
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+`;
+
 const AddPillButton_ver1 = ({ text }) => {
+
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate('/search/register'); // 클릭 시 페이지 이동
+  };
+
   return (
-    <Button>
+    <>
+    <Button onClick={handleClick}>
       <ButtonText>{text}</ButtonText>
       <IconContainer alt="Add Icon" ><FaCirclePlus /></IconContainer>
     </Button>
+
+    
+    </>
   );
 };
 
