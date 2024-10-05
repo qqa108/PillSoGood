@@ -80,7 +80,7 @@ const router = createBrowserRouter([
                 element: <DrugSearch />,
                 children: [
                     {
-                        path: '/medicine/:id',
+                        path: 'medicine/:id',
                         element: <DrugDetail />,
                     },
                 ],
