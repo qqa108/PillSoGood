@@ -26,23 +26,33 @@ function App() {
     const navigate = useNavigate();
     const setUserState = useSetRecoilState(userState);
     const userInfo = useRecoilValue(userState);
-    const data = useAxios(USER, 'GET');
-    console.log(data);
+    const { data, loading, error } = useAxios(`${USER}`, 'GET'); // 데이터 요청
 
     useEffect(() => {
-        if (userInfo) {
-            // 그 엑세스 토큰으로 회원정보 요청
-            if (location.pathname === '/') {
-                navigate('/home');
-            }
-
-            // 정보 안 들어오면 alert 해주고 로그인 창으로.
-            // alert("로그인이 만료되었습니다. 로그인 창으로 이동합니다.");
-            // navigate('/member/login');
-        } else {
-            // navigate('/member/login');
+        if (data) {
+            setUserState({
+                allergies: data.allergies,
+                birth: data.birth,
+                email: data.email,
+                gender: data.gender,
+                height: data.height,
+                name: data.name,
+                pregnancy: data.pregnancy,
+                userDetailId: data.userDetailId,
+            });
         }
-    }, [userInfo, location.pathname, navigate, setUserState]);
+    }, [data]); // data 전체가 변경될 때만 실행
+
+    // useEffect(() => {
+    //     if (userInfo) {
+    //         // 그 엑세스 토큰으로 회원정보 요청
+    //         if (location.pathname === '/') {
+    //             navigate('/home');
+    //         }
+    //     } else {
+    //         // navigate('/member/login');
+    //     }
+    // }, [userInfo, location.pathname, navigate, setUserState]);
 
     return (
         <AppContainer>
