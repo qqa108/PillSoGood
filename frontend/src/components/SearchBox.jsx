@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IoMdSearch } from "react-icons/io";
 import colors from "../assets/colors";
@@ -40,20 +40,21 @@ const SearchBoxContainer = styled.div`
 const SearchBox = ({ value = "", onSearch }) => {
   const [inputValue, setInputValue] = useState(value);
 
+  // 사용자가 입력할 때마다 inputValue 업데이트
   const handleChangeInput = (e) => {
     const newValue = e.target.value;
     setInputValue(newValue);
   };
 
-  const handleTouchSearch = () => {
-    onSearch(inputValue);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (inputValue) {
+        onSearch(inputValue); // 입력된 값으로 검색 함수 호출
+      }
+    }, 200); // 0.7초 대기
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleTouchSearch();
-    }
-  };
+    return () => clearTimeout(timer); // 이전 타이머 제거
+  }, [inputValue, onSearch]);
 
   return (
     <SearchBoxContainer>
@@ -62,10 +63,9 @@ const SearchBox = ({ value = "", onSearch }) => {
         type="text"
         value={inputValue}
         onChange={handleChangeInput}
-        onKeyDown={handleKeyDown}
         aria-label="Search input"
       />
-      <div className="iconContainer" onTouchStart={handleTouchSearch}>
+      <div className="iconContainer">
         <IoMdSearch className="icon" />
       </div>
     </SearchBoxContainer>

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import colors from "@/assets/colors"; // colors.js에서 색상 가져오기
+import { DETAILMEDICINE } from "@/assets/apis"; // API 경로 가져오기
 
 // 전체 컨테이너: 가로 길이 통일을 위한 컨테이너
 const Container = styled.div`
@@ -12,45 +14,44 @@ const Container = styled.div`
 
 // part1: 약 이름 스타일
 const DrugName = styled.div`
-  width: 18rem; /* 가로 길이 통일 */
+  width: 100%;
   height: 3rem;
   flex-shrink: 0;
   border-radius: 0.1875rem;
-  border: 1px solid ${colors.point4}; /* colors.jsx의 point4 사용 */
+  border: 1px solid ${colors.point4};
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem; /* 세로 마진 */
+  margin-bottom: 1rem;
 `;
 
 const DrugNameText = styled.p`
-  color: ${colors.text}; /* colors.jsx의 text 사용 */
+  color: ${colors.text};
   font-size: 1.25rem;
-  font-style: normal;
   font-weight: 700;
   line-height: normal;
 `;
 
 // part2: 약 사진 스타일
 const DrugImage = styled.div`
-  width: 18rem; /* 가로 길이 통일 */
+  width: 100%;
   height: 9.84rem;
   flex-shrink: 0;
-  border: 1px solid ${colors.point4}; /* colors.jsx의 point4 사용 */
-  background: url(${(props) => props.imageUrl || "default-image-path.jpg"})
+  border: 1px solid ${colors.point4};
+  background: url(${(props) => props.$imageUrl || "default-image-path.jpg"})
     lightgray 50% / cover no-repeat;
-  margin-bottom: 1rem; /* 세로 마진 */
+  margin-bottom: 1rem;
 `;
 
 // part3: 약물 상세 정보 컨테이너
 const DrugInfoContainer = styled.div`
-  width: 16rem; /* 가로 길이 통일 */
-  height: auto; /* 가변 높이 */
+  width: 90%;
+  height: auto;
   flex-shrink: 0;
   border-radius: 0.1875rem;
-  border: 1px solid ${colors.point4}; /* colors.jsx의 point4 사용 */
-  padding: 1rem;
+  border: 1px solid ${colors.point4};
+  padding: 5%;
   background: #fff;
 `;
 
@@ -59,16 +60,15 @@ const InfoTitleTab = styled.div`
   display: inline-block;
   height: 1.5rem;
   border-radius: 3.75rem;
-  border: 0.5px solid ${colors.point1}; /* colors.jsx의 point1 사용 */
-  background: ${colors.point1}; /* colors.jsx의 point1 사용 */
+  border: 0.5px solid ${colors.point1};
+  background: ${colors.point1};
   padding: 0.2rem 0.75rem;
   margin-bottom: 0.5rem;
 `;
 
 const InfoTitleText = styled.p`
-  color: ${colors.background}; /* colors.jsx의 background 사용 */
+  color: ${colors.background};
   font-size: 1rem;
-  font-style: normal;
   font-weight: 400;
   line-height: normal;
   text-align: center;
@@ -81,13 +81,29 @@ const InfoText = styled.p`
   margin-bottom: 1rem;
 `;
 
-const DrugDetail = ({ drugId }) => {
+const DrugDetail = () => {
+  const { id: medicineId } = useParams();
   const [drugDetail, setDrugDetail] = useState(null);
 
   useEffect(() => {
     const fetchDrugDetail = async () => {
       try {
-        const response = await axios.get(`/api/drug/${drugId}`);
+        const accessToken = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+
+        if (!accessToken || !refreshToken) {
+          throw new Error("토큰이 없습니다. 로그인이 필요합니다.");
+        }
+
+        // API 요청 시 Authorization과 RefreshToken 헤더 포함
+        const response = await axios.get(DETAILMEDICINE(medicineId), {
+          headers: {
+            Authorization: `${accessToken}`,
+            RefreshToken: refreshToken,
+          },
+        });
+
+        console.log("API 응답 데이터:", response.data);
         setDrugDetail(response.data);
       } catch (error) {
         console.error("Failed to fetch drug detail:", error);
@@ -95,7 +111,7 @@ const DrugDetail = ({ drugId }) => {
     };
 
     fetchDrugDetail();
-  }, [drugId]);
+  }, [medicineId]);
 
   if (!drugDetail) {
     return <p>Loading...</p>;
@@ -103,15 +119,13 @@ const DrugDetail = ({ drugId }) => {
 
   return (
     <Container>
-      {/* part1: 약 이름 */}
       <DrugName>
         <DrugNameText>{drugDetail.korName}</DrugNameText>
       </DrugName>
 
-      {/* part2: 약 사진 */}
-      <DrugImage imageUrl={drugDetail.imageUrl} />
+      {/* Transient props로 전달된 $imageUrl 사용 */}
+      <DrugImage $imageUrl={drugDetail.imageUrl} />
 
-      {/* part3: 약물 상세 정보 */}
       <DrugInfoContainer>
         <InfoTitleTab>
           <InfoTitleText>구분</InfoTitleText>
@@ -139,13 +153,13 @@ const DrugDetail = ({ drugId }) => {
         <InfoText>{drugDetail.usages}</InfoText>
 
         <InfoTitleTab>
-          <InfoTitleText>복약정보</InfoTitleText>
+          <InfoTitleText>복약 정보</InfoTitleText>
         </InfoTitleTab>
         {drugDetail.medicineInformation?.map((info) => (
-          <InfoText key={info.informationId}>{info.information}</InfoText>
+          <InfoText key={info.informationId}>- {info.information}</InfoText>
         ))}
 
-        {/* 추가 정보: 연령 금기, 용량 금기, 임부 금기, 노인 금기 */}
+        {/* 연령 금기 */}
         {drugDetail.ageProhibition && (
           <div>
             <InfoTitleTab>
@@ -155,6 +169,7 @@ const DrugDetail = ({ drugId }) => {
           </div>
         )}
 
+        {/* 용량 금기 */}
         {drugDetail.amountProhibition && (
           <div>
             <InfoTitleTab>
@@ -168,6 +183,7 @@ const DrugDetail = ({ drugId }) => {
           </div>
         )}
 
+        {/* 임부 금기 */}
         {drugDetail.pregnancyProhibition && (
           <div>
             <InfoTitleTab>
@@ -177,6 +193,7 @@ const DrugDetail = ({ drugId }) => {
           </div>
         )}
 
+        {/* 노인 금기 */}
         {drugDetail.seniorProhibition && (
           <div>
             <InfoTitleTab>
