@@ -1,4 +1,3 @@
-// src/router.js
 import { createBrowserRouter } from 'react-router-dom';
 import App from './App'; // App 컴포넌트 import
 import MyPills from './pages/MyPills';
@@ -11,8 +10,15 @@ import SurveyEdit from './pages/Survey/surveyEdit';
 import Login from './pages/member/Login';
 import Member from './pages/Member';
 import Join from './pages/member/Join';
-import PillCardRegister from './pages/MyPills/PillCardRegister';
-import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
+import PhotoGuide from './pages/MyPills/PillCardRegister/photoRegister/photoGuide';
+import HistoryRegisterModal from './pages/MyPills/PillCardRegister/historyRegister/historyRegisterModal';
+import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister/historyRegister';
+import RegisterCard from './pages/MyPills/PillCardRegister/registerCard';
+import RegisterPill from './pages/Search/searchForRegister';
+import DrugSearch from './pages/Search/searchforAll';
+import Test from './pages/Member/test';
+import Compare from './pages/Compare';
+import DrugDetail from './pages/Search/DrugDetail';
 
 const router = createBrowserRouter([
     {
@@ -22,6 +28,24 @@ const router = createBrowserRouter([
             {
                 path: 'mypills',
                 element: <MyPills />,
+                children: [
+                    {
+                        path: 'photoGuide',
+                        element: <PhotoGuide />,
+                    },
+                    {
+                        path: 'historyReguisterModal',
+                        element: <HistoryRegisterModal />,
+                    },
+                    {
+                        path: 'historyReguister',
+                        element: <HistoryRegister />,
+                    },
+                    {
+                        path: 'registerCard',
+                        element: <RegisterCard />,
+                    },
+                ],
             },
             {
                 path: 'notification',
@@ -47,22 +71,27 @@ const router = createBrowserRouter([
                 path: 'surveyEdit',
                 element: <SurveyEdit />,
             },
-        ],
-    },
-
-    {
-        path: '/member',
-        element: <Member />,
-        children: [
             {
-                path: 'photoGuide',
-                element: <PhotoGuide />,
+                path: '/search/register',
+                element: <RegisterPill />,
+            },
+            {
+                path: '/search',
+                element: <DrugSearch />,
+            },
+            {
+                path: '/home/compare',
+                element: <Compare />,
             },
         ],
     },
     {
-        path: '/cardRegister',
-        element: <PillCardRegister />,
+        path: '/medicine/:id',
+        element: <DrugDetail />,
+    },
+    {
+        path: '/member',
+        element: <Member />,
         children: [
             {
                 path: 'login',
@@ -71,6 +100,10 @@ const router = createBrowserRouter([
             {
                 path: 'join',
                 element: <Join />,
+            },
+            {
+                path: 'test',
+                element: <Test />,
             },
         ],
     },

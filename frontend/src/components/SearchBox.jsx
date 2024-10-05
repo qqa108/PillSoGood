@@ -43,7 +43,6 @@ const SearchBox = ({ value = "", onSearch }) => {
   const handleChangeInput = (e) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    onSearch(newValue);
   };
 
   const handleTouchSearch = () => {
