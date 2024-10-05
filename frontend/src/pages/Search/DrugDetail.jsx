@@ -5,14 +5,12 @@ import axios from "axios";
 import colors from "@/assets/colors"; // colors.js에서 색상 가져오기
 import { DETAILMEDICINE } from "@/assets/apis"; // API 경로 가져오기
 
-// 전체 컨테이너: 가로 길이 통일을 위한 컨테이너
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-// part1: 약 이름 스타일
 const DrugName = styled.div`
   width: 100%;
   height: 3rem;
@@ -33,7 +31,6 @@ const DrugNameText = styled.p`
   line-height: normal;
 `;
 
-// part2: 약 사진 스타일
 const DrugImage = styled.div`
   width: 100%;
   height: 9.84rem;
@@ -44,7 +41,6 @@ const DrugImage = styled.div`
   margin-bottom: 1rem;
 `;
 
-// part3: 약물 상세 정보 컨테이너
 const DrugInfoContainer = styled.div`
   width: 90%;
   height: auto;
@@ -55,7 +51,6 @@ const DrugInfoContainer = styled.div`
   background: #fff;
 `;
 
-// 소제목 탭
 const InfoTitleTab = styled.div`
   display: inline-block;
   height: 1.5rem;
@@ -75,7 +70,6 @@ const InfoTitleText = styled.p`
   margin: 0;
 `;
 
-// 약물 상세 정보 텍스트
 const InfoText = styled.p`
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -95,7 +89,6 @@ const DrugDetail = () => {
           throw new Error("토큰이 없습니다. 로그인이 필요합니다.");
         }
 
-        // API 요청 시 Authorization과 RefreshToken 헤더 포함
         const response = await axios.get(DETAILMEDICINE(medicineId), {
           headers: {
             Authorization: `${accessToken}`,
@@ -123,7 +116,6 @@ const DrugDetail = () => {
         <DrugNameText>{drugDetail.korName}</DrugNameText>
       </DrugName>
 
-      {/* Transient props로 전달된 $imageUrl 사용 */}
       <DrugImage $imageUrl={drugDetail.imageUrl} />
 
       <DrugInfoContainer>
@@ -156,7 +148,9 @@ const DrugDetail = () => {
           <InfoTitleText>복약 정보</InfoTitleText>
         </InfoTitleTab>
         {drugDetail.medicineInformation?.map((info) => (
-          <InfoText key={info.informationId}>- {info.information}</InfoText>
+          <InfoText key={info.informationId || info.information}>
+            - {info.information}
+          </InfoText> // 고유한 key 추가
         ))}
 
         {/* 연령 금기 */}
