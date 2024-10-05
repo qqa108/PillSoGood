@@ -18,6 +18,7 @@ import RegisterPill from './pages/Search/searchForRegister';
 import DrugSearch from './pages/Search/searchforAll';
 import Test from './pages/Member/test';
 import Compare from './pages/Compare';
+import DrugDetail from './pages/Search/DrugDetail';
 
 const router = createBrowserRouter([
     {
