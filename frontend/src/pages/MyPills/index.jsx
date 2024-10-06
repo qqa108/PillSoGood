@@ -8,15 +8,17 @@ import PillsItem from '../../components/PillsItem';
 import Modal from '../../components/Modal';
 import HistoryDetail from '../History/HistoryDetail';
 import Warn from '../../components/Warn';
-import { testData } from './testData';
-import { mediListState } from '../../atoms/mediListState';
+import { takingMediListState } from '../../atoms/mediListState';
 import { useRecoilValue } from 'recoil';
-import LoadMyPill from '../../components/LoadMyPill';
 
 const MyPillContainer = styled.div`
+    min-height: calc(100vh - 140px);
     display: flex;
     flex-direction: column;
     align-items: center;
+    & > *:not(:last-child) {
+        margin-bottom: 15px;
+    }
 `;
 
 const IconContainer = styled.div`
@@ -68,20 +70,16 @@ function MyPills() {
     };
     const handleCloseModal = () => setIsDetailModalOpen(false);
 
-    const mediListInfo = useRecoilValue(mediListState);
+    const mediListInfo = useRecoilValue(takingMediListState);
     return (
         <>
             {!isChildRoute && (
-                <>
-                    <LoadMyPill />
+                <MyPillContainer>
                     {mediListInfo?.map((e) => {
                         return (
                             <PillsItem type="mypliis" info={e} key={e?.id} handleOpenModal={() => handleOpenModal(e)} />
                         );
                     })}
-                    {/* <PillsItem type="mypliis" item={1} key={1} handleOpenModal={handleOpenModal} />
-                    <PillsItem type="mypliis" item={1} key={2} handleOpenModal={handleOpenModal} />
-                    <PillsItem type="mypliis" item={1} key={3} handleOpenModal={handleOpenModal} /> */}
 
                     <IconContainer alt="Add Icon" onClick={openRegisterModal}>
                         <FaCirclePlus />
@@ -94,7 +92,9 @@ function MyPills() {
                             <HistoryDetail detailInfo={detail} />
                         </Modal>
                     )}
-                </>
+                    {/* {mediListInfo.length !== 0 ? <Warn pillList={mediListInfo} /> : null} */}
+                    {/* 추가 버튼이 가려짐...*/}
+                </MyPillContainer>
             )}
             <Outlet />
         </>
