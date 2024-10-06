@@ -25,13 +25,10 @@ export const MODIFYDETAIL = (userMedicationDetailId) => `${MEDICATIONADD}-detail
 //알약조회
 export const MEDICINE = `${ENDPOINT}medicine`; //알약 전체 조회
 export const DETAILMEDICINE = (medicineId) => `${MEDICINE}/${medicineId}`; //알약 상세 조회
-
-//알약 비교
-const PILL = `${ENDPOINT}/pill/`;
-export const COMPAREPILL = `${PILL}compare`;
+export const COMPAREPILL = `${MEDICINE}/compare`; //알약 비교
 
 //알림
-export const NOTIFICATION = `${ENDPOINT}remainder`; //알림 조회
+export const NOTIFICATION = (medicationId) => `${ENDPOINT}remainder/${medicationId}`; //알림 조회
 export const ADDNOTIFICATION = `${NOTIFICATION}/register`; //알림 등록
 export const MODIFYNOTIFICATION = `${NOTIFICATION}/modify`; //알림 수정
 export const DELETENOTIFICATION = (id) => `${NOTIFICATION}/delete/${id}`;

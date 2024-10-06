@@ -1,40 +1,66 @@
-import { useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import colors from '../assets/colors';
+import axios from 'axios';
+import { COMPAREPILL } from '../assets/apis';
 
 const WarnContainer = styled.div`
     width: 90%;
     position: fixed;
     bottom: 0;
-    background-color: ${(props) => (props.$warnCount === 0 ? colors.taking : colors.paused)};
+    background-color: ${(props) => (props.$warnCount === 0 ? colors.taking : colors.warn)};
     color: ${(props) => (props.$warnCount === 0 ? 'white' : 'black')};
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-top-right-radius: 6px;
-    border-top-left-radius: 6px;
-    font-weight: 700;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
     transition: transform 0.5s ease-in-out;
     margin-bottom: 60px;
-    transform: ${(props) => (props.$isOpen ? `translateY(calc(0%))` : `translateY(calc(100% - 70px))`)};
+    padding-top: 10px;
+    transform: ${(props) => (props.$isOpen ? `translateY(calc(0%))` : `translateY(calc(100% - 90px))`)};
 `;
 
 const WarnCount = styled.div`
-    font-size: 1.25rem;
+    font-weight: 700;
+    font-size: 1.5rem;
     padding: 10px 0px;
 `;
 
 const WarnText = styled.div`
-    font-size: 0.75rem;
+    font-size: 1.25rem;
     padding: 10px 0px;
 `;
 
-const WarnContent = styled.div``;
+const WarnContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 90%;
+    margin-bottom: 10px;
+    background-color: white;
+    height: 90px;
+    border-radius: 6px;
+    padding: 15px 20px;
+    box-sizing: border-box;
+`;
 
-function Warn() {
+const WarnContentTitle = styled.div`
+    font-weight: 500;
+    overflow: hidden; // 을 사용해 영역을 감출 것
+    text-overflow: ellipsis; // 로 ... 을 만들기
+    white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
+    word-break: break-all;
+`;
+
+const WarnContentPill = styled.div`
+    font-size: 0.8rem;
+`;
+
+function Warn({ pillList }) {
     // const [warnData, setWarnData] = useState([]);
-    const [warnData, setWarnData] = useState(['병용 금기', '임산부 금기']);
+    const [warnData, setWarnData] = useState([]);
     const [warnIsOpen, setWarnIsOpen] = useState(false);
 
     const handleWarn = () => {
@@ -42,6 +68,39 @@ function Warn() {
             setWarnIsOpen(!warnIsOpen);
         }
     };
+
+    const idList = [];
+
+    // pillList를 순회하며 id 추출
+    pillList?.forEach((pill) => {
+        if (pill?.userMedicationDetailList) {
+            pill.userMedicationDetailList.forEach((detail) => {
+                if (detail?.medicineDTO?.id) {
+                    idList.push(detail?.medicineDTO?.id); // detail의 id 추가
+                }
+            });
+        } else {
+            idList.push(pill.id); // pill의 id 추가
+        }
+    });
+
+    useEffect(() => {
+        console.log(idList);
+        const data = { medicineIds: idList };
+        const config = {
+            headers: {
+                Authorization: localStorage.getItem('accessToken'),
+                RefreshToken: localStorage.getItem('refreshToken'),
+            },
+        };
+        if (pillList.length !== 0) {
+            //api요청
+            axios.post(COMPAREPILL, data, config).then((e) => {
+                console.log(e.data);
+                setWarnData(e.data);
+            });
+        }
+    }, [pillList]);
 
     return (
         <WarnContainer onClick={handleWarn} $warnCount={warnData.length} $isOpen={warnIsOpen}>
@@ -55,18 +114,20 @@ function Warn() {
                     <WarnCount>주의사항이 {warnData.length}건 있습니다.</WarnCount>
                     <WarnText>처방받은 약국에 문의하세요.</WarnText>
 
-                    <WarnContent>
-                        <div>내용이 여기에 표시됩니다.</div>
-                        <div>내용이 여기에 표시됩니다.</div>
-                        <div>내용이 여기에 표시됩니다.</div>
-                        <div>내용이 여기에 표시됩니다.</div>
-                        <div>내용이 여기에 표시됩니다.</div>
-                        <div>내용이 여기에 표시됩니다.</div>
-                    </WarnContent>
+                    {warnData?.map((e, i) => {
+                        return (
+                            <WarnContentContainer key={i}>
+                                <WarnContentTitle>{e?.effect}</WarnContentTitle>
+                                <WarnContentPill>
+                                    {e?.nameA}, {e?.nameB}
+                                </WarnContentPill>
+                            </WarnContentContainer>
+                        );
+                    })}
                 </>
             )}
         </WarnContainer>
     );
 }
 
-export default Warn;
+export default memo(Warn);
