@@ -55,8 +55,7 @@ function PillsItem({ info, type, handleOpenModal }) {
 
     return (
         <ItemContainer onClick={handleOpenModal}>
-            {/* <Date>{info?.date}</Date> */}
-            <Date>{info?.intakeAt}</Date>
+            <Date>{info?.intakeAt?.substring(0, 10)}</Date>
             <ContentContainer>
                 <TopWrapper>
                     {/* <PillsNickName>{info.pillsNickName}</PillsNickName> */}
@@ -73,7 +72,7 @@ function PillsItem({ info, type, handleOpenModal }) {
                 {/* <div>약리스트</div> */}
                 <PillsList>
                     {info?.userMedicationDetailList?.map((e, i) => (
-                        <Pill key={i} pillInfo={e.medicineDTO} />
+                        <Pill key={i} pillInfo={e} />
                     ))}
                 </PillsList>
             </ContentContainer>

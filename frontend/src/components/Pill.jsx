@@ -51,12 +51,12 @@ const TimePer = styled.div`
 function Pill({ pillInfo }) {
     return (
         <PillContainer>
-            <PillImageWrapper src={pillInfo?.imageUrl} alt="" />
+            <PillImageWrapper src={pillInfo?.medicineDTO?.imageUrl} alt="" />
             <PillInfomation>
-                <PillName>{pillInfo?.korName}</PillName>
+                <PillName>{pillInfo?.medicineDTO?.korName}</PillName>
                 <PerContainer>
-                    <DayPer>1일3회</DayPer>
-                    <TimePer>2정</TimePer>
+                    <DayPer>1일{pillInfo?.dailyIntakeFrequency}회</DayPer>
+                    <TimePer>1정</TimePer>
                 </PerContainer>
             </PillInfomation>
         </PillContainer>
