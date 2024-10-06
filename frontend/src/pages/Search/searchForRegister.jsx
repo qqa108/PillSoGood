@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SearchBox from "@/components/SearchBox";
 import Filter from "@/components/Filter";
 import SearchResult from "@/components/SearchResult";
 import colors from "@/assets/colors";
-import { useRecoilState } from 'recoil';
-import { surveyAnswersState } from '../../atoms/surveyState';
-
+import axios from "axios";
+import { MEDICINE } from "@/assets/apis"; // API 엔드포인트 임포트
+import { useRecoilState } from "recoil";
+import { surveyAnswersState } from "../../atoms/surveyState";
 
 const SelectedPillsContainer = styled.div`
   margin-top: 1rem;
@@ -17,7 +18,7 @@ const PillsList = styled.div`
   margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px; /* 약물 간 간격 조정 */
+  gap: 10px;
 `;
 
 const PillItem = styled.span`
@@ -49,20 +50,6 @@ const ReguisterButton = styled.button`
   }
 `;
 
-const pillData = [
-  { id: 1, name: "타이레놀", category: "일반", color: "흰색", shape: "원형" },
-  {
-    id: 2,
-    name: "아스피린",
-    category: "전문",
-    color: "노란색",
-    shape: "타원형",
-  },
-  { id: 3, name: "게보린", category: "일반", color: "파란색", shape: "사각형" },
-  { id: 4, name: "비타민C", category: "전문", color: "빨간색", shape: "원형" },
-  // 더 많은 약물 데이터 추가 가능
-];
-
 const RegisterPillContainer = styled.div`
   padding: 1rem;
   display: flex;
@@ -76,49 +63,66 @@ const SearchResultsContainer = styled.div`
 
 const RegisterPill = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterOptions, setFilterOptions] = useState({});
+  const [filterOptions, setFilterOptions] = useState({ category: "" });
   const [filteredPills, setFilteredPills] = useState([]); // 초기 상태를 빈 배열로 설정
   const [filteredCount, setFilteredCount] = useState(0); // 필터링된 개수 상태
   const [selectedPills, setSelectedPills] = useState([]); // 선택된 약물 관리
   const navigate = useNavigate();
-  
-  const filterAndUpdatePills = (searchTerm, filterOptions) => {
-    let filtered = pillData;
 
-    if (searchTerm) {
-      filtered = filtered.filter((pill) => pill.name.includes(searchTerm));
+  const fetchPillData = async (term, currentFilterOptions) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      if (!accessToken || !refreshToken) {
+        throw new Error("토큰이 없습니다. 로그인이 필요합니다.");
+      }
+
+      const response = await axios.get(MEDICINE, {
+        headers: {
+          Authorization: `${accessToken}`,
+          RefreshToken: `${refreshToken}`,
+        },
+        params: {
+          search: term,
+        },
+      });
+
+      const pills = response.data;
+      let filtered = pills;
+
+      if (term) {
+        filtered = filtered.filter((pill) => pill.korName.includes(term));
+      }
+
+      if (currentFilterOptions.category) {
+        if (currentFilterOptions.category === "일반") {
+          filtered = filtered.filter((pill) => pill.category === "일반");
+        } else if (currentFilterOptions.category === "전문") {
+          filtered = filtered.filter(
+            (pill) => pill.category === "전문" || pill.category === "전문(희귀)"
+          );
+        }
+      }
+
+      setFilteredPills(filtered);
+      setFilteredCount(filtered.length); // 필터링된 약물 개수 업데이트
+    } catch (error) {
+      console.error("알약 데이터를 불러오는 데 실패했습니다.", error);
     }
-
-    if (filterOptions.category?.length) {
-      filtered = filtered.filter((pill) =>
-        filterOptions.category.includes(pill.category)
-      );
-    }
-
-    if (filterOptions.color?.length) {
-      filtered = filtered.filter((pill) =>
-        filterOptions.color.includes(pill.color)
-      );
-    }
-
-    if (filterOptions.shape?.length) {
-      filtered = filtered.filter((pill) =>
-        filterOptions.shape.includes(pill.shape)
-      );
-    }
-
-    setFilteredPills(filtered);
-    setFilteredCount(filtered.length); // 필터링된 약물 개수 업데이트
   };
 
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    filterAndUpdatePills(term, filterOptions);
-  };
+  const handleSearch = useCallback(
+    (term) => {
+      setSearchTerm(term);
+      fetchPillData(term, filterOptions);
+    },
+    [filterOptions]
+  );
 
   const handleFilterChange = (options) => {
     setFilterOptions(options);
-    filterAndUpdatePills(searchTerm, options);
+    fetchPillData(searchTerm, options);
   };
 
   // 약물 선택 핸들러
@@ -135,49 +139,30 @@ const RegisterPill = () => {
   const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
 
   const handleRegister = () => {
-    // navigate('/survey', { state: { selectedPills } });
-    // // navigate(-1, { state: { selectedPills } });
-    // console.log('약 검색 등록', selectedPills)
-    // const updatedAnswers = [...surveyAnswers];
-    // updatedAnswers[4] = {
-    //     type: 'option-pill',
-    //     answer: selectedPills.length > 0 ? selectedPills : ['없음'],
-    //     addedPills: selectedPills, // 추가된 약물도 관리
-    // };
-    // setSurveyAnswers(updatedAnswers);
+    // 기존에 로컬 스토리지에 저장된 약물 목록 가져오기
+    const storedPills = localStorage.getItem("selectedPills");
+    const existingPills = storedPills ? JSON.parse(storedPills) : [];
 
-    // // 2. localStorage에 저장 (필요시)
-    // localStorage.setItem('selectedPills', JSON.stringify(selectedPills));
+    // 새로운 약물을 기존 약물에 추가 (중복 제거)
+    const updatedPills = [...new Set([...existingPills, ...selectedPills])];
 
-    // // 3. 이전 페이지로 이동
-    // navigate(-1);
+    // Recoil 상태 업데이트
+    const updatedAnswers = [...surveyAnswers];
+    updatedAnswers[4] = {
+      type: "option-pill",
+      answer: updatedPills.length > 0 ? updatedPills : ["없음"],
+      addedPills: updatedPills, // 추가된 약물 관리
+    };
+    setSurveyAnswers(updatedAnswers);
 
-    // // 4. 콘솔 출력 (디버깅용)
-    // console.log('약 검색 등록', selectedPills);
-     // 기존에 로컬 스토리지에 저장된 약물 목록 가져오기
-     const storedPills = localStorage.getItem('selectedPills');
-     const existingPills = storedPills ? JSON.parse(storedPills) : [];
- 
-     // 새로운 약물을 기존 약물에 추가 (중복 제거)
-     const updatedPills = [...new Set([...existingPills, ...selectedPills])];
- 
-     // Recoil 상태 업데이트
-     const updatedAnswers = [...surveyAnswers];
-     updatedAnswers[4] = {
-         type: 'option-pill',
-         answer: updatedPills.length > 0 ? updatedPills : ['없음'],
-         addedPills: updatedPills, // 추가된 약물 관리
-     };
-     setSurveyAnswers(updatedAnswers);
- 
-     // 로컬 스토리지에 저장
-     localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
- 
-     // 이전 페이지로 이동
-     navigate(-1);
- 
-     // 디버깅용 콘솔 출력
-     console.log('약 검색 등록', updatedPills);
+    // 로컬 스토리지에 저장
+    localStorage.setItem("selectedPills", JSON.stringify(updatedPills));
+
+    // 이전 페이지로 이동
+    navigate(-1);
+
+    // 디버깅용 콘솔 출력
+    console.log("약 검색 등록", updatedPills);
   };
 
   return (
@@ -193,18 +178,20 @@ const RegisterPill = () => {
 
       {/* 검색 결과 */}
       <SearchResultsContainer>
-        {
-          filteredPills.length > 0
-            ? filteredPills.map((pill) => (
-                <SearchResult
-                  key={pill.id}
-                  text={pill.name}
-                  isActive={selectedPills.includes(pill.name)} // 선택된 약물 상태 반영
-                  onSelect={() => handlePillSelect(pill.name)} // 약물 선택 핸들러 연결
-                />
-              ))
-            : searchTerm && <p>검색된 약물이 없습니다.</p> // 검색어가 있을 때만 표시
-        }
+        {filteredPills.length > 0 ? (
+          filteredPills.map((pill) => (
+            <SearchResult
+              key={pill.id}
+              korName={pill.korName}
+              isActive={selectedPills.includes(pill.korName)} // 선택된 약물 상태 반영
+              onSelect={() => handlePillSelect(pill.korName)} // 약물 선택 핸들러 연결
+            />
+          ))
+        ) : searchTerm ? (
+          <p>검색된 약물이 없습니다.</p>
+        ) : (
+          <p>검색어를 입력해주세요.</p>
+        )}
       </SearchResultsContainer>
 
       {/* 선택된 약물 목록 */}
@@ -221,9 +208,7 @@ const RegisterPill = () => {
         )}
       </SelectedPillsContainer>
 
-      <ReguisterButton onClick={handleRegister}>
-        등록하기
-      </ReguisterButton>
+      <ReguisterButton onClick={handleRegister}>등록하기</ReguisterButton>
     </RegisterPillContainer>
   );
 };
