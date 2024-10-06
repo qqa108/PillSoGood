@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import colors from '../../assets/colors';
 import { useState } from 'react';
 import Pill from '../../components/Pill';
+import axios from 'axios';
+import { MYPILLS } from '../../assets/apis';
 
 const ContentWrapper = styled.div`
     display: flex;
@@ -44,8 +46,8 @@ const StateButton = styled.div`
     display: flex;
     justify-content: center;
     padding: 5px;
-    border: 1.5px solid ${(props) => (props.active ? props.color : colors.disableText)};
-    color: ${(props) => (props.active ? props.color : colors.disableText)};
+    border: 1.5px solid ${(props) => (props.$active === 'true' ? props.color : colors.disableText)};
+    color: ${(props) => (props.$active === 'true' ? props.color : colors.disableText)};
     border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
@@ -53,39 +55,83 @@ const StateButton = styled.div`
 `;
 
 function HistoryDetail({ detailInfo }) {
-    const [pillState, setPillstate] = useState([
-        { stateName: '복약중', active: true, color: colors.taking },
-        { stateName: '복약중단', active: false, color: colors.paused },
-        { stateName: '복약종료', active: false, color: colors.stopped },
-    ]);
+    console.log(detailInfo);
+    const pillState = [
+        {
+            stateName: '복약중',
+            active: detailInfo?.status === 'TAKING' ? true : false,
+            color: colors.taking,
+            name: 'TAKING',
+        },
+        {
+            stateName: '복약중단',
+            active: detailInfo?.status === 'STOPPED' ? true : false,
+            color: colors.paused,
+            name: 'STOPPED',
+        },
+        {
+            stateName: '복약종료',
+            active: detailInfo?.status === 'COMPLETED' ? true : false,
+            color: colors.stopped,
+            name: 'COMPLETED',
+        },
+    ];
 
-    const handleButtonState = (index) => {
-        const tempState = [
-            { stateName: '복약중', active: false, color: colors.taking },
-            { stateName: '복약중단', active: false, color: colors.paused },
-            { stateName: '복약종료', active: false, color: colors.stopped },
-        ];
-        tempState[index].active = true;
-        setPillstate(tempState);
+    const handleButtonState = (status) => {
+        console.log(status);
+        changeState(status);
     };
 
-    console.log(detailInfo);
+    const changeState = (status) => {
+        const url = MYPILLS(detailInfo?.id);
+        const data = {
+            name: detailInfo?.name,
+            intakeAt: detailInfo?.intakeAt,
+            prescriptionDay: detailInfo?.prescriptionDay,
+            hospitalName: detailInfo.hospitalName,
+            pharmacyName: detailInfo.pharmacyName,
+            status: status,
+        };
+        const config = {
+            headers: {
+                Authorization: localStorage.getItem('accessToken'),
+                RefreshToken: localStorage.getItem('refreshToken'),
+            },
+        };
+
+        axios
+            .put(url, data, config)
+            .then((e) => {
+                console.log(e);
+                console.log('성공');
+            })
+            .catch((error) => {
+                console.error('오류');
+            });
+    };
 
     return (
         <>
             <ContentWrapper>
-                <PillNickNameWrapper>{detailInfo?.name}</PillNickNameWrapper>
+                <PillNickNameWrapper>
+                    {detailInfo?.name} ({detailInfo?.prescriptionDay}일분)
+                </PillNickNameWrapper>
                 <TopWrapper>
                     <HospitalName>{detailInfo?.hospitalName}</HospitalName>
-                    <Date>{detailInfo?.intakeAt}</Date>
+                    <Date>{detailInfo?.intakeAt.substring(0, 10)}</Date>
                 </TopWrapper>
                 {detailInfo?.userMedicationDetailList?.map((e, i) => (
-                    <Pill key={i} pillInfo={e.medicineDTO} />
+                    <Pill key={i} pillInfo={e} />
                 ))}
             </ContentWrapper>
             <ButtonContainer>
                 {pillState.map((e, i) => (
-                    <StateButton key={i} active={e.active} color={e.color} onClick={() => handleButtonState(i)}>
+                    <StateButton
+                        key={i}
+                        $active={String(e.active)}
+                        color={e.color}
+                        onClick={() => handleButtonState(e.name)}
+                    >
                         {e.stateName}
                     </StateButton>
                 ))}

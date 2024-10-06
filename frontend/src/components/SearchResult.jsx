@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import ActiveCheckIcon from "../assets/check_active.svg";
 import InactiveCheckIcon from "../assets/check_inactive.svg";
@@ -12,7 +12,7 @@ const SearchResultContainer = styled.div`
   flex-shrink: 0;
   border-radius: 0.375rem;
   border: 1px solid
-    ${({ isActive }) => (isActive ? colors.point1 : colors.point4)};
+    ${({ $isActive }) => ($isActive ? colors.point1 : colors.point4)};
   background: #fff;
   color: #000;
   font-size: 1.25rem;
@@ -36,20 +36,14 @@ const CheckBoxIcon = styled.img`
   height: 1.5rem;
 `;
 
-const SearchResult = ({
-  text = "임시텍스트",
-  isActive,
-  onSelect,
-  hideCheckbox,
-}) => {
-  // 선택 상태를 상위 컴포넌트에서 관리하도록 수정
+const SearchResult = ({ id, korName, isActive, onSelect, hideCheckbox }) => {
   const handleSelect = () => {
-    onSelect(text); // 상위 컴포넌트에 선택된 항목을 전달
+    onSelect(id); // 클릭 시 ID 전달
   };
 
   return (
-    <SearchResultContainer isActive={isActive} onClick={handleSelect}>
-      <SearchResultText>{text}</SearchResultText>
+    <SearchResultContainer $isActive={isActive} onClick={handleSelect}>
+      <SearchResultText>{korName}</SearchResultText>
       {!hideCheckbox && (
         <CheckBoxIcon
           src={isActive ? ActiveCheckIcon : InactiveCheckIcon}

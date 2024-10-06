@@ -4,8 +4,13 @@ import { useState } from 'react';
 import PillsItem from '../../components/PillsItem';
 import Modal from '../../components/Modal';
 import HistoryDetail from './HistoryDetail';
+import useAxios from '../../hook/useAxios';
+import { MYPILLS } from '../../assets/apis';
+import LoadMyPill from '../../components/LoadMyPill';
+import { useRecoilValue } from 'recoil';
+import { mediListState } from '../../atoms/mediListState';
 
-// const history = [1, 2, 3];
+// const data = [1, 2, 3];
 const history = [
     {
         date: '2024.09.06',
@@ -62,14 +67,30 @@ const HistoryWrapper = styled.div`
 
 function History() {
     const [isModalOpen, setModalOpen] = useState(false);
-    const handleOpenModal = () => setModalOpen(true);
-    const handleCloseModal = () => setModalOpen(false);
+    const handleOpenModal = (e) => {
+        setDetail(e);
+        setModalOpen(true);
+    };
+    const handleCloseModal = (e) => {
+        setDetail(null);
+        setModalOpen(false);
+    };
+    const data = useRecoilValue(mediListState);
+    const [detail, setDetail] = useState();
     return (
         <>
             <HistoryContainer>
-                {history.length > 0 ? (
-                    history.map((e, i) => {
-                        return <PillsItem type="history" item={e} key={`${e}${i}`} handleOpenModal={handleOpenModal} />;
+                <LoadMyPill />
+                {data !== null && data.length > 0 ? (
+                    data.map((e, i) => {
+                        return (
+                            <PillsItem
+                                type="data"
+                                info={e}
+                                key={`${e}${i}`}
+                                handleOpenModal={() => handleOpenModal(e)}
+                            />
+                        );
                     })
                 ) : (
                     <HistoryWrapper>
@@ -79,8 +100,8 @@ function History() {
                 )}
             </HistoryContainer>
             {isModalOpen && (
-                <Modal detailInfo={1} onClose={handleCloseModal}>
-                    <HistoryDetail />
+                <Modal onClose={handleCloseModal}>
+                    <HistoryDetail detailInfo={detail} />
                 </Modal>
             )}
         </>
