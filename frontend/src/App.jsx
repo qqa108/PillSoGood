@@ -8,6 +8,9 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from './atoms/userState';
 import useAxios from './hook/useAxios';
 import { USER } from './assets/apis';
+import './firebase-messaging-sw.js';
+import LoadMyPill from './components/LoadMyPill.jsx';
+import LoadNotification from './pages/Notification/LoadNotification.jsx';
 
 const AppContainer = styled.div`
     width: 100vw;
@@ -56,6 +59,8 @@ function App() {
 
     return (
         <AppContainer>
+            <LoadMyPill />
+            <LoadNotification />
             <Header />
             <OutletContainer>
                 <Outlet />

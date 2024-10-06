@@ -80,12 +80,11 @@ function History() {
     return (
         <>
             <HistoryContainer>
-                <LoadMyPill />
                 {data !== null && data.length > 0 ? (
                     data.map((e, i) => {
                         return (
                             <PillsItem
-                                type="data"
+                                type="history"
                                 info={e}
                                 key={`${e}${i}`}
                                 handleOpenModal={() => handleOpenModal(e)}
