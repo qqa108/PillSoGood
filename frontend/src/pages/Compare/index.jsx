@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import colors from '../../assets/colors';
 import { FaTrashCan } from 'react-icons/fa6';
 import Warn from '../../components/Warn';
+import { useState } from 'react';
+import Modal from '../../components/Modal';
+import CompareMyPills from './CompareMyPills';
 
 const CompareContainer = styled.div`
     width: 100%;
@@ -15,6 +18,7 @@ const CompareContainer = styled.div`
 
 const ButtonContainer = styled.div`
     display: flex;
+    width: 100%;
     justify-content: space-evenly;
     margin-bottom: 20px;
 `;
@@ -50,26 +54,66 @@ const PillWrapper = styled.div`
 `;
 
 function Compare() {
+    const [pillList, setPillList] = useState([]);
+    // setPillList를 사용해서 pillList에 추가되게끔.
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [modalType, setModalType] = useState(null);
+
+    const handleOpenModal = (type) => {
+        setModalType(type);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const handleDeletePill = (index) => {
+        const updatedPillList = pillList.filter((_, i) => i !== index);
+        setPillList(updatedPillList);
+    };
     return (
-        <CompareContainer>
-            <ButtonContainer>
-                <ButtonWrapper>약 검색하기</ButtonWrapper>
-                <ButtonWrapper>내 약 불러오기</ButtonWrapper>
-            </ButtonContainer>
-            <PillContainer>
-                <SelectCount>선택된 약물 (총 3건)</SelectCount>
-                <PillWrapper>
-                    타이레놀 <FaTrashCan />
-                </PillWrapper>
-                <PillWrapper>
-                    타이레놀 <FaTrashCan />
-                </PillWrapper>
-                <PillWrapper>
-                    타이레놀 <FaTrashCan />
-                </PillWrapper>
-            </PillContainer>
-            <Warn />
-        </CompareContainer>
+        <>
+            <CompareContainer>
+                <ButtonContainer>
+                    <ButtonWrapper
+                        onClick={() => {
+                            handleOpenModal('search');
+                        }}
+                    >
+                        약 검색하기
+                    </ButtonWrapper>
+                    <ButtonWrapper
+                        onClick={() => {
+                            handleOpenModal('my');
+                        }}
+                    >
+                        내 약 불러오기
+                    </ButtonWrapper>
+                </ButtonContainer>
+                <PillContainer>
+                    <SelectCount>선택된 약물 (총 {pillList.length}건)</SelectCount>
+                    {pillList?.map((e, i) => {
+                        return (
+                            <PillWrapper key={i}>
+                                {e.name}
+                                <FaTrashCan onClick={() => handleDeletePill(i)} style={{ cursor: 'pointer' }} />
+                            </PillWrapper>
+                        );
+                    })}
+                </PillContainer>
+                {pillList.length !== 0 ? <Warn pillList={pillList} /> : null}
+            </CompareContainer>
+            {isModalOpen && (
+                <Modal onClose={handleCloseModal}>
+                    {modalType === 'search' ? (
+                        <div>search</div>
+                    ) : (
+                        <CompareMyPills setPillList={setPillList} onClose={handleCloseModal} />
+                    )}
+                </Modal>
+            )}
+        </>
     );
 }
 
