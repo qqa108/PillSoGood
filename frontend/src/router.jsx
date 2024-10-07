@@ -27,10 +27,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <App />,
         children: [
-            {
-                path: 'mypills',
-                element: <MyPills />,
-                children: [
+            // {
+                // path: 'mypills',
+                // element: <MyPills />,
+                // children: [
                     {
                         path: 'mypills',
                         element: <MyPills />,
@@ -147,7 +147,7 @@ const router = createBrowserRouter([
                 element: <Compare />,
             },
         ],
-    },
+    // },
     {
         path: '/member',
         element: <Member />,
@@ -166,6 +166,6 @@ const router = createBrowserRouter([
             },
         ],
     },
-]);
-
+// ]);
+);
 export default router;
