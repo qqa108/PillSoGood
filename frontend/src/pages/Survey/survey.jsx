@@ -84,6 +84,9 @@ function Survey() {
     useEffect(() => {
         console.log('설문',surveyAnswers)
     })
+
+    
+
     // 로컬 저장된 데이터 불러오기 (현재 단계, 답변)
     useEffect(() => {
         const savedStep = localStorage.getItem('currentStep');
@@ -123,6 +126,7 @@ function Survey() {
         });
     };
 
+      
     useEffect(() => {
         const passedPills = location.state?.selectedPills || [];
         if (passedPills.length > 0) {

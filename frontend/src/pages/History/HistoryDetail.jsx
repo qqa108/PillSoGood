@@ -85,11 +85,6 @@ function HistoryDetail({ detailInfo }) {
     const changeState = (status) => {
         const url = MYPILLS(detailInfo?.id);
         const data = {
-            name: detailInfo?.name,
-            intakeAt: detailInfo?.intakeAt,
-            prescriptionDay: detailInfo?.prescriptionDay,
-            hospitalName: detailInfo.hospitalName,
-            pharmacyName: detailInfo.pharmacyName,
             status: status,
         };
         const config = {

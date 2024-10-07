@@ -116,7 +116,7 @@ function TextInput({ label, value, onChange, placeholder, isDateInput, type = 't
                                     onChange={handleDateChange}
                                     inline
                                     locale="ko"
-                                    dateFormat="yyyy/MM/dd"
+                                    dateFormat="YYYY-MM-dd"
                                     renderCustomHeader={(props) => (
                                         <CustomCalendar {...props} />
                                     )}
