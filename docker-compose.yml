@@ -16,6 +16,15 @@ services:
       - pill-net
     restart: always
 
+  frontend:
+    build:
+      context: ./frontend
+    networks:
+      - pill-net
+    ports:
+      - "3000:3000" 
+
+
 networks:
   pill-net:
     driver: bridge
