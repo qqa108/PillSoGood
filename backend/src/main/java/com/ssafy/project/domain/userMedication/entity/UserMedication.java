@@ -60,6 +60,7 @@ public class UserMedication {
         this.pharmacyName = pharmacyName;
     }
 
+
     //복약 상태 업데이트
     public void updateStatus(Status status) {
         this.status = status;
