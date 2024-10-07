@@ -11,6 +11,7 @@ import colors from "../../assets/colors";
 import { MAIN } from "@/assets/apis"; // API 경로 추가
 import { useRecoilValue } from "recoil";
 import { userState } from "../../atoms/userState";
+import { mediListState } from "../../atoms/mediListState"; // 추가
 
 // Part 1: 헤더
 const Header = styled.div`
@@ -71,16 +72,16 @@ const UserButton = styled.button`
   padding: 0 0.5rem;
   flex-shrink: 0;
   background-color: ${({ $isSelected }) =>
-    $isSelected ? colors.point1 : "white"}; // $isSelected로 변경
+    $isSelected ? colors.point1 : "white"}; // 선택된 사용자 버튼
   border: 1px solid ${colors.point4};
   color: ${({ $isSelected }) =>
-    $isSelected ? colors.point1 : "white"}; // $isSelected로 변경
+    $isSelected ? "#fff" : colors.point1}; // 선택된 사용자 텍스트 색상
   cursor: pointer;
 `;
 
 const UserNameDisplay = styled.div`
   color: ${({ $isSelected }) =>
-    $isSelected ? "#EBF3FF" : "#9C9C9C"}; // $isSelected로 변경
+    $isSelected ? "#EBF3FF" : "#9C9C9C"}; // 선택된 사용자 텍스트 색상
   text-align: center;
   font-size: 1.25rem;
   font-style: normal;
@@ -383,7 +384,7 @@ const DrugList = ({ drugs }) => {
               {drugs.map((drug, index) => (
                 <DrugButtonContainer key={index}>
                   <DrugButton />
-                  <DrugName>{drug}</DrugName>
+                  <DrugName>{drug}</DrugName> {/* 약 이름 출력 */}
                 </DrugButtonContainer>
               ))}
               <AddDrugButton onClick={() => navigate("/mypills/registerCard")}>
@@ -432,18 +433,17 @@ const MedicationStatus = ({ medications }) => {
 
 // 메인 페이지 컴포넌트
 const MainPage = () => {
-  const [users, setUsers] = useState([]); // 초기 사용자 목록을 비우고 API 데이터로 설정
-  const [selectedUser, setSelectedUser] = useState("");
+  const userInfo = useRecoilValue(userState); // Recoil에서 userState 가져오기
+  const mediListInfo = useRecoilValue(mediListState); // 복용 중인 약물 Recoil 값 가져오기
+  const [users, setUsers] = useState([]); // 초기 사용자 목록
+  const [selectedUser, setSelectedUser] = useState(userInfo.name); // 처음에 무조건 userInfo.name으로 설정
   const [drugs, setDrugs] = useState([]); // 복용 중인 약물
   const [medications, setMedications] = useState([]); // 복약 정보
-  const userInfo = useRecoilValue(userState); // Recoil에서 userState 가져오기
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const Token = localStorage.getItem("accessToken"); // 인증 토큰을 로컬 스토리지에서 가져옴
-        console.log("Token:", Token); // token이 제대로 저장되어 있는지 확인
-
+        const Token = localStorage.getItem("accessToken");
         const response = await axios.get(MAIN, {
           headers: {
             Authorization: `Bearer ${Token}`,
@@ -457,20 +457,29 @@ const MainPage = () => {
         );
 
         setUsers(familyMembers);
-        setSelectedUser(userInfo.name || familyMembers[0]?.name || ""); // userInfo.name을 기본 선택
 
-        const pills = response.data.pill.map((pill) => pill.name);
+        // 사용자 선택에 따라 데이터를 필터링하여 설정
+        const pills = response.data.pill
+          .filter((pill) => pill.user === selectedUser)
+          .map((pill) => pill.name); // 약 이름을 가져옴
         setDrugs(pills);
 
-        setMedications(response.data.pill);
+        const userMedications = response.data.pill.filter(
+          (pill) => pill.user === selectedUser
+        );
+        setMedications(userMedications);
+
+        console.log("Selected User:", selectedUser); // 값 확인용
       } catch (error) {
         console.error("API 호출 중 오류 발생:", error);
       }
     };
-  }, [userInfo.name]); // userInfo.name이 변경될 때도 다시 데이터 가져오기
+
+    fetchData();
+  }, [selectedUser]); // selectedUser가 변경될 때마다 실행
 
   const handleUserSelect = (userName) => {
-    setSelectedUser(userName);
+    setSelectedUser(userName); // 사용자가 선택되면 상태 변경
   };
 
   return (
@@ -478,22 +487,18 @@ const MainPage = () => {
       <Header>
         <Logo src={logoImage} alt="Logo" />
         <UserNameContainer>
-          <UserName>{userInfo.name}</UserName>{" "}
-          {/* '님' 앞에 userInfo.name 표시 */}
+          <UserName>{selectedUser}</UserName> {/* 현재 선택된 사용자 표시 */}
           <UserSuffix>님</UserSuffix>
         </UserNameContainer>
       </Header>
-
       <UserManagement
         users={users}
         selectedUser={selectedUser}
         onUserSelect={handleUserSelect}
       />
-
       <MenuButtons />
-
-      <DrugList drugs={drugs} />
-
+      <DrugList drugs={mediListInfo.map((pill) => pill.name)} />{" "}
+      {/* mediListState에서 약 이름 가져오기 */}
       <MedicationStatus medications={medications} />
     </div>
   );
