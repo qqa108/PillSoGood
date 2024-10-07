@@ -10,17 +10,17 @@ import SurveyEdit from './pages/Survey/surveyEdit';
 import Login from './pages/Member/Login';
 import Member from './pages/Member';
 import Join from './pages/Member/Join';
-import PhotoGuide from './pages/MyPills/PillCardRegister/photoRegister/photoGuide';
-import HistoryRegisterModal from './pages/MyPills/PillCardRegister/historyRegister/historyRegisterModal';
-import HistoryRegister from './pages/MyPills/PillCardRegister/historyRegister/historyRegister';
-import RegisterCard from './pages/MyPills/PillCardRegister/registerCard';
+import PhotoGuide from './pages/MyPills/PillCardRegister/PhotoRegister/PhotoGuide';
+import HistoryRegisterModal from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRegisterModal';
+import HistoryRegister from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRegister';
+import RegisterCard from './pages/MyPills/PillCardRegister/RegisterCard';
 import RegisterPill from './pages/Search/searchForRegister';
 import DrugSearch from './pages/Search/searchforAll';
 import Test from './pages/Member/test';
 import Compare from './pages/Compare';
 import DrugDetail from './pages/Search/DrugDetail';
 import FamilyDetail from './pages/Profile/familyDetail';
-import HistoryRequest from './pages/MyPills/PillCardRegister/historyRegister/historyRequest';
+import HistoryRequest from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRequest';
 
 const router = createBrowserRouter([
     {

@@ -1,4 +1,4 @@
-const ENDPOINT = 'http://j11b308.p.ssafy.io/api/';
+const ENDPOINT = 'https://j11b308.p.ssafy.io/api/';
 
 export const MAIN = `${ENDPOINT}`; // 메인화면 정보 불러오기
 export const LOGIN = `${ENDPOINT}login`; //로그인
@@ -10,11 +10,11 @@ export const USER = `${ENDPOINT}user`; //회원 정보 조회
 export const USERGET = (family) => `${ENDPOINT}user?family=${family}`; //회원 정보 조회
 export const REGISTER = `${USER}/register`; //회원 정보 등록
 // export const MODIFY = `${USER}/modify`; // 회원 정보 수정
-export const MODIFY  = (family) => `${USER}/modify?family=${family}`; // 회원 정보 수정
+export const MODIFY = (family) => `${USER}/modify?family=${family}`; // 회원 정보 수정
 export const SIGNOUT = `${USER}/withdraw`; //회원 탈퇴
 export const FAMILY = `${USER}/family`; //회원 가족 조회
 // export const DELETEFAMILY = `${FAMILY}/delete`; //가족 정보 삭제
-export const DELETEFAMILY = (FAMILY) => `${USER}/family/delete?family=${FAMILY}`; 
+export const DELETEFAMILY = (FAMILY) => `${USER}/family/delete?family=${FAMILY}`;
 
 //복약
 export const MEDICATIONADD = `${ENDPOINT}user-medication`; //복약 카드 추가
