@@ -42,6 +42,13 @@ public class MedicineService {
                 .orElseThrow(() -> new NoSuchElementException("해당 ID로 약물을 찾을 수 없습니다: " + id));
     }
 
+    @Transactional
+    public MedicineDTO findByCode(String code) {
+        return medicineRepository.findByCode(code)
+                .map(MedicineDTO::toMedicineDTO)
+                .orElse(null);  // 결과가 없으면 null 반환
+    }
+
     public List<CombinationProhibitionDTO> findAllCombinationProhibition(List<Integer> medicineIds) {
         List<CombinationProhibitionDTO> combinationProhibitions = new ArrayList<>();
 
