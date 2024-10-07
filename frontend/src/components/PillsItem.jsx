@@ -6,6 +6,10 @@ import { FaBellSlash } from 'react-icons/fa';
 import { memo, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { notificationState } from '../atoms/notificationState';
+import axios from 'axios';
+import { ADDNOTIFICATION, DELETENOTIFICATION } from '../assets/apis';
+import Modal from './Modal';
+import NotificationForm from '../pages/Notification/NotificationForm';
 
 const ItemContainer = styled.div`
     width: 100%;
@@ -58,19 +62,31 @@ const PillsList = styled.ul`
     flex-direction: column;
 `;
 
+const NotiModalWrapper = styled.div``;
+
 function PillsItem({ info, type, handleOpenModal }) {
     const notificationList = useRecoilValue(notificationState);
     const [bellState, setBellState] = useState(false);
-
-    const fetchNoti = async (medicationId) => {
+    const [isNotiOpen, setIsNotiOpen] = useState(false);
+    const fetchNoti = async (action, data = null) => {
         const config = {
             headers: {
                 Authorization: localStorage.getItem('accessToken'),
                 RefreshToken: localStorage.getItem('refreshToken'),
             },
         };
+
         try {
-            const response = await axios.get(NOTIFICATION(medicationId), config);
+            let response;
+            if (action === 'on') {
+                response = await axios.post(ADDNOTIFICATION, data, config);
+            } else if (action === 'off') {
+                // 알림 끄기 (DELETE 요청)
+                console.log(DELETENOTIFICATION(info?.id));
+                response = await axios.delete(DELETENOTIFICATION(info?.id), config);
+            } else {
+                throw new Error('유효하지 않은 액션입니다.');
+            }
             return response.data; // 알림 데이터 반환
         } catch (error) {
             console.error('알림 요청 오류:', error);
@@ -79,11 +95,16 @@ function PillsItem({ info, type, handleOpenModal }) {
     };
 
     const handleNotiOn = () => {
-        confirm('알림을 설정하시겠습니까?');
+        if (confirm('알림을 설정하시겠습니까?')) {
+            setIsNotiOpen(true);
+        }
     };
 
-    const hanleNotiOff = () => {
-        confirm('알림을 끄시겠습니까?');
+    const handleNotiOff = async () => {
+        if (confirm('알림을 끄시겠습니까?')) {
+            await fetchNoti('off'); // fetchNoti가 완료될 때까지 기다림
+            window.location.reload(); // 페이지 새로고침
+        }
     };
 
     useEffect(() => {
@@ -95,28 +116,42 @@ function PillsItem({ info, type, handleOpenModal }) {
     }, [notificationList]);
 
     return (
-        <ItemContainer onClick={handleOpenModal}>
-            <Date>{info?.intakeAt?.substring(0, 10)}</Date>
-            <ContentContainer $status={info?.status}>
-                <TopWrapper>
-                    {/* <PillsNickName>{info.pillsNickName}</PillsNickName> */}
-                    <PillsNickName>{info?.name}</PillsNickName>
-                    <NotificationWrapper
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setBellState(() => !bellState);
-                        }}
-                    >
-                        {type !== 'history' ? bellState === true ? <FaBell /> : <FaBellSlash /> : null}
-                    </NotificationWrapper>
-                </TopWrapper>
-                <PillsList>
-                    {info?.userMedicationDetailList?.map((e, i) => (
-                        <Pill key={i} pillInfo={e} />
-                    ))}
-                </PillsList>
-            </ContentContainer>
-        </ItemContainer>
+        <>
+            <ItemContainer onClick={handleOpenModal}>
+                <Date>{info?.intakeAt?.substring(0, 10)}</Date>
+                <ContentContainer $status={info?.status}>
+                    <TopWrapper>
+                        {/* <PillsNickName>{info.pillsNickName}</PillsNickName> */}
+                        <PillsNickName>{info?.name}</PillsNickName>
+                        <NotificationWrapper
+                            onClick={(e) => {
+                                e.stopPropagation();
+                            }}
+                        >
+                            {type !== 'history' ? (
+                                bellState === true ? (
+                                    <FaBell onClick={handleNotiOff} />
+                                ) : (
+                                    <FaBellSlash onClick={handleNotiOn} />
+                                )
+                            ) : null}
+                        </NotificationWrapper>
+                    </TopWrapper>
+                    <PillsList>
+                        {info?.userMedicationDetailList?.map((e, i) => (
+                            <Pill key={i} pillInfo={e} />
+                        ))}
+                    </PillsList>
+                </ContentContainer>
+            </ItemContainer>
+            {isNotiOpen ? (
+                <NotiModalWrapper>
+                    <Modal>
+                        <NotificationForm info={info} fetchNoti={fetchNoti} />
+                    </Modal>
+                </NotiModalWrapper>
+            ) : null}
+        </>
     );
 }
 
