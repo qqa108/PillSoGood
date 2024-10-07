@@ -23,5 +23,5 @@ RUN mkdir -p /build && cp -r dist/* /build
 # 포트 노출 (로컬 개발 환경에서 필요할 수 있음)
 EXPOSE 3000
 
-# 컨테이너가 실행되었을 때 빌드 파일이 저장되었음을 확인하는 메시지
-CMD ["echo", "Frontend build completed. Check /build directory for output files."]
+# 애플리케이션 실행
+CMD ["npm", "run", "preview"]
