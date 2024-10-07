@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import useAxios from '../../hook/useAxios'; 
 import { FAMILY, DELETEFAMILY } from '../../assets/apis'; 
 import { IoIosClose } from "react-icons/io";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import colors from '../../assets/colors';
 import SurveyEdit from '../Survey/surveyEdit';
 // import { USERGET, DELETEFAMILY } from '../../assets/apis';
@@ -75,13 +75,20 @@ function Profile() {
     const { data: familyData, loading: familyLoading, error: familyError } = useAxios(FAMILY, 'GET'); 
     const navigate = useNavigate();
     const [isChildVisible, setIsChildVisible] = useState(false);
-
+    
     const [deleteFamilyId, setDeleteFamilyId] = useState(null);
 
     const { data: deleteData, loading: deleteLoading, error: deleteError } = useAxios(
         deleteFamilyId ? DELETEFAMILY(deleteFamilyId) : undefined, 
         deleteFamilyId ? 'DELETE' : undefined
     );
+
+    useEffect(() => {
+        if (location.pathname === '/profile') {
+            localStorage.removeItem('surveyAnswers');
+            localStorage.removeItem('selectedPills');
+        }
+      }, [location]);
 
     useEffect(() => {
         if (deleteData) {

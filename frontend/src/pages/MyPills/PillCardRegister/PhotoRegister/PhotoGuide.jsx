@@ -8,7 +8,6 @@ import medicine_bag_guide from '../../../../assets/medicine_bag_guide.svg';
 import medicine_guide from '../../../../assets/medicine_guide.svg';
 import PreprocessImage from './PreprocessImage'; // 전처리 컴포넌트
 
-//
 
 const Container = styled.div`
     display: flex;
