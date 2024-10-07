@@ -7,11 +7,14 @@ export const REFRESH = `${ENDPOINT}refresh`; //refresh token 재발급
 
 //회원
 export const USER = `${ENDPOINT}user`; //회원 정보 조회
+export const USERGET = (family) => `${ENDPOINT}user?family=${family}`; //회원 정보 조회
 export const REGISTER = `${USER}/register`; //회원 정보 등록
-export const MODIFY = `${USER}/modify`; // 회원 정보 수정
+// export const MODIFY = `${USER}/modify`; // 회원 정보 수정
+export const MODIFY  = (family) => `${USER}/modify?family=${family}`; // 회원 정보 수정
 export const SIGNOUT = `${USER}/withdraw`; //회원 탈퇴
 export const FAMILY = `${USER}/family`; //회원 가족 조회
-export const DELETEFAMILY = `${FAMILY}/delete`; //가족 정보 삭제
+// export const DELETEFAMILY = `${FAMILY}/delete`; //가족 정보 삭제
+export const DELETEFAMILY = (FAMILY) => `${USER}/family/delete?family=${FAMILY}`; 
 
 //복약
 export const MEDICATIONADD = `${ENDPOINT}user-medication`; //복약 카드 추가
@@ -21,6 +24,10 @@ export const MODIFYDETAIL = (userMedicationDetailId) => `${MEDICATIONADD}-detail
 
 //복약기록
 export const HISTORY = `${ENDPOINT}history`;
+
+// 진료& 처방 내역
+export const MEDICATION = `${ENDPOINT}medication-api/request`;
+export const KAKAO_CERTIFY = `${ENDPOINT}medication-api/certify`; // 카카오 인증 요청
 
 //알약조회
 export const MEDICINE = `${ENDPOINT}medicine`; //알약 전체 조회
