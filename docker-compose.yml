@@ -23,6 +23,10 @@ services:
       - pill-net
     ports:
       - "5173:5173" 
+    command: ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]  # Vite preview 모드에서 5173 포트 사용
+    environment:
+      - NODE_ENV=production  # production 환경 변수 설정 (필요시)
+    restart: always
 
 
 networks:

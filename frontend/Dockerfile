@@ -23,5 +23,5 @@ RUN mkdir -p /build && cp -r dist/* /build
 # 포트 노출
 EXPOSE 5173
 
-# 애플리케이션 실행 (모든 인터페이스에서 접근 가능하도록 --host 옵션 추가)
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+# 애플리케이션 실행 (모든 인터페이스에서 접근 가능하도록 --host 옵션 추가 및 5173 포트 사용)
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
