@@ -2,6 +2,7 @@ package com.ssafy.project.domain.userMedication.controller;
 
 import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationResponseDTO;
+import com.ssafy.project.domain.userMedication.entity.Status;
 import com.ssafy.project.domain.userMedication.service.UserMedicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,10 @@ public class UserMedicationController {
         return ResponseEntity.ok("복약카드 업데이트 완료");
     }
 
-
-
+    //복약카드 상태 수정
+    @PutMapping("/{userMedicationId}/status")
+    public ResponseEntity<String> updateUserMedicationStatus(@PathVariable int userMedicationId, @RequestParam Status status) {
+        userMedicationService.updateUserMedicationStatus(userMedicationId, status);
+        return ResponseEntity.ok("복약카드 상태 업데이트 완료");
+    }
 }
