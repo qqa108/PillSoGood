@@ -81,7 +81,7 @@ public class UserMedicationService {
         UserMedication userMedication = userMedicationRepository.findById(userMedicationId).orElseThrow(() ->
                 new IllegalArgumentException("UserMedication not found"));
 
-        userMedication.update(userMedicationRequestDTO.getName(), userMedicationRequestDTO.getIntakeAt(),
+        userMedication.update(userMedicationRequestDTO.getName(), userMedicationRequestDTO.getStatus(), userMedicationRequestDTO.getIntakeAt(),
                 userMedicationRequestDTO.getPrescriptionDay(), userMedicationRequestDTO.getHospitalName(),
                 userMedicationRequestDTO.getPharmacyName());
 
@@ -94,5 +94,4 @@ public class UserMedicationService {
             findDetail.update(detail.getDailyIntakeFrequency(), detail.getPerAmount(), medicine);
         }
     }
-
 }

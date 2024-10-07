@@ -51,7 +51,8 @@ public class UserMedication {
     @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<UserMedicationDetail> userMedicationDetailList = new ArrayList<>();
 
-    public void update(String name, LocalDateTime intakeAt, int prescriptionDay, String hospitalName, String pharmacyName) {
+    public void update(String name, Status status, LocalDateTime intakeAt, int prescriptionDay, String hospitalName, String pharmacyName) {
+        this.status = status;
         this.name = name;
         this.intakeAt = intakeAt;
         this.prescriptionDay = prescriptionDay;
