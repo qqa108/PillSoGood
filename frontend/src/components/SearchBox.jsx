@@ -51,7 +51,7 @@ const SearchBox = ({ value = "", onSearch }) => {
       if (inputValue) {
         onSearch(inputValue); // 입력된 값으로 검색 함수 호출
       }
-    }, 200); // 0.7초 대기
+    }, 700); // 0.7초 대기
 
     return () => clearTimeout(timer); // 이전 타이머 제거
   }, [inputValue, onSearch]);
