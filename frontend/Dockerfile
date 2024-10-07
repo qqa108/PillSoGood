@@ -20,8 +20,8 @@ RUN npm run build
 # Vite의 기본 빌드 경로는 dist이므로 dist를 build로 복사
 RUN mkdir -p /build && cp -r dist/* /build
 
-# 포트 노출 (로컬 개발 환경에서 필요할 수 있음)
-EXPOSE 3000
+# 포트 노출
+EXPOSE 5173
 
-# 애플리케이션 실행
-CMD ["npm", "run", "preview"]
+# 애플리케이션 실행 (모든 인터페이스에서 접근 가능하도록 --host 옵션 추가)
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]

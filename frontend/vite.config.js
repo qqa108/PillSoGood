@@ -80,6 +80,8 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     server: {
+        host: '0.0.0.0', // 모든 인터페이스에서 접근 가능하도록 설정
+        port: 5173,       // Vite preview 모드의 기본 포트로 설정
         proxy: {
           '/api': {
             target: 'https://k683g2ohlu.apigw.ntruss.com',
