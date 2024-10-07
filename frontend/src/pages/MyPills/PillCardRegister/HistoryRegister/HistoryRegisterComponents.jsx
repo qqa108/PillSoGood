@@ -21,9 +21,11 @@ export const ListContent = styled.div`
 
 export const UpperRow = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  width: 100%;
   margin-bottom: 0.5rem;
+  gap: 0.2rem;
+  font-weight: 700;
 `;
 
 export const LowerRow = styled.div`
@@ -36,7 +38,9 @@ export const LowerRow = styled.div`
 export const MedicineInfo = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   width: 100%;
+  gap: 0.3rem;
 `;
 
 export const CheckBoxImage = styled.img`
@@ -58,11 +62,11 @@ export const ButtonContainer = styled.div`
   margin-top: 2rem;
 `;
 
-// Title 및 Description 스타일링
 export const Title = styled.h1`
-  color: #000;
   text-align: center;
   margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 1.2rem;
 `;
 
 export const Description = styled.p`
@@ -74,21 +78,27 @@ export const Description = styled.p`
 // ListItem 컴포넌트
 export function ListItemComponent({ item, index, checked, handleCheck }) {
   return (
-    <ListItem key={item.num}>
+    <ListItem key={index}>
       <ListNum>{index + 1}</ListNum>
       <ListContent>
         <UpperRow>
-          <div>{item.진료일자}</div>
-          <div>{item.병의원명}</div>
-          <div>{item.진료형태}</div>
+          <div>{item.intakeAt.substring(0, 10)}</div>
+          <div>{item.hospitalName !== 'Unknown' ? item.hospitalName : ''}</div>
+          <div>{item.pharmacyName !== 'Unknown' ? item.pharmacyName : '알 수 없음'}</div>
         </UpperRow>
         <LowerRow>
-          {item.medicine.map((약품, i) => (
-            <MedicineInfo key={i}>
-              <span>{약품}</span>
-              <span>투약횟수 : {item.투약횟수}회</span>
-            </MedicineInfo>
-          ))}
+          {/* userMedicationDetailList가 배열일 경우에만 map을 실행 */}
+          {Array.isArray(item.userMedicationDetailList) && item.userMedicationDetailList.length > 0 ? (
+            item.userMedicationDetailList.map((medicationDetail, i) => (
+              <MedicineInfo key={i}>
+                <span>약 이름: {medicationDetail.medicineId}</span>
+                <span>하루 복용 횟수: {medicationDetail.dailyIntakeFrequency}회</span>
+                <span>하루 복용량: {medicationDetail.perAmount}정</span>
+              </MedicineInfo>
+            ))
+          ) : (
+            <p>복약 정보가 없습니다.</p> // userMedicationDetailList가 없을 때 처리
+          )}
         </LowerRow>
       </ListContent>
       <CheckBoxImage

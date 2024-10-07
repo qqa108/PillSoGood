@@ -1,4 +1,5 @@
-const ENDPOINT = 'https://j11b308.p.ssafy.io/api/';
+// const ENDPOINT = 'https://j11b308.p.ssafy.io/api/';
+const ENDPOINT = 'http://j11b308.p.ssafy.io:8080/api/';
 
 export const MAIN = `${ENDPOINT}`; // 메인화면 정보 불러오기
 export const LOGIN = `${ENDPOINT}login`; //로그인
@@ -23,11 +24,14 @@ export const ADDDETAIL = (userMedicationId) => `${MEDICATIONADD}-detail/${userMe
 export const MODIFYDETAIL = (userMedicationDetailId) => `${MEDICATIONADD}-detail/${userMedicationDetailId}`; //디테일 수정, 삭제
 
 //복약기록
-// export const HISTORY = `${ENDPOINT}history`;
+export const HISTORY = `${ENDPOINT}history`;
 
 // 진료& 처방 내역
 export const MEDICATION = `${ENDPOINT}medication-api/request`;
 export const KAKAO_CERTIFY = `${ENDPOINT}medication-api/certify`; // 카카오 인증 요청
+
+// 알약 객체탐지
+export const MEDIPHOTO = (IMGURL) => `${ENDPOINT}/medicine/image?imageUrl=${IMGURL}`;
 
 //알약조회
 export const MEDICINE = `${ENDPOINT}medicine`; //알약 전체 조회

@@ -624,10 +624,10 @@ export default function RegisterCard() {
         intakeAt: `${surveyAnswers[0].answer}T00:00:00`,
         hospitalName: surveyAnswers[3].answer, 
         pharmacyName: surveyAnswers[2].answer, 
-        prescriptionDay: selectedPills[0]?.days || 3, // 처방 일수 기본값
+        prescriptionDay: parseInt(selectedPills[0]?.days) || 3, // 처방 일수 기본값
         userMedicationDetailList: selectedPills.map((pill) => ({
-          dailyIntakeFrequency: pill.frequency || 3, // 1일 투여 횟수 기본값
-          perAmount: pill.dose || 3, // 1회 투약량 기본값
+          dailyIntakeFrequency: parseInt(pill.frequency) || 3, // 1일 투여 횟수 기본값
+          perAmount: parseInt(pill.dose) || 3, // 1회 투약량 기본값
           // medicineId: pill.name, // 약 id
           medicineId: 3, // 약 id
         })),

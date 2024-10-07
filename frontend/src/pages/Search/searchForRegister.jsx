@@ -43,6 +43,7 @@ const ReguisterButton = styled.button`
   color: white;
   border: none;
   border-radius: 5px;
+  margin-bottom: 5rem;
   cursor: pointer;
 
   &:hover {
