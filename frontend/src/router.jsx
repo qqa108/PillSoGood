@@ -10,7 +10,7 @@ import SurveyEdit from './pages/Survey/surveyEdit';
 import Login from './pages/Member/Login';
 import Member from './pages/Member';
 import Join from './pages/Member/Join';
-import PhotoGuide from './pages/MyPills/PillCardRegister/PhotoRegister/photoGuide';
+import PhotoGuide from './pages/MyPills/PillCardRegister/PhotoRegister/PhotoGuide';
 import HistoryRegisterModal from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRegisterModal';
 import HistoryRegister from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRegister';
 import RegisterCard from './pages/MyPills/PillCardRegister/RegisterCard';

@@ -62,6 +62,30 @@ function PillsItem({ info, type, handleOpenModal }) {
     const notificationList = useRecoilValue(notificationState);
     const [bellState, setBellState] = useState(false);
 
+    const fetchNoti = async (medicationId) => {
+        const config = {
+            headers: {
+                Authorization: localStorage.getItem('accessToken'),
+                RefreshToken: localStorage.getItem('refreshToken'),
+            },
+        };
+        try {
+            const response = await axios.get(NOTIFICATION(medicationId), config);
+            return response.data; // 알림 데이터 반환
+        } catch (error) {
+            console.error('알림 요청 오류:', error);
+            return null; // 오류 발생 시 null 반환
+        }
+    };
+
+    const handleNotiOn = () => {
+        confirm('알림을 설정하시겠습니까?');
+    };
+
+    const hanleNotiOff = () => {
+        confirm('알림을 끄시겠습니까?');
+    };
+
     useEffect(() => {
         if (notificationList.length !== 0) {
             if (notificationList.some((notification) => notification.id === info.id)) {
