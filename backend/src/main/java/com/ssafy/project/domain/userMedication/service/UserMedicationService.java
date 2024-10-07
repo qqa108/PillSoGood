@@ -5,6 +5,7 @@ import com.ssafy.project.domain.medicine.entity.Medicine;
 import com.ssafy.project.domain.medicine.repository.MedicineRepository;
 import com.ssafy.project.domain.userDetail.entity.UserDetail;
 import com.ssafy.project.domain.userDetail.repository.UserDetailRepository;
+import com.ssafy.project.domain.userMedication.entity.Status;
 import com.ssafy.project.domain.userMedicationDetail.dto.UserMedicationDetailRequestDTO;
 import com.ssafy.project.domain.userMedicationDetail.dto.UserMedicationDetailResponseDTO;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
@@ -93,5 +94,13 @@ public class UserMedicationService {
                     -> new IllegalArgumentException("Medicine not found"));
             findDetail.update(detail.getDailyIntakeFrequency(), detail.getPerAmount(), medicine);
         }
+    }
+
+    //복약카드 수정
+    public void updateUserMedicationStatus(int userMedicationId, Status status) {
+        UserMedication userMedication = userMedicationRepository.findById(userMedicationId).orElseThrow(() ->
+                new IllegalArgumentException("UserMedication not found"));
+        userMedication.updateStatus(status);
+        userMedicationRepository.save(userMedication);
     }
 }
