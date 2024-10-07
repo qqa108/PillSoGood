@@ -5,7 +5,7 @@ import SearchBox from "../../components/SearchBox";
 import Filter from "../../components/Filter";
 import SearchResult from "../../components/SearchResult";
 import axios from "axios";
-import { MEDICINE } from "../../assets/apis"; // API 엔드포인트 임포트
+import { MEDICINEES } from "../../assets/apis"; // API 엔드포인트 임포트 (ElasticSearch 버전)
 
 const DrugSearchContainer = styled.div`
   padding: 1rem;
@@ -34,37 +34,26 @@ const DrugSearch = () => {
         throw new Error("토큰이 없습니다. 로그인이 필요합니다.");
       }
 
-      const response = await axios
-        .get(MEDICINE, {
+      const response = await axios.get(
+        MEDICINEES(term, [currentFilterOptions.category]),
+        {
           headers: {
             Authorization: `${accessToken}`,
             RefreshToken: `${refreshToken}`,
           },
-          params: { search: term },
-        })
-        .catch((error) => {
-          console.error("API 요청 오류:", error);
-        });
+        }
+      );
 
       const pills = response.data;
-      let filtered = pills;
+      console.log("API로부터 받은 약물 데이터:", pills); // 데이터 확인
 
-      if (term) {
-        filtered = filtered.filter((pill) => pill.korName.includes(term));
-      }
+      // 중복된 약물이 있는지 확인하고 중복 제거
+      const uniquePills = pills.filter(
+        (pill, index, self) => self.findIndex((p) => p.id === pill.id) === index
+      );
 
-      if (currentFilterOptions.category) {
-        if (currentFilterOptions.category === "일반") {
-          filtered = filtered.filter((pill) => pill.category === "일반");
-        } else if (currentFilterOptions.category === "전문") {
-          filtered = filtered.filter(
-            (pill) => pill.category === "전문" || pill.category === "전문(희귀)"
-          );
-        }
-      }
-
-      setFilteredPills(filtered);
-      setFilteredCount(filtered.length);
+      setFilteredPills(uniquePills);
+      setFilteredCount(uniquePills.length);
     } catch (error) {
       console.error("알약 데이터를 불러오는 데 실패했습니다.", error);
     }
@@ -96,9 +85,9 @@ const DrugSearch = () => {
 
       <SearchResultsContainer>
         {filteredPills.length > 0 ? (
-          filteredPills.map((pill) => (
+          filteredPills.map((pill, index) => (
             <SearchResult
-              key={pill.id}
+              key={pill.id || index} // pill.id가 없거나 중복되면 index 사용
               id={pill.id}
               korName={pill.korName}
               category={pill.category}
