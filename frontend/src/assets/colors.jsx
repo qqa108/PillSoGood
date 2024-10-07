@@ -10,6 +10,7 @@ const colors = {
     taking: '#01c73c',
     paused: '#f7a000',
     stopped: '#f60000',
+    warn: '#f4ec2f',
 };
 
 export default colors;

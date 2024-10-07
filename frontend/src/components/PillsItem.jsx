@@ -4,6 +4,8 @@ import Pill from './Pill';
 import { FaBell } from 'react-icons/fa';
 import { FaBellSlash } from 'react-icons/fa';
 import { memo, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { notificationState } from '../atoms/notificationState';
 
 const ItemContainer = styled.div`
     width: 100%;
@@ -22,7 +24,13 @@ const ContentContainer = styled.div`
     box-sizing: border-box;
     padding: 0.75rem;
     border-radius: 6px;
-    border: 1.5px solid ${colors.taking};
+    border: 1.5px solid
+        ${(props) =>
+            props?.$status === 'TAKING'
+                ? colors.taking
+                : props?.$status === 'STOPPED'
+                  ? colors.paused
+                  : colors.disableText};
     font-weight: 700;
     background-color: white;
 `;
@@ -31,6 +39,7 @@ const TopWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 40px;
 `;
 
 const PillsNickName = styled.div`
@@ -50,14 +59,21 @@ const PillsList = styled.ul`
 `;
 
 function PillsItem({ info, type, handleOpenModal }) {
+    const notificationList = useRecoilValue(notificationState);
     const [bellState, setBellState] = useState(false);
-    // useEffect()
+
+    useEffect(() => {
+        if (notificationList.length !== 0) {
+            if (notificationList.some((notification) => notification.id === info.id)) {
+                setBellState(true);
+            }
+        }
+    }, [notificationList]);
 
     return (
         <ItemContainer onClick={handleOpenModal}>
-            {/* <Date>{info?.date}</Date> */}
-            <Date>{info?.intakeAt}</Date>
-            <ContentContainer>
+            <Date>{info?.intakeAt?.substring(0, 10)}</Date>
+            <ContentContainer $status={info?.status}>
                 <TopWrapper>
                     {/* <PillsNickName>{info.pillsNickName}</PillsNickName> */}
                     <PillsNickName>{info?.name}</PillsNickName>
@@ -70,10 +86,9 @@ function PillsItem({ info, type, handleOpenModal }) {
                         {type !== 'history' ? bellState === true ? <FaBell /> : <FaBellSlash /> : null}
                     </NotificationWrapper>
                 </TopWrapper>
-                {/* <div>약리스트</div> */}
                 <PillsList>
                     {info?.userMedicationDetailList?.map((e, i) => (
-                        <Pill key={i} pillInfo={e.medicineDTO} />
+                        <Pill key={i} pillInfo={e} />
                     ))}
                 </PillsList>
             </ContentContainer>

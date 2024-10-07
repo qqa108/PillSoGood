@@ -12,6 +12,7 @@ const ItemContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: white;
 `;
 
 const TopContainer = styled.div`
@@ -27,18 +28,12 @@ const Name = styled.div`
     font-size: 1.25rem;
 `;
 
-const Setting = styled.div`
-    cursor: pointer;
-    color: ${colors.disableText};
-`;
-
 const ButtonContainer = styled.div`
     display: flex;
     width: 100%;
     & > div:not(:last-child) {
         margin-right: 25px;
     }
-    /* justify-content: space-evenly; */
 `;
 
 const Button = styled.div`
@@ -54,20 +49,37 @@ const Button = styled.div`
     border-radius: 6px;
 `;
 
-function NotificationItem({ notificationInfo, setSelectedInfo, onOpen }) {
-    const setModalInfo = () => {
-        setSelectedInfo(notificationInfo);
-        onOpen();
+function NotificationItem({ notificationInfo }) {
+    const convertAndFormatTimes = (alertTimes) => {
+        const uniqueTimes = new Set(); // Set을 사용하여 고유한 시간 저장
+
+        alertTimes.forEach((time) => {
+            // UTC 시간을 한국 시간으로 변환 (UTC+9)
+            const date = new Date(time);
+            const koreanTime = new Date(date.getTime() + 9 * 60 * 60 * 1000); // 9시간 더하기
+
+            // 시간과 분만 추출
+            const hours = String(koreanTime.getHours()).padStart(2, '0'); // 2자리로 포맷
+            const minutes = String(koreanTime.getMinutes()).padStart(2, '0'); // 2자리로 포맷
+
+            // HH:MM 형식으로 저장
+            uniqueTimes.add(`${hours}:${minutes}`);
+        });
+
+        return Array.from(uniqueTimes); // Set을 배열로 변환하여 반환
     };
+
+    const formattedTimes = convertAndFormatTimes(notificationInfo.alertTimes);
 
     return (
         <ItemContainer>
             <TopContainer>
-                <Name>{notificationInfo.name}</Name>
-                <Setting onClick={setModalInfo}>알림 설정</Setting>
+                <Name>
+                    {notificationInfo.name} ({notificationInfo.prescriptionDay}일분)
+                </Name>
             </TopContainer>
             <ButtonContainer>
-                {notificationInfo.time.map((e) => (
+                {formattedTimes.map((e) => (
                     <Button key={e}>{e}</Button>
                 ))}
             </ButtonContainer>

@@ -23,9 +23,13 @@ import FamilyDetail from './pages/Profile/familyDetail';
 import HistoryRequest from './pages/MyPills/PillCardRegister/historyRegister/historyRequest';
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
+  {
+    path: "/",
+    element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
+    children: [
+      {
+        path: "mypills",
+        element: <MyPills />,
         children: [
             {
                 path: 'mypills',
@@ -102,26 +106,68 @@ const router = createBrowserRouter([
                 element: <Compare />,
             },
         ],
-    },
+      },
+      {
+        path: "notification",
+        element: <Notification />,
+      },
+      {
+        path: "home",
+        element: <Home />,
+      },
+      {
+        path: "history",
+        element: <History />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "survey",
+        element: <Survey />,
+      },
+      {
+        path: "surveyEdit",
+        element: <SurveyEdit />,
+      },
+      {
+        path: "/search/register",
+        element: <RegisterPill />,
+      },
+      {
+        path: "/search",
+        element: <DrugSearch />,
+      },
+      {
+        path: "/search/medicine/:id",
+        element: <DrugDetail />,
+      },
+      {
+        path: "/home/compare",
+        element: <Compare />,
+      },
+    ],
+  },
 
-    {
-        path: '/member',
-        element: <Member />,
-        children: [
-            {
-                path: 'login',
-                element: <Login />,
-            },
-            {
-                path: 'join',
-                element: <Join />,
-            },
-            {
-                path: 'test',
-                element: <Test />,
-            },
-        ],
-    },
+  {
+    path: "/member",
+    element: <Member />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "join",
+        element: <Join />,
+      },
+      {
+        path: "test",
+        element: <Test />,
+      },
+    ],
+  },
 ]);
 
 export default router;

@@ -70,15 +70,17 @@ const UserButton = styled.button`
   border-radius: 60px;
   padding: 0 0.5rem;
   flex-shrink: 0;
-  background-color: ${({ isSelected }) =>
-    isSelected ? colors.point1 : "white"};
+  background-color: ${({ $isSelected }) =>
+    $isSelected ? colors.point1 : "white"}; // $isSelected로 변경
   border: 1px solid ${colors.point4};
-  color: ${({ isSelected }) => (isSelected ? colors.point1 : "white")};
+  color: ${({ $isSelected }) =>
+    $isSelected ? colors.point1 : "white"}; // $isSelected로 변경
   cursor: pointer;
 `;
 
 const UserNameDisplay = styled.div`
-  color: ${({ isSelected }) => (isSelected ? "#EBF3FF" : "#9C9C9C")};
+  color: ${({ $isSelected }) =>
+    $isSelected ? "#EBF3FF" : "#9C9C9C"}; // $isSelected로 변경
   text-align: center;
   font-size: 1.25rem;
   font-style: normal;
@@ -109,9 +111,9 @@ const MenuButton = styled.button`
   justify-content: center;
   align-items: center;
   border: 1px solid
-    ${({ variant }) => (variant === "search" ? "#0550B2" : "#0550B2")};
-  background-color: ${({ variant }) =>
-    variant === "nottoeat" ? "#3382E9" : "#EBF3FF"};
+    ${({ $variant }) => ($variant === "search" ? "#0550B2" : "#0550B2")}; // $variant로 변경
+  background-color: ${({ $variant }) =>
+    $variant === "nottoeat" ? "#3382E9" : "#EBF3FF"}; // $variant로 변경
   cursor: pointer;
 `;
 
@@ -307,27 +309,25 @@ const UserManagement = ({ users, selectedUser, onUserSelect }) => {
     <UserContainer>
       {/* 현재 사용자를 맨 앞에 표시 */}
       <UserButton
-        isSelected={selectedUser === userInfo.name}
+        $isSelected={selectedUser === userInfo.name}
         onClick={() => onUserSelect(userInfo.name)}
       >
-        <UserNameDisplay isSelected={selectedUser === userInfo.name}>
+        <UserNameDisplay $isSelected={selectedUser === userInfo.name}>
           {userInfo.name}
         </UserNameDisplay>
       </UserButton>
-
       {/* 나머지 사용자들 */}
       {users.map((user, index) => (
         <UserButton
           key={index}
-          isSelected={selectedUser === user.name}
+          $isSelected={selectedUser === user.name}
           onClick={() => onUserSelect(user.name)}
         >
-          <UserNameDisplay isSelected={selectedUser === user.name}>
+          <UserNameDisplay $isSelected={selectedUser === user.name}>
             {user.name}
           </UserNameDisplay>
         </UserButton>
       ))}
-
       {/* 사용자 추가 버튼 */}
       <AddUserButton onClick={() => navigate("/survey")}>
         사용자 추가
@@ -342,17 +342,21 @@ const MenuButtons = () => {
 
   return (
     <MenuContainer>
-      <MenuButton variant="nottoeat" onClick={() => navigate("/home/compare")}>
-        <MenuIcon src={notToEatIcon} alt="Not to Eat Icon" variant="nottoeat" />
-        <MenuText variant="nottoeat">병용금지 확인</MenuText>
+      <MenuButton $variant="nottoeat" onClick={() => navigate("/home/compare")}>
+        <MenuIcon
+          src={notToEatIcon}
+          alt="Not to Eat Icon"
+          $variant="nottoeat"
+        />
+        <MenuText $variant="nottoeat">병용금지 확인</MenuText>
       </MenuButton>
-      <MenuButton variant="search" onClick={() => navigate("/search")}>
+      <MenuButton $variant="search" onClick={() => navigate("/search")}>
         <MenuIcon
           src={searchDrugIcon}
           alt="Search Drug Icon"
-          variant="search"
+          $variant="search"
         />
-        <MenuText variant="search">의약품 검색</MenuText>
+        <MenuText $variant="search">의약품 검색</MenuText>
       </MenuButton>
     </MenuContainer>
   );
@@ -437,10 +441,12 @@ const MainPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token"); // 인증 토큰을 로컬 스토리지에서 가져옴
+        const Token = localStorage.getItem("accessToken"); // 인증 토큰을 로컬 스토리지에서 가져옴
+        console.log("Token:", Token); // token이 제대로 저장되어 있는지 확인
+
         const response = await axios.get(MAIN, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${Token}`,
           },
         });
 
@@ -461,8 +467,6 @@ const MainPage = () => {
         console.error("API 호출 중 오류 발생:", error);
       }
     };
-
-    fetchData();
   }, [userInfo.name]); // userInfo.name이 변경될 때도 다시 데이터 가져오기
 
   const handleUserSelect = (userName) => {
