@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.project.domain.medicationApi.dto.MedicationApiRequestDto;
 import com.ssafy.project.domain.medicationApi.dto.MedicationApiResponseAPI;
+import com.ssafy.project.domain.medicine.dto.MedicineDTO;
+import com.ssafy.project.domain.medicine.service.MedicineService;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
 import com.ssafy.project.domain.userMedication.entity.Status;
 import com.ssafy.project.domain.userMedicationDetail.dto.UserMedicationDetailRequestDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,14 +24,17 @@ import java.util.*;
 @Service
 public class MedicationApiService {
 
-    @Value ("${MEDICATION_API_KEY}")
+    @Value("${MEDICATION_API_KEY}")
     private String apiKey;
     private final WebClient webClient;
+    private MedicineService medicineService;
 
-    public MedicationApiService(WebClient.Builder webClientBuilder) {
+    @Autowired
+    public MedicationApiService(WebClient.Builder webClientBuilder, MedicineService medicineService) {
         this.webClient = webClientBuilder.baseUrl("https://datahub-dev.scraping.co.kr/scrap")
                 .defaultHeader("Content-Type", "application/json")
                 .build();
+        this.medicineService = medicineService;
     }
 
     //카카오톡 인증
@@ -45,8 +51,7 @@ public class MedicationApiService {
 
             System.out.println(response.toString());
             return response.getData().getCallbackId();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -93,8 +98,7 @@ public class MedicationApiService {
         try {
             // 아까 만든 parseMedicationData 함수 사용
             parsedData = parseMedicationData(jsonString, userId);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
@@ -109,7 +113,7 @@ public class MedicationApiService {
         return parsedData; // 필요한 데이터만 반환
     }
 
-    public static List<UserMedicationRequestDTO> parseMedicationData(String jsonString, int userId) throws Exception {
+    public List<UserMedicationRequestDTO> parseMedicationData(String jsonString, int userId) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(jsonString);
 
@@ -132,7 +136,14 @@ public class MedicationApiService {
                 for (JsonNode drugInfoNode : drugInfoList) {
                     String payInfo = drugInfoNode.path("PAYINFO").asText();
                     if (!payInfo.isEmpty() && payInfo.contains("-")) {
-                        int medicineId = Integer.parseInt(payInfo.split("-")[0]);
+                        int medicineCodeNum = Integer.parseInt(payInfo.split("-")[0]);
+                        String medicineCode = "" + medicineCodeNum;
+                        MedicineDTO medicineDTO = medicineService.findByCode(medicineCode);
+
+                        if(medicineDTO == null) {
+                            continue;
+                        }
+                        int medicineId = medicineDTO.getId();
 
                         UserMedicationDetailRequestDTO detail = new UserMedicationDetailRequestDTO(
                                 0, 1, 1, medicineId
