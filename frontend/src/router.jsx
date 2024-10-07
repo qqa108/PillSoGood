@@ -23,37 +23,85 @@ import FamilyDetail from './pages/Profile/familyDetail';
 import HistoryRequest from './pages/MyPills/PillCardRegister/historyRegister/historyRequest';
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
-    children: [
-      {
-        path: "mypills",
-        element: <MyPills />,
+    {
+        path: '/',
+        element: <App />,
         children: [
             {
                 path: 'mypills',
                 element: <MyPills />,
                 children: [
                     {
-                        path: 'photoGuide',
-                        element: <PhotoGuide />,
+                        path: 'mypills',
+                        element: <MyPills />,
+                        children: [
+                            {
+                                path: 'photoGuide',
+                                element: <PhotoGuide />,
+                            },
+                            {
+                                path: 'historyReguisterModal',
+                                element: <HistoryRegisterModal />,
+                            },
+                            {
+                                path: 'historyRegister',
+                                element: <HistoryRegister />,
+                            },
+                            {
+                                path: 'historyRequest',
+                                element: <HistoryRequest />,
+                            },
+                            {
+                                path: 'registerCard',
+                                element: <RegisterCard />,
+                            },
+                        ],
                     },
                     {
-                        path: 'historyReguisterModal',
-                        element: <HistoryRegisterModal />,
+                        path: 'notification',
+                        element: <Notification />,
                     },
                     {
-                        path: 'historyRegister',
-                        element: <HistoryRegister />,
+                        path: 'home',
+                        element: <Home />,
                     },
                     {
-                        path: 'historyRequest',
-                        element: <HistoryRequest />,
+                        path: 'history',
+                        element: <History />,
                     },
                     {
-                        path: 'registerCard',
-                        element: <RegisterCard />,
+                        path: 'profile',
+                        element: <Profile />,
+                        children: [
+                            {
+                                path: ':family',
+                                element: <FamilyDetail />,
+                            },
+                        ],
+                    },
+                    {
+                        path: 'survey',
+                        element: <Survey />,
+                    },
+                    {
+                        path: 'surveyEdit',
+                        element: <SurveyEdit />,
+                    },
+                    {
+                        path: 'search/register', // 수정된 부분
+                        element: <RegisterPill />,
+                    },
+                    {
+                        path: 'search',
+                        element: <DrugSearch />,
+                    },
+                    {
+                        path: 'search/medicine/:id',
+                        element: <DrugDetail />,
+                    },
+                    {
+                        path: 'home/compare',
+                        element: <Compare />,
                     },
                 ],
             },
@@ -72,12 +120,6 @@ const router = createBrowserRouter([
             {
                 path: 'profile',
                 element: <Profile />,
-                children: [
-                    {
-                        path: ':family',
-                        element: <FamilyDetail />,
-                    },
-                ],
             },
             {
                 path: 'survey',
@@ -87,87 +129,43 @@ const router = createBrowserRouter([
                 path: 'surveyEdit',
                 element: <SurveyEdit />,
             },
+            // 이 부분도 수정
             {
-                path: '/search/register',
+                path: 'search/register',
                 element: <RegisterPill />,
             },
             {
-                path: '/search',
+                path: 'search',
                 element: <DrugSearch />,
-                children: [
-                    {
-                        path: 'medicine/:id',
-                        element: <DrugDetail />,
-                    },
-                ],
             },
             {
-                path: '/home/compare',
+                path: 'search/medicine/:id',
+                element: <DrugDetail />,
+            },
+            {
+                path: 'home/compare',
                 element: <Compare />,
             },
         ],
-      },
-      {
-        path: "notification",
-        element: <Notification />,
-      },
-      {
-        path: "home",
-        element: <Home />,
-      },
-      {
-        path: "history",
-        element: <History />,
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
-      {
-        path: "survey",
-        element: <Survey />,
-      },
-      {
-        path: "surveyEdit",
-        element: <SurveyEdit />,
-      },
-      {
-        path: "/search/register",
-        element: <RegisterPill />,
-      },
-      {
-        path: "/search",
-        element: <DrugSearch />,
-      },
-      {
-        path: "/search/medicine/:id",
-        element: <DrugDetail />,
-      },
-      {
-        path: "/home/compare",
-        element: <Compare />,
-      },
-    ],
-  },
-
-  {
-    path: "/member",
-    element: <Member />,
-    children: [
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "join",
-        element: <Join />,
-      },
-      {
-        path: "test",
-        element: <Test />,
-      },
-    ],
-  },
+    },
+    {
+        path: '/member',
+        element: <Member />,
+        children: [
+            {
+                path: 'login',
+                element: <Login />,
+            },
+            {
+                path: 'join',
+                element: <Join />,
+            },
+            {
+                path: 'test',
+                element: <Test />,
+            },
+        ],
+    },
 ]);
 
 export default router;
