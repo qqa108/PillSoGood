@@ -366,10 +366,14 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
 import { MEDICATIONADD } from '../../../assets/apis';
+import useAxios from '../../../hook/useAxiosPost';
 import TextInput from '../../../components/TextInput';
 import AddPillButton_ver1 from '../../../components/AddPillButton_ver1'; // 약 추가 버튼
 import colors from '../../../assets/colors';
 import LongNextButton from '../../../components/LongNextButton';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../atoms/userState';
+
 
 const Title = styled.p`
   margin-bottom: 0.6rem;
@@ -478,7 +482,9 @@ const ButtonContainer = styled.div`
 
 export default function RegisterCard() {
   const navigate = useNavigate();
-  
+  const userInfo = useRecoilValue(userState);
+  const { data, loading, error, fetchData } = useAxios(MEDICATIONADD, 'POST');
+
   const questions = [
     {
       type: 'date',
@@ -507,7 +513,7 @@ export default function RegisterCard() {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
     const day = String(today.getDate()).padStart(2, '0');
-    return `${year}. ${month}. ${day}.`;
+    return `${year}-${month}-${day}`;
   };
 
   const [surveyAnswers, setSurveyAnswers] = useState(() => {
@@ -578,38 +584,72 @@ export default function RegisterCard() {
     selectedPills.length > 0 
   );
 
+  // const handleSubmit = async () => {
+  //   if (!isSubmitDisabled) {
+  //     const requestData = {
+  //       userDetailId: userInfo?.userDetailId,
+  //       // name: surveyAnswers[1].answer,    
+  //       status: 'TAKING', 
+  //       intakeAt: surveyAnswers[0].answer || getTodayDate(), // 복용시작 날짜
+  //       hospitalName: surveyAnswers[3].answer, 
+  //       pharmacyName: surveyAnswers[2].answer, 
+  //       prescriptionDay: selectedPills[0]?.days || 3, // 처방 일수 기본값
+  //       userMedicationDetailList: selectedPills.map((pill) => ({
+  //         dailyIntakeFrequency: pill.frequency || 3, // 1일 투여 횟수 기본값
+  //         perAmount: pill.dose || 3, // 1회 투약량 기본값
+  //         medicineId: pill.name,      // 약 id
+  //       })),
+  //     };
+
+  //     try {
+  //       const response = await axios.post(MEDICATIONADD, requestData);
+  //       if (response.status === 200) {
+  //         console.log('처방이 성공적으로 등록되었습니다:', response.data);
+  //         navigate('/mypills');
+  //       } else {
+  //         console.error('처방 등록에 실패했습니다:', response.status, response.data);
+  //       }
+  //     } catch (error) {
+  //       console.error('API 호출 중 오류가 발생했습니다:', error);
+  //     }
+  //   }
+  // };
   const handleSubmit = async () => {
     if (!isSubmitDisabled) {
       const requestData = {
-        name: surveyAnswers[1].answer, 
-        status: 'COMPLETED', 
-        intakeAt: surveyAnswers[0].answer || getTodayDate(), // 날짜가 없으면 오늘 날짜 기본값
+        userDetailId: userInfo?.userDetailId,
+        name: surveyAnswers[1].answer,
+        status: 'TAKING', 
+        // intakeAt: surveyAnswers[0].answer || getTodayDate(), // 복용시작 날짜
+        intakeAt: `${surveyAnswers[0].answer}T00:00:00`,
         hospitalName: surveyAnswers[3].answer, 
         pharmacyName: surveyAnswers[2].answer, 
         prescriptionDay: selectedPills[0]?.days || 3, // 처방 일수 기본값
         userMedicationDetailList: selectedPills.map((pill) => ({
           dailyIntakeFrequency: pill.frequency || 3, // 1일 투여 횟수 기본값
           perAmount: pill.dose || 3, // 1회 투약량 기본값
-          medicineId: pill.name,
+          // medicineId: pill.name, // 약 id
+          medicineId: 3, // 약 id
         })),
       };
 
       try {
-        const response = await axios.post(MEDICATIONADD, requestData);
-        if (response.status === 200) {
-          console.log('처방이 성공적으로 등록되었습니다:', response.data);
-          navigate('/mypills');
-        } else {
-          console.error('처방 등록에 실패했습니다:', response.status, response.data);
-        }
+        // API 호출
+        await fetchData(MEDICATIONADD, 'POST', requestData);
+        
+        // 성공적으로 제출되었을 경우
+        alert('설문 응답이 성공적으로 등록되었습니다.');
+        navigate('/mypills'); // 성공 후 페이지 이동
       } catch (error) {
-        console.error('API 호출 중 오류가 발생했습니다:', error);
+        console.error('API 등록 오류:', error);
+        alert('설문 응답 등록 중 오류가 발생했습니다.');
       }
     }
   };
 
   return (
     <>
+    {/* <div>{userInfo?.userDetailId}</div> */}
       {questions.map((question, index) => (
         <div key={index}>
           {question.type === 'text' && (

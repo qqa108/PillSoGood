@@ -15,6 +15,7 @@ const Container = styled.div`
   align-items: center;
   height: 100vh;
   background-color: #f0f0f0;
+  margin-bottom: 5rem;
 `;
 
 const ModalContentWrapper = styled.div`
