@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 // 버튼 스타일 정의
 const Button = styled.button`
-  width: 305px;
+  width:100%;
+  /* width: 305px; */
   height: 42.743px;
   flex-shrink: 0;
   border-radius: 60px;
