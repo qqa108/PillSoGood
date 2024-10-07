@@ -6,7 +6,7 @@ import Filter from "@/components/Filter";
 import SearchResult from "@/components/SearchResult";
 import colors from "@/assets/colors";
 import axios from "axios";
-import { MEDICINE } from "@/assets/apis"; // API 엔드포인트 임포트
+import { MEDICINEES } from "@/assets/apis"; // ElasticSearch 기반 API 엔드포인트 임포트
 import { useRecoilState } from "recoil";
 import { surveyAnswersState } from "../../atoms/surveyState";
 
@@ -70,6 +70,7 @@ const RegisterPill = () => {
   const [selectedPills, setSelectedPills] = useState([]); // 선택된 약물 관리
   const navigate = useNavigate();
 
+  // API를 통해 약물 데이터를 불러오는 함수 (ElasticSearch 기반)
   const fetchPillData = async (term, currentFilterOptions) => {
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -79,15 +80,16 @@ const RegisterPill = () => {
         throw new Error("토큰이 없습니다. 로그인이 필요합니다.");
       }
 
-      const response = await axios.get(MEDICINE, {
-        headers: {
-          Authorization: `${accessToken}`,
-          RefreshToken: `${refreshToken}`,
-        },
-        params: {
-          search: term,
-        },
-      });
+      // ElasticSearch 기반 API 호출
+      const response = await axios.get(
+        MEDICINEES(term, [currentFilterOptions.category]), // searchforAll.jsx와 동일하게 변경
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+            RefreshToken: `${refreshToken}`,
+          },
+        }
+      );
 
       const pills = response.data;
       let filtered = pills;
@@ -96,18 +98,13 @@ const RegisterPill = () => {
         filtered = filtered.filter((pill) => pill.korName.includes(term));
       }
 
-      if (currentFilterOptions.category) {
-        if (currentFilterOptions.category === "일반") {
-          filtered = filtered.filter((pill) => pill.category === "일반");
-        } else if (currentFilterOptions.category === "전문") {
-          filtered = filtered.filter(
-            (pill) => pill.category === "전문" || pill.category === "전문(희귀)"
-          );
-        }
-      }
+      // 중복된 약물이 있는지 확인하고 중복 제거 (searchforAll.jsx와 동일하게 적용)
+      const uniquePills = filtered.filter(
+        (pill, index, self) => self.findIndex((p) => p.id === pill.id) === index
+      );
 
-      setFilteredPills(filtered);
-      setFilteredCount(filtered.length); // 필터링된 약물 개수 업데이트
+      setFilteredPills(uniquePills);
+      setFilteredCount(uniquePills.length); // 필터링된 약물 개수 업데이트
     } catch (error) {
       console.error("알약 데이터를 불러오는 데 실패했습니다.", error);
     }
