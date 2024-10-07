@@ -45,3 +45,4 @@ const useAxios = (url, method, body = null) => {
 };
 
 export default useAxios;
+

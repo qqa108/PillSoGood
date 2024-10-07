@@ -34,15 +34,17 @@ const DrugSearch = () => {
         throw new Error("토큰이 없습니다. 로그인이 필요합니다.");
       }
 
-      const response = await axios.get(MEDICINE, {
-        headers: {
-          Authorization: `${accessToken}`,
-          RefreshToken: `${refreshToken}`,
-        },
-        params: {
-          search: term,
-        },
-      });
+      const response = await axios
+        .get(MEDICINE, {
+          headers: {
+            Authorization: `${accessToken}`,
+            RefreshToken: `${refreshToken}`,
+          },
+          params: { search: term },
+        })
+        .catch((error) => {
+          console.error("API 요청 오류:", error);
+        });
 
       const pills = response.data;
       let filtered = pills;
@@ -111,7 +113,6 @@ const DrugSearch = () => {
           <p>검색어를 입력해주세요.</p>
         )}
       </SearchResultsContainer>
-
     </DrugSearchContainer>
   );
 };
