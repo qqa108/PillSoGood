@@ -1,6 +1,4 @@
-//const ENDPOINT = 'https://j11b308.p.ssafy.io/api/';
 const ENDPOINT = "http://j11b308.p.ssafy.io:8080/api/";
-
 export const MAIN = `${ENDPOINT}`; // 메인화면 정보 불러오기
 export const LOGIN = `${ENDPOINT}login`; //로그인
 export const LOGOUT = `${ENDPOINT}logout`; //로그아웃
@@ -43,14 +41,12 @@ export const MEDICINEES = (prefix, categories) => {
 export const COMPAREPILL = `${MEDICINE}/compare`; //알약 비교
 
 //알림
-export const NOTIFICATION = (medicationId) =>
-  `${ENDPOINT}remainder/${medicationId}`; //알림 조회
-export const ADDNOTIFICATION = `${NOTIFICATION}/register`; //알림 등록
-export const MODIFYNOTIFICATION = `${NOTIFICATION}/modify`; //알림 수정
-export const DELETENOTIFICATION = (id) => `${NOTIFICATION}/delete/${id}`;
-export const DELAYNOTIFICATION = (medicationId) =>
-  `${NOTIFICATION}/dealy/${medicationId}`;
-export const RESTARTNOTIFICATION = (medicationId) =>
-  `${NOTIFICATION}/restart/${medicationId}`;
-export const CHECKNOTIFICATION = (medicationId) =>
-  `${NOTIFICATION}/check/${medicationId}`;
+const NOTI = `${ENDPOINT}remainder/`;
+export const NOTIFICATION = (medicationId) => `${NOTI}${medicationId}`; //알림 조회
+export const ADDNOTIFICATION = `${NOTI}register`; //알림 등록
+// export const MODIFYNOTIFICATION = `${NOTI}modify`; //알림 수정
+export const DELETENOTIFICATION = (id) => `${NOTI}delete/${id}`; //알림삭제
+// export const DELAYNOTIFICATION = (medicationId) => `${NOTIFICATION}/dealy/${medicationId}`;
+// export const RESTARTNOTIFICATION = (medicationId) => `${NOTIFICATION}/restart/${medicationId}`;
+// export const CHECKNOTIFICATION = (medicationId) => `${NOTIFICATION}/check/${medicationId}`;
+
