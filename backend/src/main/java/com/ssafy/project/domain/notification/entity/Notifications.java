@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@Table(name = "notifications") // 테이블 이름을 명시적으로 설정
 public class Notifications {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
