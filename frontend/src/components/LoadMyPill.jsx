@@ -2,18 +2,21 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { MYPILLS } from '../assets/apis';
 import useAxios from '../hook/useAxios';
 import { mediListState } from '../atoms/mediListState';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { userState } from '../atoms/userState';
 
 function LoadMyPill() {
     const setMediListState = useSetRecoilState(mediListState);
     const mediListInfo = useRecoilValue(mediListState);
-    const { data, loading, error } = useAxios(MYPILLS(2), 'GET');
+    const userInfo = useRecoilValue(userState);
+    const { data, loading, error } = useAxios(MYPILLS(userInfo.userDetailId), 'GET');
 
     useEffect(() => {
         if (!loading && data !== null) {
             setMediListState(data);
         }
-    }, [loading]);
+        console.log('약 불러오기');
+    }, [data, userInfo?.userDetailId, userInfo]);
 
     return null;
 }

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import colors from '../../assets/colors';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { notificationState } from '../../atoms/notificationState';
 
 const FormContainer = styled.div`
     & > div {
@@ -109,12 +111,15 @@ const Register = styled.div`
     cursor: pointer; /* 클릭 가능하게 변경 */
 `;
 
-function NotificationForm({ info, fetchNoti }) {
+function NotificationForm({ info, fetchNoti, onClose }) {
     console.log(info);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [frequency, setFrequency] = useState(3);
     const [notiTimes, setNotiTimes] = useState(Array(frequency).fill('')); // 알림 시간 배열
+    const setNoti = useSetRecoilState(notificationState);
+    const noti = useRecoilValue(notificationState);
+    console.log(noti);
 
     useEffect(() => {
         if (info) {
@@ -194,12 +199,20 @@ function NotificationForm({ info, fetchNoti }) {
                 }
             }
         });
+        // console.log(notifications);
+        // console.log(info.id);
+        // console.log(localStorage.getItem('fcmToken'));
         fetchNoti('on', {
             medicationId: info?.id,
             fcmToken: localStorage.getItem('fcmToken'),
             notificationsTimeList: notifications,
         }).then((e) => {
-            window.location.reload(); // 페이지 새로고침
+            setNoti((preNoti) => [
+                ...preNoti,
+                { alertTimes: notifications, id: info?.id, name: info?.name, prescriptionDay: info?.prescriptionDay },
+            ]);
+            // console.log(noti);
+            onClose();
         });
     };
 
@@ -218,7 +231,7 @@ function NotificationForm({ info, fetchNoti }) {
             <PerTimeWarpper>
                 <PerTimeButton
                     onClick={() => {
-                        if (frequency > 0) {
+                        if (frequency > 1) {
                             handleFrequencyChange(frequency - 1);
                         }
                     }}

@@ -5,6 +5,7 @@ import Warn from '../../components/Warn';
 import { useState } from 'react';
 import Modal from '../../components/Modal';
 import CompareMyPills from './CompareMyPills';
+import DrugSearch from '../Search/searchforAll';
 
 const CompareContainer = styled.div`
     width: 100%;
@@ -107,7 +108,7 @@ function Compare() {
             {isModalOpen && (
                 <Modal onClose={handleCloseModal}>
                     {modalType === 'search' ? (
-                        <div>search</div>
+                        <div>{/* <DrugSearch /> */}</div>
                     ) : (
                         <CompareMyPills setPillList={setPillList} onClose={handleCloseModal} />
                     )}

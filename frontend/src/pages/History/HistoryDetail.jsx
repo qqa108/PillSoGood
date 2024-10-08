@@ -3,7 +3,10 @@ import colors from '../../assets/colors';
 import { useState } from 'react';
 import Pill from '../../components/Pill';
 import axios from 'axios';
-import { MYPILLS } from '../../assets/apis';
+import { MYPILLS, STATUS } from '../../assets/apis';
+import LoadMyPill from '../../components/LoadMyPill';
+import { useSetRecoilState } from 'recoil';
+import { mediListState } from '../../atoms/mediListState';
 
 const ContentWrapper = styled.div`
     display: flex;
@@ -54,8 +57,9 @@ const StateButton = styled.div`
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
-function HistoryDetail({ detailInfo }) {
+function HistoryDetail({ detailInfo, onClose }) {
     console.log(detailInfo);
+    const setMediListState = useSetRecoilState(mediListState);
     const pillState = [
         {
             stateName: '복약중',
@@ -83,7 +87,8 @@ function HistoryDetail({ detailInfo }) {
     };
 
     const changeState = (status) => {
-        const url = MYPILLS(detailInfo?.id);
+        const url = STATUS(detailInfo?.id);
+        console.log(url);
         const data = {
             status: status,
         };
@@ -99,6 +104,10 @@ function HistoryDetail({ detailInfo }) {
             .then((e) => {
                 console.log(e);
                 console.log('성공');
+                setMediListState((prevList) =>
+                    prevList.map((item) => (item.id === detailInfo.id ? { ...item, status } : item))
+                );
+                onClose();
             })
             .catch((error) => {
                 console.error('오류');
