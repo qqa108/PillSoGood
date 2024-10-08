@@ -28,7 +28,7 @@ public class UserMedicationDetail {
     private UserMedication userMedication;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false, unique = false)
     private Medicine medicine;
 
     public void update(int dailyIntakeFrequency, int perAmount, Medicine medicine) {
