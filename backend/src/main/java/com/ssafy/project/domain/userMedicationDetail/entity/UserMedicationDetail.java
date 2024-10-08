@@ -27,7 +27,7 @@ public class UserMedicationDetail {
     @JoinColumn(name = "user_medication_id", referencedColumnName = "id")
     private UserMedication userMedication;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false)
     private Medicine medicine;
 
