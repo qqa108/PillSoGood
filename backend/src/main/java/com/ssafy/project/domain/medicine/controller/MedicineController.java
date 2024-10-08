@@ -77,4 +77,9 @@ public class MedicineController {
     public ResponseEntity<List<CombinationProhibitionDTO>> compareMedicine(@RequestBody MedicineListDTO medicineList) {
         return ResponseEntity.ok(medicineService.findAllCombinationProhibition(medicineList.getMedicineIds()));
     }
+
+    @GetMapping("/detail")
+    public ResponseEntity<String> findMedicineByCode(@RequestParam String code) {
+        return ResponseEntity.ok(String.valueOf(medicineService.findMedicineIdByCode(code)));
+    }
 }
