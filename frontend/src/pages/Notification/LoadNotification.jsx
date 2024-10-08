@@ -18,6 +18,7 @@ function LoadNotification() {
         };
         try {
             const response = await axios.get(NOTIFICATION(medicationId), config);
+            console.log(response.data);
             return response.data; // 알림 데이터 반환
         } catch (error) {
             console.error('알림 요청 오류:', error);
@@ -38,7 +39,7 @@ function LoadNotification() {
         };
 
         fetchAllNotifications(); // 알림 요청 실행
-    }, [myPillList, setNotifications]);
+    }, [myPillList, setNotifications, myPillList]);
 
     return null; // 컴포넌트는 UI를 렌더링하지 않음
 }

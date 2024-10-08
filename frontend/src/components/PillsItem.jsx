@@ -4,7 +4,7 @@ import Pill from './Pill';
 import { FaBell } from 'react-icons/fa';
 import { FaBellSlash } from 'react-icons/fa';
 import { memo, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { notificationState } from '../atoms/notificationState';
 import axios from 'axios';
 import { ADDNOTIFICATION, DELETENOTIFICATION } from '../assets/apis';
@@ -65,7 +65,7 @@ const PillsList = styled.ul`
 const NotiModalWrapper = styled.div``;
 
 function PillsItem({ info, type, handleOpenModal }) {
-    const notificationList = useRecoilValue(notificationState);
+    const [notificationList, setNotificationList] = useRecoilState(notificationState);
     const [bellState, setBellState] = useState(false);
     const [isNotiOpen, setIsNotiOpen] = useState(false);
     const fetchNoti = async (action, data = null) => {
@@ -103,7 +103,10 @@ function PillsItem({ info, type, handleOpenModal }) {
     const handleNotiOff = async () => {
         if (confirm('알림을 끄시겠습니까?')) {
             await fetchNoti('off'); // fetchNoti가 완료될 때까지 기다림
-            window.location.reload(); // 페이지 새로고침
+            setNotificationList(
+                (prevList) => prevList.filter((notification) => notification.id !== info.id) // 알림 삭제
+            );
+            setBellState(false);
         }
     };
 
@@ -146,8 +149,8 @@ function PillsItem({ info, type, handleOpenModal }) {
             </ItemContainer>
             {isNotiOpen ? (
                 <NotiModalWrapper>
-                    <Modal>
-                        <NotificationForm info={info} fetchNoti={fetchNoti} />
+                    <Modal onClose={() => setIsNotiOpen(false)}>
+                        <NotificationForm info={info} fetchNoti={fetchNoti} onClose={() => setIsNotiOpen(false)} />
                     </Modal>
                 </NotiModalWrapper>
             ) : null}

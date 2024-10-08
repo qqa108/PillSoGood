@@ -100,7 +100,7 @@ function History() {
             </HistoryContainer>
             {isModalOpen && (
                 <Modal onClose={handleCloseModal}>
-                    <HistoryDetail detailInfo={detail} />
+                    <HistoryDetail detailInfo={detail} onClose={handleCloseModal} />
                 </Modal>
             )}
         </>
