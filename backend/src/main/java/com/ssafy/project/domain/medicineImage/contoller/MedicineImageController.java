@@ -1,4 +1,4 @@
-package com.ssafy.project.domain.medicineImage.controller;
+package com.ssafy.project.domain.medicineImage.contoller;
 
 import com.ssafy.project.domain.medicineImage.service.MedicineImageService;
 import lombok.RequiredArgsConstructor;

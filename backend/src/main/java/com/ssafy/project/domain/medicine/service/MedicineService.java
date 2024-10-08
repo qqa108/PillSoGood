@@ -67,4 +67,10 @@ public class MedicineService {
         }
         return combinationProhibitions;
     }
+
+    public int findMedicineIdByCode(String code) {
+        return medicineRepository.findByCode(code)
+                .map(Medicine::getId) // code가 존재하면 해당 medicine의 id 반환
+                .orElse(7); // null이거나 존재하지 않으면 7 반환
+    }
 }
