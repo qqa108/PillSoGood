@@ -28,4 +28,12 @@ public class MedicationApiController {
         // 서비스 호출 후 필요한 필드만 추출
         return ResponseEntity.ok(medicationApiService.requestMedication(key.getCallbackId(), 1));
     }
+
+    @PostMapping ("/test")
+    public ResponseEntity<?> requestMedicationTest(@RequestBody String key) throws Exception {
+        // 서비스 호출 후 필요한 필드만 추출
+        return ResponseEntity.ok(medicationApiService.parseMedicationData(key, 1));
+    }
+
+
 }
