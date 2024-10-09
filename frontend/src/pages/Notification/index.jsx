@@ -23,7 +23,7 @@ const Title = styled.div`
 
 function Notification() {
     const [notificationList, setNotificationList] = useRecoilState(notificationState);
-
+    console.log(notificationList);
     return (
         <>
             <NotificationContainer>
