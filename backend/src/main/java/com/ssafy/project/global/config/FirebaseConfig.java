@@ -13,7 +13,7 @@ import java.io.IOException;
 @Configuration
 public class FirebaseConfig {
 
-//    @Bean
+    @Bean
     public FirebaseApp firebaseApp() throws IOException {
         FileInputStream serviceAccount = new FileInputStream("/app/fcmKey.json");
 
