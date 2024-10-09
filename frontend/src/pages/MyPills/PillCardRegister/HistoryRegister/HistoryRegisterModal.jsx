@@ -66,6 +66,25 @@ const Label = styled.div`
     font-size: 1rem;
 `;
 
+const Loader = styled.div`
+    width: 50px;
+    padding: 8px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #25b09b;
+    --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+    mask: var(--_m);
+    -webkit-mask-composite: source-out;
+    mask-composite: subtract;
+    animation: l3 1s infinite linear;
+    @keyframes l3 {
+        to {
+            transform: rotate(1turn);
+        }
+    }
+`;
+
 export default function HistoryRegisterModal() {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(true);
@@ -132,7 +151,6 @@ export default function HistoryRegisterModal() {
                     CHILDPARSE: formData.CHILDPARSE,
                 };
 
-                setLoading(true);
                 const response = await axios.post(KAKAO_CERTIFY, requestData, {
                     headers: {
                         Authorization: localStorage.getItem('accessToken'),
@@ -141,12 +159,13 @@ export default function HistoryRegisterModal() {
                 });
                 console.log(response);
                 setData(response.data); // 응답 데이터 저장
-                setLoading(false);
 
                 if (response.data) {
                     setCallbackId(response.data);
                     if (confirm('인증을 하시고 확인을 눌러주세요')) {
+                        setLoading(true);
                         await handleHistoryRequest(response.data);
+                        setLoading(false);
                         setIsModalOpen(false);
                     }
                 }
@@ -196,7 +215,6 @@ export default function HistoryRegisterModal() {
             `}
                     </style>
                     <h2>진료내역을 가져오기 위한 정보를 입력해주세요</h2>
-
                     <TextInput
                         label="이름"
                         value={formData.USERNAME}
@@ -204,7 +222,6 @@ export default function HistoryRegisterModal() {
                         type="text"
                         placeholder="이름을 입력하세요"
                     />
-
                     <TextInput
                         label="주민번호"
                         value={formData.JUMIN}
@@ -212,14 +229,12 @@ export default function HistoryRegisterModal() {
                         type="text"
                         placeholder="YYYYMMDD"
                     />
-
                     <Label>통신사</Label>
                     <Dropdown value={formData.TELECOMGUBUN} onChange={handleTelecomChange}>
                         <option value="1">KT</option>
                         <option value="2">SKT</option>
                         <option value="3">LG</option>
                     </Dropdown>
-
                     <TextInput
                         label="전화번호"
                         value={formData.HPNUMBER}
@@ -227,7 +242,6 @@ export default function HistoryRegisterModal() {
                         type="tel"
                         placeholder="전화번호를 입력하세요"
                     />
-
                     <Label>상세 여부</Label>
                     <Dropdown
                         value={formData.DETAILPARSE}
@@ -237,7 +251,6 @@ export default function HistoryRegisterModal() {
                         <option value={2}>일반 + 상세</option>
                         <option value={3}>일반 + 상세 + 의약품 상세</option>
                     </Dropdown>
-
                     <ButtonContainer>
                         {isFormValid() ? (
                             <SubmitButton onClick={handleSubmit}>가져오기</SubmitButton>
@@ -245,8 +258,7 @@ export default function HistoryRegisterModal() {
                             <DisabledButton disabled>가져오기</DisabledButton>
                         )}
                     </ButtonContainer>
-
-                    {loading && <p>로딩 중...</p>}
+                    {loading && <Loader />}
                     {error && <p>오류: {error.message}</p>}
                     {data && (
                         <div>
