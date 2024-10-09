@@ -1,19 +1,19 @@
 const questions = [
   {
-      question: 'Q1. 이름과 관계를 입력해주세요.',
+      question: '이름(관계)과 성별을 입력해주세요.',
       type: 'multiple',
       fields: [
-        { label: '이름', placeholder: '이름을 입력하세요', type: 'text' },
-        { label: '관계', placeholder: '관계를 입력하세요', type: 'text' },
+          { label: '이름(관계)', placeholder: '이름 혹은 관계를 입력하세요', type: 'text'},
+          { label: '성별', placeholder: '남자/여자', type: 'text'},
       ],
   },
   {
-      question: 'Q2. 생년월일을 입력해주세요.',
+      question: '생년월일을 입력해주세요.',
       type: 'date',
       label: '생년월일',
   },
   {
-      question: 'Q3. 키와 몸무게를 입력해주세요.',
+      question: '키와 몸무게를 입력해주세요.',
       type: 'multiple',
       fields: [
           { label: '키', placeholder: '키를 입력하세요', type: 'number', unit: 'cm', step: '0.01' },
@@ -21,12 +21,12 @@ const questions = [
       ],
   },
   {
-      question: 'Q4. 임신여부를 입력해주세요.',
+      question: '임신여부를 입력해주세요.',
       type: 'option',
       options: ['계획없음', '임신 준비중', '임신 중', '수유 중'],
   },
   {
-      question: 'Q5. 약물 알러지를 입력해주세요',
+      question: '약물 알러지를 입력해주세요',
     //   type: 'option',
     //   options: ['없음'],
     type: 'option-pill',  // 약물 추가 가능 타입
