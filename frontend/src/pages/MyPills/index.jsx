@@ -32,7 +32,7 @@ const IconContainer = styled.div`
     align-items: center;
     position: fixed;
     bottom: 5rem;
-    right: 1.2rem;
+    right: 0.25rem;
     z-index: 2;
     background-color: white;
     border-radius: 50%;

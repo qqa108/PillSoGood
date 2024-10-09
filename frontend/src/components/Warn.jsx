@@ -76,10 +76,11 @@ function Warn({ pillList }) {
             pill.userMedicationDetailList.forEach((detail) => {
                 if (detail?.medicineDTO?.id) {
                     idList.push(detail?.medicineDTO?.id); // detail의 id 추가
-                    nameList.push(detail?.medicineDTO?.name); // detail의 name 추가
+                    nameList.push(detail?.medicineDTO?.korName || detail?.medicineDTO?.name); // 한글 이름 추가
                 }
             });
-        } else {
+        } else if (pill?.id) {
+            // pill이 객체일 때
             idList.push(pill.id); // pill의 id 추가
             nameList.push(pill.name); // pill의 name 추가
         }
