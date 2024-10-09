@@ -92,7 +92,7 @@ function MyPills() {
                     <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} />
                     {isDetailModalOpen && (
                         <Modal onClose={handleCloseModal}>
-                            <HistoryDetail detailInfo={detail} />
+                            <HistoryDetail detailInfo={detail} onClose={handleCloseModal} />
                         </Modal>
                     )}
                     {mediListInfo.length !== 0 ? <Warn pillList={mediListInfo} /> : null}
