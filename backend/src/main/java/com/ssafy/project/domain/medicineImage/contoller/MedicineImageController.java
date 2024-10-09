@@ -15,6 +15,7 @@ public class MedicineImageController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        System.out.println("-----------------------------COME--------------------------------");
         // 서비스에서 이미지 전송 로직 처리
         String response = medicineImageService.uploadImageToUrl(file);
         if (response != null) {
