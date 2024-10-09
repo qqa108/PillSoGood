@@ -13,6 +13,7 @@ public class MedicineImageController {
 
     private final MedicineImageService medicineImageService;
 
+    @CrossOrigin(origins = "http://j11b308.p.ssafy.io")
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         System.out.println("-----------------------------COME--------------------------------");
