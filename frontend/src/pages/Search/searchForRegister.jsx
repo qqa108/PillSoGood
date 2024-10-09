@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SearchBox from "@/components/SearchBox";
@@ -147,6 +147,43 @@ const RegisterPill = () => {
       }
     });
   };
+
+  // ocr 결과 검색 자동화
+  const [ocrPills, setOcrPills] = useState([]);
+  useEffect(() => {
+    const ocrPills = JSON.parse(localStorage.getItem('ocrPills')) || []; 
+    // setOcrPills(ocrPills)
+    if (ocrPills.length > 0) {
+      const names = extractNamesFromOcr(ocrPills);  // name만 추출하여 배열로 반환
+      setOcrPills(names);
+    // Promise.all을 사용해 각 약물 이름에 대해 개별 검색을 병렬로 실행
+    Promise.all(
+      names.map(name => fetchPillData(name, filterOptions))
+    )
+    .then((results) => {
+      const validResults = results
+    .filter(result => result !== null && result !== undefined) // 유효한 값만 필터링
+    .flat();  // 배열 평탄화 (nested 배열일 경우 대비)
+
+  if (validResults.length > 0) {
+    setFilteredPills(validResults);  // 상태에 저장
+  } else {
+    console.log("유효한 검색 결과가 없습니다.");
+  }
+    })
+    .catch((error) => {
+      console.error("검색 실패:", error);
+    });
+  }
+  }, []);
+  
+  // OCR 데이터에서 name 값만 추출하는 함수
+  const extractNamesFromOcr = (ocrData) => {
+    return ocrData
+      .filter(item => item.name)  // name 속성이 있는 항목만 필터링
+      .map(item => item.name)     // name 값만 추출
+  };
+
   const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
 
   const handleRegister = () => {
@@ -191,11 +228,14 @@ const RegisterPill = () => {
     localStorage.setItem("selectedPills", JSON.stringify(updatedPills));
 
     // 이전 페이지로 이동
-    navigate(-1);
+    if (setOcrPills.length >0 ? navigate('/mypills/registerCard') : navigate(-1) )
+    
 
     // 디버깅용 콘솔 출력
     console.log("약 검색 등록", updatedPills);
   };
+
+  console.log(filteredPills)
 
   return (
     <RegisterPillContainer>
@@ -207,7 +247,10 @@ const RegisterPill = () => {
 
       {/* 필터링된 약물 개수 출력 */}
       {filteredCount > 0 && <p>총 {filteredCount}건의 약이 있어요.</p>}
-
+      {/* ocr */}
+      {ocrPills.length > 0 && 
+      <p>약 봉투 분석 결과: <br></br>
+        {ocrPills}</p>}
       {/* 검색 결과 */}
       <SearchResultsContainer>
         {filteredPills.length > 0 ? (

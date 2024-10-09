@@ -111,10 +111,12 @@ export default function OcrRequest({ originalImage, processedImage }) {
         localStorage.setItem('pharmacyName', pharmacyName);
         localStorage.setItem('intakeAt', dispensingDate);
         setSelectedPills(medicineInfo); // 상태 업데이트
-        localStorage.setItem('selectedPills', JSON.stringify(medicineInfo)); // 로컬 스토리지에 저장
+        localStorage.setItem('ocrPills', JSON.stringify(medicineInfo)); // 로컬 스토리지에 저장
+        // localStorage.setItem('selectedPills', JSON.stringify(medicineInfo)); // 로컬 스토리지에 저장
 
         setIsProcessing(false);
-        navigate('/mypills/registerCard');
+        navigate('/search/register');
+        // navigate('/mypills/registerCard');
     };
 
     console.log(`${'약 이름'.padEnd(20)}${'용량'.padEnd(10)}${'복약 횟수'.padEnd(10)}${'복약 일수'.padEnd(10)}`);
