@@ -21,16 +21,23 @@ const Title = styled.div`
     padding: 20px 0px;
 `;
 
+const NoNoti = styled.div`
+    font-size: 1.5rem;
+    font-weight: 700;
+`;
+
 function Notification() {
     const [notificationList, setNotificationList] = useRecoilState(notificationState);
-
+    console.log(notificationList);
     return (
         <>
             <NotificationContainer>
                 <Title>복약 알림 리스트</Title>
-                {notificationList?.map((e, i) => (
-                    <NotificationItem key={i} notificationInfo={e} />
-                ))}
+                {notificationList?.length >= 1 ? (
+                    notificationList?.map((e, i) => <NotificationItem key={i} notificationInfo={e} />)
+                ) : (
+                    <NoNoti>등록된 알림이 없습니다.</NoNoti>
+                )}
             </NotificationContainer>
         </>
     );
