@@ -1,5 +1,4 @@
-import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import SearchBox from '@/components/SearchBox';
 import Filter from '@/components/Filter';
@@ -7,8 +6,6 @@ import SearchResult from '@/components/SearchResult';
 import colors from '@/assets/colors';
 import axios from 'axios';
 import { MEDICINEES } from '@/assets/apis';
-import { useRecoilState } from 'recoil';
-import { surveyAnswersState } from '../../atoms/surveyState';
 
 const SelectedPillsContainer = styled.div`
     margin-top: 1rem;
@@ -62,13 +59,12 @@ const SearchResultsContainer = styled.div`
     margin-top: 1rem;
 `;
 
-const RegisterPill = ({ setPillList }) => {
+const RegisterPill = ({ setPillList, onClose }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterOptions, setFilterOptions] = useState({ category: '' });
     const [filteredPills, setFilteredPills] = useState([]);
     const [filteredCount, setFilteredCount] = useState(0);
     const [selectedPills, setSelectedPills] = useState([]);
-    const navigate = useNavigate();
 
     const fetchPillData = async (term, currentFilterOptions) => {
         try {
@@ -117,18 +113,20 @@ const RegisterPill = ({ setPillList }) => {
         fetchPillData(searchTerm, options);
     };
 
-    const handlePillSelect = (pillName) => {
+    const handlePillSelect = (pill) => {
         setSelectedPills((prevSelected) => {
-            if (prevSelected.includes(pillName)) {
-                return prevSelected.filter((p) => p !== pillName);
+            const pillName = pill.name; // pill 객체에서 이름 추출
+            if (prevSelected.some((p) => p.name === pillName && p.id === pill.id)) {
+                return prevSelected.filter((p) => p.name !== pillName || p.id !== pill.id);
             } else {
-                return [...prevSelected, pillName];
+                return [...prevSelected, pill]; // pill 객체 전체를 추가
             }
         });
     };
 
     const handleRegister = () => {
         setPillList((prevPillList) => [...prevPillList, ...selectedPills]);
+        onClose();
         console.log('약 검색 등록', selectedPills);
     };
 
@@ -143,8 +141,10 @@ const RegisterPill = ({ setPillList }) => {
                         <SearchResult
                             key={pill.id}
                             korName={pill.korName}
-                            isActive={selectedPills.includes(pill.korName)}
-                            onSelect={() => handlePillSelect(pill.korName)}
+                            isActive={selectedPills.some(
+                                (selected) => selected.name === pill.korName && selected.id === pill.id
+                            )}
+                            onSelect={() => handlePillSelect({ name: pill.korName, id: pill.id })}
                         />
                     ))
                 ) : searchTerm ? (
@@ -157,8 +157,8 @@ const RegisterPill = ({ setPillList }) => {
                 <h3>[선택된 약물]</h3>
                 {selectedPills.length > 0 ? (
                     <PillsList>
-                        {selectedPills.map((pillName, index) => (
-                            <PillItem key={index}>{pillName}</PillItem>
+                        {selectedPills.map((pill, index) => (
+                            <PillItem key={index}>{pill.name}</PillItem> // 이름과 ID 출력
                         ))}
                     </PillsList>
                 ) : (

@@ -48,9 +48,9 @@ const WarnContentContainer = styled.div`
 
 const WarnContentTitle = styled.div`
     font-weight: 500;
-    overflow: hidden; // 을 사용해 영역을 감출 것
-    text-overflow: ellipsis; // 로 ... 을 만들기
-    white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     word-break: break-all;
 `;
 
@@ -59,9 +59,10 @@ const WarnContentPill = styled.div`
 `;
 
 function Warn({ pillList }) {
-    // const [warnData, setWarnData] = useState([]);
     const [warnData, setWarnData] = useState([]);
     const [warnIsOpen, setWarnIsOpen] = useState(false);
+    const idList = [];
+    const nameList = []; // 이름 리스트 추가
 
     const handleWarn = () => {
         if (warnData.length !== 0) {
@@ -69,23 +70,22 @@ function Warn({ pillList }) {
         }
     };
 
-    const idList = [];
-
-    // pillList를 순회하며 id 추출
+    // pillList를 순회하며 id와 name 추출
     pillList?.forEach((pill) => {
         if (pill?.userMedicationDetailList) {
             pill.userMedicationDetailList.forEach((detail) => {
                 if (detail?.medicineDTO?.id) {
                     idList.push(detail?.medicineDTO?.id); // detail의 id 추가
+                    nameList.push(detail?.medicineDTO?.name); // detail의 name 추가
                 }
             });
         } else {
             idList.push(pill.id); // pill의 id 추가
+            nameList.push(pill.name); // pill의 name 추가
         }
     });
 
     useEffect(() => {
-        console.log(idList);
         const data = { medicineIds: idList };
         const config = {
             headers: {
@@ -94,13 +94,19 @@ function Warn({ pillList }) {
             },
         };
         if (pillList.length !== 0) {
-            //api요청
+            // API 요청
             axios.post(COMPAREPILL, data, config).then((e) => {
                 console.log(e.data);
                 setWarnData(e.data);
             });
         }
     }, [pillList]);
+
+    // 한글 이름 반환 함수
+    const getKoreanName = (id) => {
+        const index = idList.indexOf(id);
+        return index !== -1 ? nameList[index] : '이름을 찾을 수 없습니다.';
+    };
 
     return (
         <WarnContainer onClick={handleWarn} $warnCount={warnData.length} $isOpen={warnIsOpen}>
@@ -119,7 +125,7 @@ function Warn({ pillList }) {
                             <WarnContentContainer key={i}>
                                 <WarnContentTitle>{e?.effect}</WarnContentTitle>
                                 <WarnContentPill>
-                                    {e?.nameA}, {e?.nameB}
+                                    {getKoreanName(e?.medicineIdA)}, {getKoreanName(e?.medicineIdB)}
                                 </WarnContentPill>
                             </WarnContentContainer>
                         );

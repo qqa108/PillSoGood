@@ -74,6 +74,7 @@ function Compare() {
         const updatedPillList = pillList.filter((_, i) => i !== index);
         setPillList(updatedPillList);
     };
+    console.log(pillList);
     return (
         <>
             <CompareContainer>
@@ -110,7 +111,7 @@ function Compare() {
                 <Modal onClose={handleCloseModal}>
                     {modalType === 'search' ? (
                         <div>
-                            <RegisterPill setPillList={setPillList} />
+                            <RegisterPill setPillList={setPillList} onClose={handleCloseModal} />
                         </div>
                     ) : (
                         <CompareMyPills setPillList={setPillList} onClose={handleCloseModal} />

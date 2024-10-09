@@ -114,10 +114,17 @@ function HistoryDetail({ detailInfo, onClose }) {
         console.log(status);
         if (confirm('복약 상태를 변경하시겠습니까?')) {
             changeState(status);
-            await fetchNoti('off'); // fetchNoti가 완료될 때까지 기다림
-            setNotificationList(
-                (prevList) => prevList.filter((notification) => notification.id !== detailInfo.id) // 알림 삭제
-            );
+            if (status !== 'TAKING') {
+                const notificationExists = notificationList.some((notification) => notification.id === detailInfo.id);
+                if (notificationExists) {
+                    await fetchNoti('off'); // fetchNoti가 완료될 때까지 기다림
+                    setNotificationList(
+                        (prevList) => prevList.filter((notification) => notification.id !== detailInfo.id) // 알림 삭제
+                    );
+                } else {
+                    console.log('해당 알림이 존재하지 않습니다.');
+                }
+            }
         }
     };
 
