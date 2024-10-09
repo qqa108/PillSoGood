@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { mediListState } from "@/atoms/mediListState";
 import { notificationState } from "@/atoms/notificationState";
+import colors from "../../../assets/colors";
 
 const MedicationStatusTitle = styled.div`
   color: #000;
@@ -65,6 +66,15 @@ const MedicationIcon = styled.div`
 const MedicationIconText = styled.span`
   color: #0550b2;
   font-size: 0.625rem;
+`;
+
+const NoDrugsText = styled.div`
+  margin: 0 0 1rem 1rem;
+  color: ${colors.text};
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: normal;
+  width: 80%;
 `;
 
 const MedicationStatus = () => {
@@ -138,7 +148,7 @@ const MedicationStatus = () => {
       <MedicationStatusTitle>복약 현황</MedicationStatusTitle>
       <MedicationStatusContainer>
         {medicationStatus.length === 0 ? (
-          <div>등록된 복용 일정이 없습니다.</div>
+          <NoDrugsText>등록된 복용 일정이 없습니다.</NoDrugsText>
         ) : (
           medicationStatus.map((medication, index) => (
             <MedicationItem key={index}>
