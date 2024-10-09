@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import axios from 'axios';
-import logoImage from '@/assets/logo.svg';
-import notToEatIcon from '@/assets/nottoeat.svg';
-import searchDrugIcon from '@/assets/searchdrug.svg';
-import eatingDrugIcon from '@/assets/eatingdrug.svg';
-import addDrugPlusIcon from '@/assets/adddrugplus.svg';
-import colors from '../../assets/colors';
-import { MAIN } from '@/assets/apis';
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../atoms/userState';
-import { notificationState } from '../../atoms/notificationState';
-import { mediListState } from '../../atoms/mediListState';
-import useAxios from '../../hook/useAxios';
-import { FAMILY } from '../../assets/apis';
-import PillCardRegister from '../MyPills/PillCardRegister/RegisterModal'; // 모달 추가
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import axios from "axios";
+import logoImage from "@/assets/logo.svg";
+import notToEatIcon from "@/assets/nottoeat.svg";
+import searchDrugIcon from "@/assets/searchdrug.svg";
+import eatingDrugIcon from "@/assets/eatingdrug.svg";
+import addDrugPlusIcon from "@/assets/adddrugplus.svg";
+import colors from "../../assets/colors";
+import { MAIN } from "@/assets/apis";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { userState } from "../../atoms/userState";
+import { notificationState } from "../../atoms/notificationState";
+import { mediListState } from "../../atoms/mediListState";
+import useAxios from "../../hook/useAxios";
+import { FAMILY } from "../../assets/apis";
+import PillCardRegister from "../MyPills/PillCardRegister/RegisterModal";
+import Modal from "@/components/Modal"; // 모달 컴포넌트 추가
+import HistoryDetail from "../History/HistoryDetail"; // 상세 정보 컴포넌트 추가
 
 // Part 1: 헤더
 const Header = styled.div`
@@ -244,15 +246,16 @@ const MedicationStatusTitle = styled.div`
 `;
 
 const MedicationStatusContainer = styled.div`
-    width: 100%;
-    min-height: 5rem;
-    border-radius: 0.375rem;
-    border: 1px solid #0550b2;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    padding-top: 0.5rem;
+  width: 100%;
+  min-height: 5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #0550b2;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-top: 0.5rem;
+  margin-bottom: 5rem;
 `;
 
 const MedicationItem = styled.div`
@@ -278,16 +281,16 @@ const MedicationDetails = styled.div`
 `;
 
 const MedicationIcon = styled.div`
-    width: 2.5rem;
-    height: 2.5rem;
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: ${({ isTaken }) => (isTaken ? '#EBF3FF' : 'none')};
-    border: 1px solid #0550b2;
-    border-radius: 50%;
-    margin-bottom: 0.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ $isTaken }) => ($isTaken ? "#EBF3FF" : "none")};
+  border: 1px solid #0550b2;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
 `;
 
 const MedicationIconText = styled.span`
@@ -300,34 +303,72 @@ const MedicationIconText = styled.span`
     line-height: normal;
 `;
 
+const ScrollableIcons = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+`;
+
 // 사용자 관리 컴포넌트
 const UserManagement = ({ selectedUser, onUserSelect }) => {
-    const navigate = useNavigate();
-    const userInfo = useRecoilValue(userState);
-    const { data: familyData, loading, error } = useAxios(FAMILY, 'GET');
+  const [userInfo, setUserInfo] = useRecoilState(userState); // Recoil 상태 관리
+  const { data: familyData, loading, error } = useAxios(FAMILY, "GET");
+  const navigate = useNavigate();
+
+  const [users, setUsers] = useState([]); // 사용자 목록 상태
+
+  useEffect(() => {
+    if (!loading && familyData) {
+      const familyUsers = familyData.map((member) => ({
+        name:
+          member.family === "나" || member.family === "본인"
+            ? userInfo.name
+            : member.family, // 관계가 '나' 또는 '본인'이면 userInfo.name 사용
+        userDetailId: member.userDetailId,
+      }));
+
+      setUsers(familyUsers); // 가족 구성원 목록을 상태에 설정
+    }
+  }, [familyData, loading, userInfo.name]);
+
+  const handleUserSelect = (name, userDetailId) => {
+    // Recoil의 userState를 업데이트
+    setUserInfo((prevState) => ({
+      ...prevState,
+      name: name,
+      userDetailId: userDetailId,
+    }));
+
+    onUserSelect(name); // 선택된 사용자 이름을 상위 컴포넌트로 전달
+  };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
-    return (
-        <UserContainer>
-            <UserButton $isSelected={selectedUser === userInfo.name} onClick={() => onUserSelect(userInfo.name)}>
-                <UserNameDisplay $isSelected={selectedUser === userInfo.name}>{userInfo.name}</UserNameDisplay>
-            </UserButton>
-            {familyData
-                .filter((member) => member.family !== '나')
-                .map((member, index) => (
-                    <UserButton
-                        key={index}
-                        $isSelected={selectedUser === member.family}
-                        onClick={() => onUserSelect(member.family)}
-                    >
-                        <UserNameDisplay $isSelected={selectedUser === member.family}>{member.family}</UserNameDisplay>
-                    </UserButton>
-                ))}
-            <AddUserButton onClick={() => navigate('/survey')}>사용자 추가</AddUserButton>
-        </UserContainer>
-    );
+  return (
+    <UserContainer>
+      {users.map((user, index) => (
+        <UserButton
+          key={index}
+          $isSelected={selectedUser === user.name} // 선택된 사용자에 대한 스타일링을 적용
+          onClick={() => handleUserSelect(user.name, user.userDetailId)}
+        >
+          <UserNameDisplay $isSelected={selectedUser === user.name}>
+            {user.name}
+          </UserNameDisplay>
+        </UserButton>
+      ))}
+      <AddUserButton onClick={() => navigate("/survey")}>
+        사용자 추가
+      </AddUserButton>
+    </UserContainer>
+  );
 };
 
 // 메뉴 버튼 컴포넌트
@@ -349,160 +390,202 @@ const MenuButtons = () => {
 };
 
 // 복용 중인 약 컴포넌트
-const DrugList = ({ drugs }) => {
-    const navigate = useNavigate();
-    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false); // 모달 상태 추가
+const DrugList = () => {
+  const mediListInfo = useRecoilValue(mediListState); // 약물 정보
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false); // 약 추가 모달 상태
+  const [selectedDrug, setSelectedDrug] = useState(null); // 선택된 약 정보 저장
 
-    const openRegisterModal = () => setIsRegisterModalOpen(true);
-    const closeRegisterModal = () => setIsRegisterModalOpen(false);
+  // 약 클릭 시 모달 열기
+  const openDrugDetailModal = (drug) => {
+    setSelectedDrug(drug); // 선택한 약 저장
+    setIsRegisterModalOpen(false); // 약 추가 모달은 닫고
+  };
 
-    const handleDrugClick = () => {
-        navigate(`/mypills`);
-    };
+  // 약 추가 모달 열기
+  const openRegisterModal = () => {
+    setSelectedDrug(null); // 선택된 약은 없고
+    setIsRegisterModalOpen(true); // 약 추가 모달 열기
+  };
 
-    return (
-        <div>
-            <DrugSectionTitle>현재 복용중인 약</DrugSectionTitle>
-            <DrugListContainer>
-                <DrugWrapper>
-                    {drugs.length === 0 ? (
-                        <>
-                            <NoDrugsText>등록된 약이 없습니다.</NoDrugsText>
-                            <AddDrugButton onClick={openRegisterModal}>
-                                {' '}
-                                {/* 모달 열기 */}
-                                <AddDrugIcon src={addDrugPlusIcon} alt="Add drug icon" />
-                            </AddDrugButton>
-                        </>
-                    ) : (
-                        <ScrollableDrugList>
-                            {drugs.map((drug, index) => (
-                                <DrugButtonContainer key={index} onClick={() => handleDrugClick(drug)}>
-                                    <DrugButton />
-                                    <DrugName>{drug}</DrugName>
-                                </DrugButtonContainer>
-                            ))}
-                            <AddDrugButton onClick={openRegisterModal}>
-                                {' '}
-                                <AddDrugIcon src={addDrugPlusIcon} alt="Add drug icon" />
-                            </AddDrugButton>
-                        </ScrollableDrugList>
-                    )}
-                </DrugWrapper>
-            </DrugListContainer>
-            <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} />
-        </div>
-    );
+  // 모달 닫기
+  const closeModal = () => {
+    setSelectedDrug(null); // 선택된 약 초기화
+    setIsRegisterModalOpen(false); // 모든 모달 닫기
+  };
+
+  return (
+    <div>
+      <DrugSectionTitle>현재 복용중인 약</DrugSectionTitle>
+      <DrugListContainer>
+        <DrugWrapper>
+          {mediListInfo.length === 0 ? (
+            <>
+              <NoDrugsText>등록된 약이 없습니다.</NoDrugsText>
+              <AddDrugButton onClick={openRegisterModal}>
+                <AddDrugIcon src={addDrugPlusIcon} alt="Add drug icon" />
+              </AddDrugButton>
+            </>
+          ) : (
+            <ScrollableDrugList>
+              {mediListInfo.map((drug, index) => (
+                <DrugButtonContainer
+                  key={index}
+                  onClick={() => openDrugDetailModal(drug)}
+                >
+                  <DrugButton />
+                  <DrugName>{drug.name}</DrugName> {/* 약 이름 출력 */}
+                </DrugButtonContainer>
+              ))}
+              <AddDrugButton onClick={openRegisterModal}>
+                <AddDrugIcon src={addDrugPlusIcon} alt="Add drug icon" />
+              </AddDrugButton>
+            </ScrollableDrugList>
+          )}
+        </DrugWrapper>
+      </DrugListContainer>
+
+      {/* 약 클릭 시 상세 정보 모달 */}
+      {selectedDrug && (
+        <Modal onClose={closeModal}>
+          <HistoryDetail detailInfo={selectedDrug} />
+        </Modal>
+      )}
+
+      {/* 약 추가 버튼 클릭 시 약 추가 모달 */}
+      {isRegisterModalOpen && (
+        <PillCardRegister
+          isModalOpen={isRegisterModalOpen}
+          closeModal={closeModal}
+        />
+      )}
+    </div>
+  );
 };
 // 날짜 차이 계산 함수
 const calculateDayDifference = (startDate, endDate) => {
-    const start = new Date(startDate); // startDate를 Date 객체로 변환
-    const end = new Date(endDate); // 오늘 날짜를 Date 객체로 변환
-
-    // 날짜가 유효하지 않을 경우 처리
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        console.error('Invalid date format:', { startDate, endDate });
-        return NaN;
-    }
-
-    const difference = end - start;
-    return Math.floor(difference / (1000 * 60 * 60 * 24)); // 일 단위로 차이 계산
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    console.error("Invalid date format:", { startDate, endDate });
+    return NaN;
+  }
+  const difference = end - start;
+  return Math.floor(difference / (1000 * 60 * 60 * 24)); // 일 단위 차이 계산
 };
 
 // 복약 현황 컴포넌트
 const MedicationStatus = () => {
-    const mediListInfo = useRecoilValue(mediListState); // 복약 목록
-    const notifications = useRecoilValue(notificationState); // 알림 목록
+  const mediListInfo = useRecoilValue(mediListState); // 복약 목록
+  const notifications = useRecoilValue(notificationState); // 알림 목록
+  const [medicationStatus, setMedicationStatus] = useState([]);
 
-    const [medicationStatus, setMedicationStatus] = useState([]);
+  useEffect(() => {
+    const calculateMedicationStatus = () => {
+      const now = new Date(); // 현재 시간
+      const today = now.toISOString().split("T")[0]; // 오늘 날짜 'YYYY-MM-DD' 형식
+      const currentHourMinute = `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`; // 현재 시간 HH:MM 형식
 
-    useEffect(() => {
-        const calculateMedicationStatus = () => {
-            const today = new Date().toISOString().split('T')[0]; // 오늘 날짜를 'YYYY-MM-DD' 형식으로 가져오기
-            const statusList = mediListInfo.map((medication) => {
-                const { intakeAt, prescriptionDay, user_medicine_id } = medication;
+      const statusList = mediListInfo.map((medication) => {
+        console.log("Medication Data:", medication); // 데이터를 제대로 확인하기 위한 로그
 
-                // intakeAt를 'startDate'로 대체하여 사용
-                const formattedStartDate = intakeAt ? intakeAt.split('T')[0] : null; // 필요한 경우 'T'로 분리해서 날짜만 사용
+        const { prescriptionDay, id, name } = medication; // 각 약물의 고유 ID 및 이름, 처방일
 
-                if (!formattedStartDate) {
-                    console.error('intakeAt is undefined or invalid for medication', medication);
-                    return null;
-                }
+        // 약물에 대한 알림 정보 찾기
+        const relatedNotification = notifications.find(
+          (notification) => notification.id === id
+        );
 
-                if (!prescriptionDay || isNaN(prescriptionDay)) {
-                    console.error('prescriptionDay is undefined or invalid for medication', medication);
-                    return null;
-                }
+        if (!relatedNotification || !relatedNotification.alertTimes) {
+          console.warn(
+            "No notification or alert times found for medication",
+            medication
+          );
+          return null;
+        }
 
-                // 먹은 지 며칠째인지 계산
-                const daysTaken = calculateDayDifference(formattedStartDate, today);
+        // 알림 시간에서 가장 빠른 날짜 찾기
+        const firstAlertDate = new Date(
+          Math.min(
+            ...relatedNotification.alertTimes.map((alert) => new Date(alert))
+          )
+        );
+        const formattedFirstAlertDate = firstAlertDate
+          .toISOString()
+          .split("T")[0];
 
-                if (isNaN(daysTaken)) {
-                    console.error('Days taken calculation resulted in NaN', {
-                        formattedStartDate,
-                        today,
-                    });
-                    return null;
-                }
+        // 오늘 날짜와 첫 알림 날짜를 기준으로 먹은 지 며칠째인지 계산
+        const daysTaken = calculateDayDifference(
+          formattedFirstAlertDate,
+          today
+        );
 
                 // 남은 복약 일수 계산
                 const daysLeft = Math.max(prescriptionDay - daysTaken, 0);
 
-                // 해당 약물의 알림 정보를 가져오기 (user_medicine_id 기준)
-                const relatedNotification = notifications.find(
-                    (notification) => notification.user_medicine_id === user_medicine_id
-                );
+        // 오늘의 알림만 필터링하여 가져오기
+        const dailyDosesTimes = relatedNotification.alertTimes
+          .filter((alert) => {
+            const alertDate = new Date(alert);
+            const alertDay = alertDate.toISOString().split("T")[0];
+            return alertDay === today;
+          })
+          .map((alert) => {
+            const alertDate = new Date(alert);
+            const koreanTime = new Date(
+              alertDate.getTime() + 9 * 60 * 60 * 1000
+            ); // UTC -> KST 변환
+            const hours = String(koreanTime.getHours()).padStart(2, "0");
+            const minutes = String(koreanTime.getMinutes()).padStart(2, "0");
+            return `${hours}:${minutes}`;
+          });
 
-                // 알림 시간을 기반으로 하루에 몇 번 복용하는지 계산, 기본값 3회차 설정
-                const dailyDosesCount = relatedNotification?.alertTimes.length || 3;
-
-                return {
-                    name: medication.name,
-                    daysTaken,
-                    daysLeft,
-                    dailyDosesCount, // 하루 복용 횟수 추가, 기본값 3
-                };
-            });
-
-            // null 항목을 제거한 리스트로 업데이트
-            setMedicationStatus(statusList.filter((status) => status !== null));
+        return {
+          name: name || "이름 없음", // name이 없을 때 기본값 처리
+          daysTaken,
+          daysLeft,
+          dailyDosesTimes,
+          currentHourMinute,
         };
 
         calculateMedicationStatus();
     }, [mediListInfo, notifications]);
 
-    return (
-        <div>
-            <MedicationStatusTitle>복약 현황</MedicationStatusTitle>
-            <MedicationStatusContainer>
-                {medicationStatus.length === 0 ? (
-                    <NoDrugsText>등록된 복용 일정이 없습니다.</NoDrugsText>
-                ) : (
-                    medicationStatus.map((medication, index) => (
-                        <MedicationItem key={index}>
-                            <MedicationName>
-                                {medication.name}
-                                <MedicationDetails>
-                                    먹은 지 {medication.daysTaken}일째 | 남은 복약 일수: {medication.daysLeft}일
-                                </MedicationDetails>
-                            </MedicationName>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                {/* 기본적으로 3회차로 설정 */}
-                                {[...Array(medication.dailyDosesCount)].map((_, doseIndex) => (
-                                    <MedicationIcon key={doseIndex}>
-                                        <MedicationIconText>{`${doseIndex + 1}회차`}</MedicationIconText>
-                                    </MedicationIcon>
-                                ))}
-                            </div>
-                        </MedicationItem>
-                    ))
-                )}
-            </MedicationStatusContainer>
-        </div>
-    );
-};
+    calculateMedicationStatus();
+  }, [mediListInfo, notifications]);
 
+  return (
+    <div>
+      <MedicationStatusTitle>복약 현황</MedicationStatusTitle>
+      <MedicationStatusContainer>
+        {medicationStatus.length === 0 ? (
+          <NoDrugsText>등록된 복용 일정이 없습니다.</NoDrugsText>
+        ) : (
+          medicationStatus.map((medication, index) => (
+            <MedicationItem key={index}>
+              <MedicationName>
+                {medication.name} {/* 이름 출력 */}
+                <MedicationDetails>
+                  먹은 지 {medication.daysTaken}일째 | 남은 복약 일수:{" "}
+                  {medication.daysLeft}일
+                </MedicationDetails>
+              </MedicationName>
+              <ScrollableIcons>
+                {medication.dailyDosesTimes.map((doseTime, doseIndex) => {
+                  const isTaken = doseTime <= medication.currentHourMinute;
+                  return (
+                    <MedicationIcon key={doseIndex} $isTaken={isTaken}>
+                      <MedicationIconText>{`${doseIndex + 1}회차`}</MedicationIconText>
+                    </MedicationIcon>
+                  );
+                })}
+              </ScrollableIcons>
+            </MedicationItem>
+          ))
+        )}
+      </MedicationStatusContainer>
+    </div>
+  );
+};
 // 메인 페이지 컴포넌트
 const MainPage = () => {
     const userInfo = useRecoilValue(userState);
