@@ -3,11 +3,11 @@ import { ListItemComponent, ButtonContainer, Title, Description } from './Histor
 import LongNextButton from '../../../../components/LongNextButton';
 import colors from '../../../../assets/colors';
 import { useRecoilValue } from 'recoil';
-import { medication } from '../../../../atoms/medication'; // Recoil 상태에서 데이터를 가져옴
+import { medicationState } from '../../../../atoms/medicationState'; // Recoil 상태에서 데이터를 가져옴
 
 export default function SelectPage({ onNext }) {
   // Recoil 상태에서 데이터를 가져옴
-  const medicationData = useRecoilValue(medication);
+  const medicationData = useRecoilValue(medicationState);
   console.log(medicationData)
   // 초기 데이터로 Recoil 상태의 medicationData를 사용
   const [data, setData] = useState(medicationData);

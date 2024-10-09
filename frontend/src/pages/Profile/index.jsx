@@ -99,9 +99,19 @@ function Profile() {
 
      const handleDelete = (family, event) => {
         event.stopPropagation();
-        setDeleteFamilyId(family); // 가족 ID 설정 후 DELETE 요청
-        alert('가족이 삭제되었습니다.');
-        navigate('/profile'); 
+
+        // 삭제 확인 메시지
+        const isConfirmed = window.confirm('정말로 데이터를 삭제하시겠습니까?');
+    
+        if (isConfirmed) {
+            // 사용자가 확인을 눌렀을 경우 삭제 수행
+            setDeleteFamilyId(family); // 가족 ID 설정 후 DELETE 요청
+            alert('가족이 삭제되었습니다.');
+            navigate('/profile');
+        } else {
+            // 사용자가 취소를 눌렀을 경우 아무 작업도 하지 않음
+            console.log('삭제가 취소되었습니다.');
+        }
     };
 
     const handleNavigate = (family) => {

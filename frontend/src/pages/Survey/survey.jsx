@@ -7,6 +7,8 @@ import { currentStepState, surveyAnswersState } from '../../atoms/surveyState';
 import LongNextButton from '../../components/LongNextButton'; 
 import questions from './components/Questions';
 import QuestionRender from './components/QuestionsRender';
+import { userState } from '../../atoms/userState';
+import { useRecoilValue } from 'recoil';
 
 const SurveyContainer = styled.div`
     display: flex;
@@ -78,50 +80,50 @@ function Survey() {
     const [currentStep, setCurrentStep] = useRecoilState(currentStepState);
     const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
     const [selectedPills, setSelectedPills] = useState([]);
+    const userInfo = useRecoilValue(userState);
     const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
         console.log('설문',surveyAnswers)
     })
-
     
 
     // 로컬 저장된 데이터 불러오기 (현재 단계, 답변)
-    useEffect(() => {
-        const savedStep = localStorage.getItem('currentStep');
-        const savedAnswers = localStorage.getItem('surveyAnswers');
-        const savedPills = localStorage.getItem('selectedPills');
+    // useEffect(() => {
+        // const savedStep = localStorage.getItem('currentStep');
+        // const savedAnswers = localStorage.getItem('surveyAnswers');
+        // const savedPills = localStorage.getItem('selectedPills');
 
-        if (savedStep) {
-            setCurrentStep(parseInt(savedStep, 10));
-        }
+    //     if (savedStep) {
+    //         setCurrentStep(parseInt(savedStep, 10));
+    //     }
 
-        if (savedAnswers) {
-            setSurveyAnswers(JSON.parse(savedAnswers));
-        }
+    //     if (savedAnswers) {
+    //         setSurveyAnswers(JSON.parse(savedAnswers));
+    //     }
 
-        if (savedPills) {
-            setSelectedPills(JSON.parse(savedPills));
-        }
-    }, []);
+    //     if (savedPills) {
+    //         setSelectedPills(JSON.parse(savedPills));
+    //     }
+    // }, []);
 
     // 현재 상태를 로컬에 저장
-    useEffect(() => {
-        localStorage.setItem('currentStep', currentStep);
-        localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
-        localStorage.setItem('selectedPills', JSON.stringify(selectedPills));
-    }, [currentStep, surveyAnswers, selectedPills]);
+    // useEffect(() => {
+    //     localStorage.setItem('currentStep', currentStep);
+    //     localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
+    //     localStorage.setItem('selectedPills', JSON.stringify(selectedPills));
+    // }, [currentStep, surveyAnswers, selectedPills]);
 
     const handlePillSelect = (pill) => {
         setSelectedPills((prevSelected) => {
             if (prevSelected.includes('없음')) {
                 const updatedPills = [pill];
-                localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
+                // localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
                 return updatedPills; 
             }
             const updatedPills = [...new Set([...prevSelected, pill])];
-            localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
+            // localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
             return updatedPills;
         });
     };
@@ -132,7 +134,7 @@ function Survey() {
         if (passedPills.length > 0) {
             setSelectedPills((prevSelected) => {
                 const updatedPills = [...new Set([...prevSelected, ...passedPills])];
-                localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
+                // localStorage.setItem('selectedPills', JSON.stringify(updatedPills)); // 로컬 저장
                 updateSurveyAnswersWithPills(updatedPills);
                 return updatedPills;
             });
@@ -151,8 +153,8 @@ function Survey() {
         setSurveyAnswers(updatedAnswers);
     
         // 로컬 스토리지에도 저장
-        localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
-        localStorage.setItem('surveyAnswers', JSON.stringify(updatedAnswers));
+        // localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
+        // localStorage.setItem('surveyAnswers', JSON.stringify(updatedAnswers));
     };
 
     // '없음'을 선택하면 약물 목록 초기화
@@ -254,6 +256,7 @@ function Survey() {
                 <QuestionRender
                     currentQuestion={currentQuestion}
                     surveyAnswers={surveyAnswers}
+                    setSurveyAnswers={setSurveyAnswers}
                     handleInputChange={handleInputChange}
                     handleOptionClick={handleOptionClick}
                     currentStep={currentStep}

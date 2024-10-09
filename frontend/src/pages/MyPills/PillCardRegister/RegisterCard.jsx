@@ -2,19 +2,26 @@
 // import styled from 'styled-components';
 // import { useNavigate } from 'react-router-dom';
 // import axios from 'axios'; 
-// import { useRecoilValue } from 'recoil';
 // import { MEDICATIONADD } from '../../../assets/apis';
-// import { prescriptionState } from '../../../atoms/prescriptionState'; 
+// import useAxios from '../../../hook/useAxiosPost';
 // import TextInput from '../../../components/TextInput';
 // import AddPillButton_ver1 from '../../../components/AddPillButton_ver1'; // 약 추가 버튼
 // import colors from '../../../assets/colors';
 // import LongNextButton from '../../../components/LongNextButton';
+// import { useRecoilValue } from 'recoil';
+// import { userState } from '../../../atoms/userState';
+
+
 // const Title = styled.p`
 //   margin-bottom: 0.6rem;
 // `;
 
 // const MedicineWrapper = styled.div`
 //   margin-top: 1.2rem;
+// `;
+
+// const AddPillPhoto = styled(AddPillButton_ver1)`
+  
 // `;
 
 // const SelectedPillsContainer = styled.div`
@@ -115,9 +122,10 @@
 // `;
 
 // export default function RegisterCard() {
-//   const prescriptionData = useRecoilValue(prescriptionState); // 상태 가져오기
-  
-//   const navigate = useNavigate()
+//   const navigate = useNavigate();
+//   const userInfo = useRecoilValue(userState);
+//   const { data, loading, error, fetchData } = useAxios(MEDICATIONADD, 'POST');
+
 //   const questions = [
 //     {
 //       type: 'date',
@@ -141,58 +149,45 @@
 //     },
 //   ];
 
-//   // const [surveyAnswers, setSurveyAnswers] = useState(() => {
-//   //   const storedAnswers = localStorage.getItem('surveyAnswers');
-//   //   return storedAnswers ? JSON.parse(storedAnswers) : questions.map(() => ({ answer: '' }));
-//   // });
 //   const getTodayDate = () => {
 //     const today = new Date();
 //     const year = today.getFullYear();
 //     const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
 //     const day = String(today.getDate()).padStart(2, '0');
-//     return `${year}. ${month}. ${day}.`;
+//     return `${year}-${month}-${day}`;
 //   };
-  
+
 //   const [surveyAnswers, setSurveyAnswers] = useState(() => {
 //     const storedAnswers = JSON.parse(localStorage.getItem('surveyAnswers')) || [];
+//     const intakeAt = storedAnswers[0]?.answer || getTodayDate(); // 오늘 날짜 기본값
 //     return [
-//       { answer: prescriptionData.intakeAt || storedAnswers[0]?.answer || getTodayDate() }, // 처방날짜
+//       { answer: intakeAt }, // 처방날짜
 //       { answer: storedAnswers[1]?.answer || '' }, // 카드 별명
-//       { answer: prescriptionData.pharmacyName || storedAnswers[2]?.answer || '' }, // 약국명
-//       { answer: prescriptionData.hospitalName || storedAnswers[3]?.answer || '' }, // 병원명
+//       { answer: storedAnswers[2]?.answer || '' }, // 약국명
+//       { answer: storedAnswers[3]?.answer || '' }, // 병원명
 //     ];
 //   });
 
-//   // const [surveyAnswers, setSurveyAnswers] = useState(() => [
-//   //   { answer: prescriptionData.intakeAt || getTodayDate() }, // 처방날짜
-//   //   { answer: '' }, // 카드 별명
-//   //   { answer: prescriptionData.pharmacyName || '' }, // 약국명
-//   //   { answer: prescriptionData.hospitalName || '' }, // 병원명
-//   //   // const storedAnswers = localStorage.getItem('surveyAnswers');
-//   //   // return storedAnswers
-//   //   //   ? JSON.parse(storedAnswers)
-//   //   //   : questions.map((question) =>
-//   //   //       question.type === 'date' ? { answer: getTodayDate() } : { answer: '' }
-//   //   //     ); // 오늘 날짜로 기본값 설정
-//   // // });
-//   // ]);
-
+//   useEffect(() => {
+//     // surveyAnswers를 로컬 스토리지에 저장
+//     localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
+//   }, [surveyAnswers]);
 
 //   const [selectedPills, setSelectedPills] = useState(() => {
-//     const storedPills = localStorage.getItem('selectedPills');
-//     return storedPills ? JSON.parse(storedPills) : [];
+//     const storedPills = JSON.parse(localStorage.getItem('selectedPills')) || [];
+//     return storedPills.map((pill) => ({
+//       name: pill.name || pill, // OCR 데이터가 아니면 이름만 있을 수 있음
+//       dose: pill.dose && pill.dose !== 'N/A' ? pill.dose : 3, // 1회 투약량 기본값 3
+//       frequency: pill.frequency && pill.frequency !== 'N/A' ? pill.frequency : 3, // 1일 투여횟수 기본값 3
+//       days: pill.days && pill.days !== 'N/A' ? pill.days : 3, // 처방 일수 기본값 3
+//     }));
 //   });
 
 //   // 선택된 약물이 추가될 때 로컬 스토리지와 상태 업데이트
 //   const handlePillAdd = (pill) => {
 //     setSelectedPills((prevSelected) => {
-//       const storedPills = localStorage.getItem('selectedPills');
-//       const existingPills = storedPills ? JSON.parse(storedPills) : [];
-
-//       const updatedPills = [...new Set([...existingPills, ...prevSelected, pill])];
-
+//       const updatedPills = [...prevSelected, { name: pill, dose: 3, frequency: 3, days: 3 }];
 //       localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
-
 //       return updatedPills;
 //     });
 //   };
@@ -200,24 +195,18 @@
 //   // 선택된 약물 삭제 기능
 //   const handlePillDelete = (pillToDelete) => {
 //     setSelectedPills((prevSelected) => {
-//       const updatedPills = prevSelected.filter((pill) => pill !== pillToDelete);
+//       const updatedPills = prevSelected.filter((pill) => pill.name !== pillToDelete.name);
 //       localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
 //       return updatedPills;
 //     });
 //   };
 
-//   // 카운터 핸들링
-//   const [counterValues, setCounterValues] = useState({
-//     처방일수: 3,
-//     투여횟수: 3,
-//     투약량: 3,
-//   });
-
-//   const handleCounterChange = (field, value) => {
-//     setCounterValues((prevValues) => ({
-//       ...prevValues,
-//       [field]: value,
-//     }));
+//   // 카운터 핸들링 (수동 입력도 가능)
+//   const handlePillDetailChange = (index, field, value) => {
+//     const updatedPills = [...selectedPills];
+//     updatedPills[index][field] = value ? parseInt(value, 10) : 3; // 기본값 3 적용
+//     setSelectedPills(updatedPills);
+//     localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
 //   };
 
 //   const handleInputChange = (index, value) => {
@@ -226,52 +215,86 @@
 //     setSurveyAnswers(newAnswers);
 //   };
 
-//   // 데이터를 로컬 스토리지에 저장하는 useEffect
 //   useEffect(() => {
 //     localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
 //   }, [surveyAnswers]);
 
-//   // 조건부로 등록하기 버튼 활성화
 //   const isSubmitDisabled = !(
-//     surveyAnswers[0].answer && // 처방날짜
-//     surveyAnswers[1].answer && // 카드 별명
-//     selectedPills.length > 0 // 선택된 약물
+//     surveyAnswers[0].answer && 
+//     surveyAnswers[1].answer && 
+//     selectedPills.length > 0 
 //   );
-//   console.log(surveyAnswers)
+
+//   // const handleSubmit = async () => {
+//   //   if (!isSubmitDisabled) {
+//   //     const requestData = {
+//   //       userDetailId: userInfo?.userDetailId,
+//   //       // name: surveyAnswers[1].answer,    
+//   //       status: 'TAKING', 
+//   //       intakeAt: surveyAnswers[0].answer || getTodayDate(), // 복용시작 날짜
+//   //       hospitalName: surveyAnswers[3].answer, 
+//   //       pharmacyName: surveyAnswers[2].answer, 
+//   //       prescriptionDay: selectedPills[0]?.days || 3, // 처방 일수 기본값
+//   //       userMedicationDetailList: selectedPills.map((pill) => ({
+//   //         dailyIntakeFrequency: pill.frequency || 3, // 1일 투여 횟수 기본값
+//   //         perAmount: pill.dose || 3, // 1회 투약량 기본값
+//   //         medicineId: pill.name,      // 약 id
+//   //       })),
+//   //     };
+
+//   //     try {
+//   //       const response = await axios.post(MEDICATIONADD, requestData);
+//   //       if (response.status === 200) {
+//   //         console.log('처방이 성공적으로 등록되었습니다:', response.data);
+//   //         navigate('/mypills');
+//   //       } else {
+//   //         console.error('처방 등록에 실패했습니다:', response.status, response.data);
+//   //       }
+//   //     } catch (error) {
+//   //       console.error('API 호출 중 오류가 발생했습니다:', error);
+//   //     }
+//   //   }
+//   // };
 //   const handleSubmit = async () => {
 //     if (!isSubmitDisabled) {
 //       const requestData = {
-//         name: surveyAnswers[1].answer, // 카드 별명
-//         status: 'COMPLETED', // 기본값
-//         intakeAt: surveyAnswers[0].answer, // 처방날짜
-//         hospitalName: surveyAnswers[3].answer, // 병원명
-//         pharmacyName: surveyAnswers[2].answer, // 약국명
-//         prescriptionDay: counterValues['처방일수'], // 처방일수
-//         userMedicationDetailList: selectedPills.map((pill, index) => ({
-//           dailyIntakeFrequency: counterValues['투여횟수'], // 1일 투여횟수
-//           perAmount: counterValues['투약량'], // 1회 투약량
-//           // medicineId: index + 1, // 가상의 ID로 약물 데이터 매칭 (실제 API 사용 시 ID로 변경)
-//           medicineId: pill,
+//         userDetailId: userInfo?.userDetailId,
+//         name: surveyAnswers[1].answer,
+//         status: 'TAKING', 
+//         // intakeAt: surveyAnswers[0].answer || getTodayDate(), // 복용시작 날짜
+//         intakeAt: `${surveyAnswers[0].answer}T00:00:00`,
+//         hospitalName: surveyAnswers[3].answer, 
+//         pharmacyName: surveyAnswers[2].answer, 
+//         prescriptionDay: parseInt(selectedPills[0]?.days) || 3, // 처방 일수 기본값
+//         userMedicationDetailList: selectedPills.map((pill) => ({
+//           dailyIntakeFrequency: parseInt(pill.frequency) || 3, // 1일 투여 횟수 기본값
+//           perAmount: parseInt(pill.dose) || 3, // 1회 투약량 기본값
+//           // medicineId: pill.name, // 약 id
+//           medicineId: 5, // 약 id
 //         })),
 //       };
-  
+
 //       try {
-//         const response = await axios.post(MEDICATIONADD, requestData);
-  
-//         if (response.status === 200) {
-//           console.log('처방이 성공적으로 등록되었습니다:', response.data);
-//           navigate('/mypills')
-//         } else {
-//           console.error('처방 등록에 실패했습니다:', response.status, response.data);
-//         }
+//         // API 호출
+//         await fetchData(MEDICATIONADD, 'POST', requestData);
+        
+//         // 성공적으로 제출되었을 경우
+//         alert('설문 응답이 성공적으로 등록되었습니다.');
+//         navigate('/mypills'); // 성공 후 페이지 이동
 //       } catch (error) {
-//         console.error('API 호출 중 오류가 발생했습니다:', error);
+//         console.error('API 등록 오류:', error);
+//         alert('설문 응답 등록 중 오류가 발생했습니다.');
 //       }
 //     }
 //   };
-
+//   const MediPhotoState = localStorage.getItem('MediPhoto');
+//   const handleMediPhotoAdd = () => {
+//     // navigate('/mypills/photoGuide')
+//     navigate('/mypills/photoGuide', { state: { selectedItem: 'medicine' } });
+//   } 
 //   return (
 //     <>
+//     {/* <div>{userInfo?.userDetailId}</div> */}
 //       {questions.map((question, index) => (
 //         <div key={index}>
 //           {question.type === 'text' && (
@@ -287,7 +310,6 @@
 //             <TextInput
 //               label={question.label}
 //               placeholder={question.placeholder || 'yyyy-mm-dd'}
-//               // value={surveyAnswers[index]?.answer || ''}
 //               value={surveyAnswers[index]?.answer || getTodayDate()}
 //               onChange={(e) => handleInputChange(index, e.target.value)}
 //               isDateInput
@@ -298,8 +320,10 @@
 
 //       <MedicineWrapper>
 //         <Title>약 선택</Title>
-//         {/* 약물 추가 버튼 */}
 //         <AddPillButton_ver1 text="약 추가" onClick={() => handlePillAdd('타이레놀')} />
+//         {MediPhotoState === 'true' && (
+//           <AddPillPhoto onClick={handleMediPhotoAdd}>이미지로 약 추가하기</AddPillPhoto>
+//         )}
 //       </MedicineWrapper>
 
 //       <SelectedPillsContainer>
@@ -308,38 +332,35 @@
 //           <PillsList>
 //             {selectedPills.map((pill, index) => (
 //               <PillItemContainer key={index}>
-//                 {/* 약물 이름과 삭제 버튼 */}
 //                 <PillItemHeader>
-//                   {pill}
+//                   {pill.name}
 //                   <DeleteButton onClick={() => handlePillDelete(pill)}>삭제</DeleteButton>
 //                 </PillItemHeader>
 //                 <Divider />
-
-//                 {/* 처방일수, 투여횟수, 투약량 */}
 //                 <PillItemBody>
 //                   <LabelText>처방 일수</LabelText>
 //                   <CounterWrapper>
-//                     <CounterButton onClick={() => handleCounterChange('처방일수', Math.max(1, counterValues['처방일수'] - 1))}>-</CounterButton>
-//                     <CounterInput type="text" readOnly value={counterValues['처방일수']} /> <UnitText>일</UnitText>
-//                     <CounterButton onClick={() => handleCounterChange('처방일수', counterValues['처방일수'] + 1)}>+</CounterButton>
+//                     <CounterButton onClick={() => handlePillDetailChange(index, 'days', Math.max(1, pill.days - 1))}>-</CounterButton>
+//                     <CounterInput type="number" value={pill.days} onChange={(e) => handlePillDetailChange(index, 'days', e.target.value)} /> <UnitText>일</UnitText>
+//                     <CounterButton onClick={() => handlePillDetailChange(index, 'days', pill.days + 1)}>+</CounterButton>
 //                   </CounterWrapper>
 //                 </PillItemBody>
 
 //                 <PillItemBody>
 //                   <LabelText>1일 투여횟수</LabelText>
 //                   <CounterWrapper>
-//                     <CounterButton onClick={() => handleCounterChange('투여횟수', Math.max(1, counterValues['투여횟수'] - 1))}>-</CounterButton>
-//                     <CounterInput type="text" readOnly value={counterValues['투여횟수']} /> <UnitText>번</UnitText>
-//                     <CounterButton onClick={() => handleCounterChange('투여횟수', counterValues['투여횟수'] + 1)}>+</CounterButton>
+//                     <CounterButton onClick={() => handlePillDetailChange(index, 'frequency', Math.max(1, pill.frequency - 1))}>-</CounterButton>
+//                     <CounterInput type="number" value={pill.frequency} onChange={(e) => handlePillDetailChange(index, 'frequency', e.target.value)} /> <UnitText>번</UnitText>
+//                     <CounterButton onClick={() => handlePillDetailChange(index, 'frequency', pill.frequency + 1)}>+</CounterButton>
 //                   </CounterWrapper>
 //                 </PillItemBody>
 
 //                 <PillItemBody>
 //                   <LabelText>1회 투약량</LabelText>
 //                   <CounterWrapper>
-//                     <CounterButton onClick={() => handleCounterChange('투약량', Math.max(1, counterValues['투약량'] - 1))}>-</CounterButton>
-//                     <CounterInput type="text" readOnly value={counterValues['투약량']} /> <UnitText>정</UnitText>
-//                     <CounterButton onClick={() => handleCounterChange('투약량', counterValues['투약량'] + 1)}>+</CounterButton>
+//                     <CounterButton onClick={() => handlePillDetailChange(index, 'dose', Math.max(1, pill.dose - 1))}>-</CounterButton>
+//                     <CounterInput type="number" value={pill.dose} onChange={(e) => handlePillDetailChange(index, 'dose', e.target.value)} /> <UnitText>정</UnitText>
+//                     <CounterButton onClick={() => handlePillDetailChange(index, 'dose', pill.dose + 1)}>+</CounterButton>
 //                   </CounterWrapper>
 //                 </PillItemBody>
 //               </PillItemContainer>
@@ -355,12 +376,14 @@
 //           label='등록하기' 
 //           width='100%'
 //           onClick={handleSubmit}
-//           isSelected={!isSubmitDisabled} // 버튼 활성화 여부
+//           isSelected={!isSubmitDisabled}
 //         />
 //       </ButtonContainer>
 //     </>
 //   );
 // }
+
+
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -381,6 +404,10 @@ const Title = styled.p`
 
 const MedicineWrapper = styled.div`
   margin-top: 1.2rem;
+`;
+
+const AddPillPhoto = styled(AddPillButton_ver1)`
+  
 `;
 
 const SelectedPillsContainer = styled.div`
@@ -536,6 +563,7 @@ export default function RegisterCard() {
     const storedPills = JSON.parse(localStorage.getItem('selectedPills')) || [];
     return storedPills.map((pill) => ({
       name: pill.name || pill, // OCR 데이터가 아니면 이름만 있을 수 있음
+      id: pill.id,
       dose: pill.dose && pill.dose !== 'N/A' ? pill.dose : 3, // 1회 투약량 기본값 3
       frequency: pill.frequency && pill.frequency !== 'N/A' ? pill.frequency : 3, // 1일 투여횟수 기본값 3
       days: pill.days && pill.days !== 'N/A' ? pill.days : 3, // 처방 일수 기본값 3
@@ -545,7 +573,7 @@ export default function RegisterCard() {
   // 선택된 약물이 추가될 때 로컬 스토리지와 상태 업데이트
   const handlePillAdd = (pill) => {
     setSelectedPills((prevSelected) => {
-      const updatedPills = [...prevSelected, { name: pill, dose: 3, frequency: 3, days: 3 }];
+      const updatedPills = [...prevSelected, { name: pill.korName, id:pill.id, dose: 3, frequency: 3, days: 3 }];
       localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
       return updatedPills;
     });
@@ -554,7 +582,7 @@ export default function RegisterCard() {
   // 선택된 약물 삭제 기능
   const handlePillDelete = (pillToDelete) => {
     setSelectedPills((prevSelected) => {
-      const updatedPills = prevSelected.filter((pill) => pill.name !== pillToDelete.name);
+      const updatedPills = prevSelected.filter((pill) => pill.id !== pillToDelete.id);
       localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
       return updatedPills;
     });
@@ -584,36 +612,6 @@ export default function RegisterCard() {
     selectedPills.length > 0 
   );
 
-  // const handleSubmit = async () => {
-  //   if (!isSubmitDisabled) {
-  //     const requestData = {
-  //       userDetailId: userInfo?.userDetailId,
-  //       // name: surveyAnswers[1].answer,    
-  //       status: 'TAKING', 
-  //       intakeAt: surveyAnswers[0].answer || getTodayDate(), // 복용시작 날짜
-  //       hospitalName: surveyAnswers[3].answer, 
-  //       pharmacyName: surveyAnswers[2].answer, 
-  //       prescriptionDay: selectedPills[0]?.days || 3, // 처방 일수 기본값
-  //       userMedicationDetailList: selectedPills.map((pill) => ({
-  //         dailyIntakeFrequency: pill.frequency || 3, // 1일 투여 횟수 기본값
-  //         perAmount: pill.dose || 3, // 1회 투약량 기본값
-  //         medicineId: pill.name,      // 약 id
-  //       })),
-  //     };
-
-  //     try {
-  //       const response = await axios.post(MEDICATIONADD, requestData);
-  //       if (response.status === 200) {
-  //         console.log('처방이 성공적으로 등록되었습니다:', response.data);
-  //         navigate('/mypills');
-  //       } else {
-  //         console.error('처방 등록에 실패했습니다:', response.status, response.data);
-  //       }
-  //     } catch (error) {
-  //       console.error('API 호출 중 오류가 발생했습니다:', error);
-  //     }
-  //   }
-  // };
   const handleSubmit = async () => {
     if (!isSubmitDisabled) {
       const requestData = {
@@ -629,7 +627,7 @@ export default function RegisterCard() {
           dailyIntakeFrequency: parseInt(pill.frequency) || 3, // 1일 투여 횟수 기본값
           perAmount: parseInt(pill.dose) || 3, // 1회 투약량 기본값
           // medicineId: pill.name, // 약 id
-          medicineId: 3, // 약 id
+          medicineId: pill.name.id, // 약 id
         })),
       };
 
@@ -646,7 +644,12 @@ export default function RegisterCard() {
       }
     }
   };
-
+  const MediPhotoState = localStorage.getItem('MediPhoto');
+  const handleMediPhotoAdd = () => {
+    // navigate('/mypills/photoGuide')
+    navigate('/mypills/photoGuide', { state: { selectedItem: 'medicine' } });
+  } 
+  console.log('선택약',selectedPills)
   return (
     <>
     {/* <div>{userInfo?.userDetailId}</div> */}
@@ -676,6 +679,9 @@ export default function RegisterCard() {
       <MedicineWrapper>
         <Title>약 선택</Title>
         <AddPillButton_ver1 text="약 추가" onClick={() => handlePillAdd('타이레놀')} />
+        {MediPhotoState === 'true' && (
+          <AddPillPhoto onClick={handleMediPhotoAdd}>이미지로 약 추가하기</AddPillPhoto>
+        )}
       </MedicineWrapper>
 
       <SelectedPillsContainer>
@@ -685,7 +691,8 @@ export default function RegisterCard() {
             {selectedPills.map((pill, index) => (
               <PillItemContainer key={index}>
                 <PillItemHeader>
-                  {pill.name}
+                  {pill.id ? pill.name.korName : pill.name}
+                  {/* {pill.name.korName} */}
                   <DeleteButton onClick={() => handlePillDelete(pill)}>삭제</DeleteButton>
                 </PillItemHeader>
                 <Divider />

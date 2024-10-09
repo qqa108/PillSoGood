@@ -10,6 +10,9 @@ import HistoryDetail from '../History/HistoryDetail';
 import Warn from '../../components/Warn';
 import { takingMediListState } from '../../atoms/mediListState';
 import { useRecoilValue } from 'recoil';
+import ReactModal from 'react-modal';
+
+ReactModal.setAppElement('#root');
 
 const MyPillContainer = styled.div`
     min-height: calc(100vh - 140px);
