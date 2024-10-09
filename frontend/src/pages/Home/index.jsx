@@ -9,7 +9,7 @@ import eatingDrugIcon from "@/assets/eatingdrug.svg";
 import addDrugPlusIcon from "@/assets/adddrugplus.svg";
 import colors from "../../assets/colors";
 import { MAIN } from "@/assets/apis";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { userState } from "../../atoms/userState";
 import { notificationState } from "../../atoms/notificationState";
 import { mediListState } from "../../atoms/mediListState";
@@ -320,36 +320,53 @@ const ScrollableIcons = styled.div`
 
 // 사용자 관리 컴포넌트
 const UserManagement = ({ selectedUser, onUserSelect }) => {
-  const navigate = useNavigate();
-  const userInfo = useRecoilValue(userState);
+  const [userInfo, setUserInfo] = useRecoilState(userState); // Recoil 상태 관리
   const { data: familyData, loading, error } = useAxios(FAMILY, "GET");
+  const navigate = useNavigate();
+
+  const [users, setUsers] = useState([]); // 사용자 목록 상태
+
+  useEffect(() => {
+    if (!loading && familyData) {
+      const familyUsers = familyData.map((member) => ({
+        name:
+          member.family === "나" || member.family === "본인"
+            ? userInfo.name
+            : member.family, // 관계가 '나' 또는 '본인'이면 userInfo.name 사용
+        userDetailId: member.userDetailId,
+      }));
+
+      setUsers(familyUsers); // 가족 구성원 목록을 상태에 설정
+    }
+  }, [familyData, loading, userInfo.name]);
+
+  const handleUserSelect = (name, userDetailId) => {
+    // Recoil의 userState를 업데이트
+    setUserInfo((prevState) => ({
+      ...prevState,
+      name: name,
+      userDetailId: userDetailId,
+    }));
+
+    onUserSelect(name); // 선택된 사용자 이름을 상위 컴포넌트로 전달
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
     <UserContainer>
-      <UserButton
-        $isSelected={selectedUser === userInfo.name}
-        onClick={() => onUserSelect(userInfo.name)}
-      >
-        <UserNameDisplay $isSelected={selectedUser === userInfo.name}>
-          {userInfo.name}
-        </UserNameDisplay>
-      </UserButton>
-      {familyData
-        .filter((member) => member.family !== "나")
-        .map((member, index) => (
-          <UserButton
-            key={index}
-            $isSelected={selectedUser === member.family}
-            onClick={() => onUserSelect(member.family)}
-          >
-            <UserNameDisplay $isSelected={selectedUser === member.family}>
-              {member.family}
-            </UserNameDisplay>
-          </UserButton>
-        ))}
+      {users.map((user, index) => (
+        <UserButton
+          key={index}
+          $isSelected={selectedUser === user.name} // 선택된 사용자에 대한 스타일링을 적용
+          onClick={() => handleUserSelect(user.name, user.userDetailId)}
+        >
+          <UserNameDisplay $isSelected={selectedUser === user.name}>
+            {user.name}
+          </UserNameDisplay>
+        </UserButton>
+      ))}
       <AddUserButton onClick={() => navigate("/survey")}>
         사용자 추가
       </AddUserButton>
@@ -386,25 +403,25 @@ const MenuButtons = () => {
 // 복용 중인 약 컴포넌트
 const DrugList = () => {
   const mediListInfo = useRecoilValue(mediListState); // 약물 정보
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false); // 모달 상태 추가
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false); // 약 추가 모달 상태
   const [selectedDrug, setSelectedDrug] = useState(null); // 선택된 약 정보 저장
 
-  useEffect(() => {
-    console.log("Drugs List:", mediListInfo); // 데이터를 확인하는 부분
-  }, [mediListInfo]);
-
-  const openRegisterModal = (drug) => {
-    setSelectedDrug(drug); // 약 선택
-    setIsRegisterModalOpen(true); // 모달 열기
+  // 약 클릭 시 모달 열기
+  const openDrugDetailModal = (drug) => {
+    setSelectedDrug(drug); // 선택한 약 저장
+    setIsRegisterModalOpen(false); // 약 추가 모달은 닫고
   };
 
-  const closeRegisterModal = () => {
+  // 약 추가 모달 열기
+  const openRegisterModal = () => {
+    setSelectedDrug(null); // 선택된 약은 없고
+    setIsRegisterModalOpen(true); // 약 추가 모달 열기
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
     setSelectedDrug(null); // 선택된 약 초기화
-    setIsRegisterModalOpen(false); // 모달 닫기
-  };
-
-  const handleDrugClick = (drug) => {
-    openRegisterModal(drug); // 약 클릭 시 모달 열기
+    setIsRegisterModalOpen(false); // 모든 모달 닫기
   };
 
   return (
@@ -415,7 +432,7 @@ const DrugList = () => {
           {mediListInfo.length === 0 ? (
             <>
               <NoDrugsText>등록된 약이 없습니다.</NoDrugsText>
-              <AddDrugButton onClick={() => setIsRegisterModalOpen(true)}>
+              <AddDrugButton onClick={openRegisterModal}>
                 <AddDrugIcon src={addDrugPlusIcon} alt="Add drug icon" />
               </AddDrugButton>
             </>
@@ -424,13 +441,13 @@ const DrugList = () => {
               {mediListInfo.map((drug, index) => (
                 <DrugButtonContainer
                   key={index}
-                  onClick={() => handleDrugClick(drug)}
+                  onClick={() => openDrugDetailModal(drug)}
                 >
                   <DrugButton />
                   <DrugName>{drug.name}</DrugName> {/* 약 이름 출력 */}
                 </DrugButtonContainer>
               ))}
-              <AddDrugButton onClick={() => setIsRegisterModalOpen(true)}>
+              <AddDrugButton onClick={openRegisterModal}>
                 <AddDrugIcon src={addDrugPlusIcon} alt="Add drug icon" />
               </AddDrugButton>
             </ScrollableDrugList>
@@ -438,10 +455,19 @@ const DrugList = () => {
         </DrugWrapper>
       </DrugListContainer>
 
+      {/* 약 클릭 시 상세 정보 모달 */}
       {selectedDrug && (
-        <Modal onClose={closeRegisterModal}>
+        <Modal onClose={closeModal}>
           <HistoryDetail detailInfo={selectedDrug} />
         </Modal>
+      )}
+
+      {/* 약 추가 버튼 클릭 시 약 추가 모달 */}
+      {isRegisterModalOpen && (
+        <PillCardRegister
+          isModalOpen={isRegisterModalOpen}
+          closeModal={closeModal}
+        />
       )}
     </div>
   );
