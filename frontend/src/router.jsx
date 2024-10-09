@@ -45,10 +45,10 @@ const router = createBrowserRouter([
                         path: 'historyRegister',
                         element: <HistoryRegister />,
                     },
-                    {
-                        path: 'historyRequest',
-                        element: <HistoryRequest />,
-                    },
+                    // {
+                    //     path: 'historyRequest',
+                    //     element: <HistoryRequest />,
+                    // },
                     {
                         path: 'registerCard',
                         element: <RegisterCard />,

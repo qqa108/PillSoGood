@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Modal from '../../../../components/Modal';  
 import TextInput from '../../../../components/TextInput';
 import colors from '../../../../assets/colors';
 import useAxios from '../../../../hook/useAxiosPost'; // useAxios 훅 import
-import { KAKAO_CERTIFY, MEDICATION } from '../../../../assets/apis'; // API 엔드포인트 import
-import { medication } from '../../../../atoms/medication'; // Recoil 상태 import (medication 사용)
-import { useRecoilState } from 'recoil'; // Recoil 훅
+import { KAKAO_CERTIFY } from '../../../../assets/apis'; // KAKAO_CERTIFY API 엔드포인트 import
+import { medication } from '../../../../atoms/medicationState';
 
 const Dropdown = styled.select`
   height: 2.75rem;
@@ -69,7 +69,7 @@ const Label = styled.div`
 export default function HistoryRegisterModal() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(true);  
-  const { data, loading, error, fetchData } = useAxios(); // useAxios로 API 호출
+  const { data, loading, error, fetchData } = useAxios(); // KAKAO_CERTIFY API 설정
   const [formData, setFormData] = useState({
     LOGINOPTION: '0', // 고정
     JUMIN: '',
@@ -80,7 +80,6 @@ export default function HistoryRegisterModal() {
     CHILDPARSE: null, // 고정
   });
   const [callbackId, setCallbackId] = useState(null); // callbackId 상태
-  const [medicationState, setMedication] = useRecoilState(medication); // Recoil 상태 (medication 사용)
 
   // 입력 값 변경 처리 함수
   const handleInputChange = (e, fieldName, value) => {
@@ -118,7 +117,6 @@ export default function HistoryRegisterModal() {
     return formData.JUMIN.trim() !== '' && formData.USERNAME.trim() !== '' && formData.HPNUMBER.trim() !== '';
   };
 
-  // 첫 번째 API 요청 (callbackId 가져오기)
   const handleSubmit = async (e) => {
     e.preventDefault(); // 기본 동작(페이지 리로드) 방지
     if (isFormValid()) {
@@ -141,9 +139,9 @@ export default function HistoryRegisterModal() {
           setCallbackId(response.callbackId); // callbackId 상태에 저장
           alert('진료내역을 가져오는 인증이 완료되었습니다.');
           
-          // HistoryRequest를 내부에서 처리
-          await handleHistoryRequest(response.callbackId); 
-
+          // HistoryRequest 페이지로 이동하고 callbackId 전달
+          console.log('모달',response.callbackId)
+          navigate(`/mypills/historyRequest`, { state: { callbackId: response.callbackId } });
           setIsModalOpen(false); // 모달 닫기
         }
       } catch (error) {
@@ -152,30 +150,6 @@ export default function HistoryRegisterModal() {
       }
     } else {
       alert('모든 필드를 채워주세요.');
-    }
-  };
-
-  // 두 번째 API 요청 (진료내역 조회)
-  const handleHistoryRequest = async (callbackId) => {
-    try {
-      const requestData = {
-        callbackId, // 인증 후 받은 callbackId
-      };
-
-      const historyResponse = await fetchData(MEDICATION, 'POST', requestData);
-
-      if (historyResponse) {
-        console.log('응답 데이터:', historyResponse);
-        setMedication(historyResponse); // Recoil 전역 상태에 저장
-        localStorage.setItem('medicationData', JSON.stringify(historyResponse)); // 로컬 스토리지에 저장
-
-        // 요청이 성공적으로 완료되면 알림 표시 및 페이지 이동
-        alert('설문 응답이 성공적으로 등록되었습니다.');
-        navigate('/mypills/historyRegister'); // 페이지 이동
-      }
-    } catch (error) {
-      console.error('진료내역 조회 중 오류:', error);
-      alert('진료내역 조회 중 오류가 발생했습니다.');
     }
   };
 

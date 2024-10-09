@@ -77,7 +77,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAxios from '../../../../hook/useAxiosPost'; 
 import { MEDICATION } from '../../../../assets/apis'; 
-import { medication } from '../../../../atoms/medication'; 
+import { medicationState } from '../../../../atoms/medicationState'; 
 import { useRecoilState } from 'recoil'; 
 
 const HistoryRequest = () => {
@@ -85,7 +85,7 @@ const HistoryRequest = () => {
   const location = useLocation(); // navigate로 전달된 state에서 callbackId를 받음
   const { callbackId } = location.state || {}; // state에서 callbackId 추출
   const { data, loading, error, fetchData } = useAxios(MEDICATION, 'POST'); // POST 요청 설정
-  const [medicationState, setMedication] = useRecoilState(medication); // Recoil 상태 (medication 사용)
+  const [medicationState, setMedication] = useRecoilState(medicationState); // Recoil 상태 (medication 사용)
 
   // callbackId 값 확인용 useEffect 추가
   useEffect(() => {
