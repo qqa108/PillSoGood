@@ -67,7 +67,7 @@ const AddPillButton_ver1 = ({ text }) => {
   const navigate = useNavigate()
 
   const handleClick = () => {
-    navigate('/search/register'); // 클릭 시 페이지 이동
+    navigate('/search/register', { state: { from: location.pathname } }); // 클릭 시 페이지 이동
   };
 
   return (

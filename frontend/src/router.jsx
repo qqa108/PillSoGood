@@ -38,11 +38,11 @@ const router = createBrowserRouter([
                         element: <PhotoGuide />,
                     },
                     {
-                        path: 'historyReguisterModal',
+                        path: 'mediReguisterModal',
                         element: <HistoryRegisterModal />,
                     },
                     {
-                        path: 'historyRegister',
+                        path: 'mediRegister',
                         element: <HistoryRegister />,
                     },
                     // {

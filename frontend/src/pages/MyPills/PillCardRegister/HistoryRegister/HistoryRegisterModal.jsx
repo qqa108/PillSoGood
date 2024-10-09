@@ -83,6 +83,11 @@ export default function HistoryRegisterModal() {
   const [medicationRecoilState, setMedicationState] = useRecoilState(medicationState); 
   const [medicationData, setMedicationData] = useState(null); 
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);  // 모달 닫기
+    navigate('/mypills');  // 원하는 경로로 페이지 이동 (또는 다른 동작 수행)
+  };
+
   // 입력 값 변경 처리 함수
   const handleInputChange = (e, fieldName, value) => {
     setFormData({
@@ -177,7 +182,7 @@ export default function HistoryRegisterModal() {
         console.log('recoil',medicationRecoilState)
         // 요청이 성공적으로 완료되면 알림 표시 및 페이지 이동
         alert('설문 응답이 성공적으로 등록되었습니다.');
-        navigate('/mypills/historyRegister'); // 페이지 이동
+        navigate('/mypills/mediRegister'); // 페이지 이동
       }
     } catch (error) {
       console.error('진료내역 조회 중 오류:', error);
@@ -188,7 +193,8 @@ export default function HistoryRegisterModal() {
   return (
     <div>
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
+        <Modal onClose={handleCloseModal} >
+        {/* <Modal onClose={() => setIsModalOpen(false) }> */}
         <style>
             {`
               svg { 

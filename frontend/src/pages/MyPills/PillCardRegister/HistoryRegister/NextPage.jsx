@@ -62,8 +62,8 @@ export default function NextPage({ selectedItems, onNext }) {
     const promises = selectedItems.map(async (item, index) => {
       const status = checked[index] ? 'TAKING' : 'COMPLETED'; // 선택된 항목은 TAKING, 선택되지 않은 항목은 COMPLETED
       const requestData = {
-        userDetailId: 21,
-        // userDetailId: userInfo?.userDetailId,
+        // userDetailId: 21,
+        userDetailId: userInfo?.userDetailId,
         name: '진료내역 자동 등록',
         status, 
         intakeAt: item.intakeAt, 
