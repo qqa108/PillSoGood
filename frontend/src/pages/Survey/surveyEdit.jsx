@@ -1,259 +1,328 @@
 // import styled from 'styled-components';
 // import { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
-// import { useRecoilState } from 'recoil';
-// import { surveyAnswersState } from '../../atoms/surveyState'; // Recoil 상태 import
+// import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+// import { surveyAnswersState } from '../../atoms/surveyState'; 
 // import useAxios from '../../hook/useAxiosPost';
-// import { REGISTER } from '../../assets/apis'; 
+// import { REGISTER, MODIFY } from '../../assets/apis'; 
 // import LongNextButton from '../../components/LongNextButton';
 // import colors from '../../assets/colors';
-// import questions from './components/Questions';
-// import QuestionRender from './components/QuestionsRender';
-// import { MODIFY } from '../../assets/apis';
-// import { useRecoilValue } from 'recoil';
-// import { userState } from '../../atoms/userState';
+// import TextInput from '../../components/TextInput';
+// import OptionButton from '../../components/OptionButton';
+// import AddPillButton_ver1 from '../../components/AddPillButton_ver1';
+// import { IoClose } from 'react-icons/io5'; 
+// import { userState } from '../../atoms/userState'; 
 
 // const SurveyEditContainer = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     justify-content: center;
-//     width: 80vw;
-//     margin: 2vh auto 0;
-//     position: relative;
-// `;
-
-// const QuestionContainer = styled.div`
-//     width: 100%;
-//     max-width: 400px;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     justify-content: center;
-//     margin-bottom: 2rem;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   width: 80vw;
+//   margin: 2vh auto 0;
+//   position: relative;
 // `;
 
 // const HeaderContainer = styled.div`
-//     display: flex;
-//     justify-content: space-between;
-//     align-items: center;
-//     width: 100%;
-//     max-width: 400px;
-//     margin-bottom: 0.125rem;
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   width: 100%;
+//   margin-top: 1rem;
+//   margin-bottom: 0.125rem;
 // `;
 
 // const QuestionText = styled.div`
-//     color: #000;
-//     font-family: 'NanumGothic', sans-serif;
-//     font-size: 1.125rem;
-//     font-weight: 700;
-//     line-height: normal;
+//   color: #000;
+//   line-height: normal;
 // `;
 
-// const PreviousButton = styled.button`
-//     background-color: #3382E9;
-//     color: white;
-//     padding: 0.5rem 1rem;
-//     border: none;
-//     border-radius: 0.5rem;
-//     cursor: pointer;
-//     margin-bottom: 1rem;
-//     align-self: flex-start;
-//     position: sticky;
-//     top: 0;
+// const ButtonContainer = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(2, 1fr);
+//   grid-gap: 0.8rem;
+//   margin-top: 1rem;
+//   width: 100%;
+//   max-width: 400px;
+// `;
 
-//     &:disabled {
-//         background-color: #ccc;
-//         cursor: not-allowed;
-//     }
+// const AddPillButtonContainer = styled.div`
+//   margin-top: 1rem;
+// `;
+
+// const SelectedPillsList = styled.div`
+//   width: 100%;
+//   margin-top: 1rem;
+//   padding: 10px 0;
+//   border-radius: 5px;
+// `;
+
+// const PillItem = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding: 5px;
+//   border: 1px solid #ddd;
+//   border-radius: 3px;
+//   margin-bottom: 0.5rem;
+//   height: 1.8rem;
+// `;
+
+// const PillText = styled.span`
+//   text-align: left;
+// `;
+
+// const CloseButton = styled(IoClose)`
+//   cursor: pointer;
+//   color: gray;
 // `;
 
 // function SurveyEdit() {
-//     const userInfo = useRecoilValue(userState);
-//     const { data, loading, error, fetchData  } = useAxios(REGISTER, 'POST');
+//   const userInfo = useRecoilValue(userState); // 유저 정보 가져오기
+//   const { fetchData } = useAxios(REGISTER, 'POST');
+//   const { fetchData: modifyFetchData } = useAxios(MODIFY, 'PATCH');
+//   const resetSurveyAnswers = useResetRecoilState(surveyAnswersState);
+//   const navigate = useNavigate();
+//   const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
 
-//     const navigate = useNavigate();
-//     const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
-//     const [localAnswers, setLocalAnswers] = useState(() => {
-//         const savedAnswers = localStorage.getItem('localAnswers');
-//         return savedAnswers ? JSON.parse(savedAnswers) : [...surveyAnswers];
+//   console.log('recoil',surveyAnswers)
+
+// //   const handleInputChange = (e, field) => {
+// //     setSurveyAnswers((prev) => ({
+// //       ...prev,
+// //       [field]: e.target.value,
+// //     }));
+// //   };
+// const handleInputChange = (e, index, fieldIndex = 0) => {
+//     setSurveyAnswers((prev) => {
+//       const updatedAnswers = [...prev]; // 상태 배열을 복사
+      
+//       // 복사한 배열의 특정 인덱스의 answer 속성도 복사하여 수정
+//       updatedAnswers[index] = {
+//         ...updatedAnswers[index], // 각 객체 복사
+//         answer: Array.isArray(updatedAnswers[index].answer)
+//           ? [...updatedAnswers[index].answer] // answer가 배열인 경우 복사
+//           : updatedAnswers[index].answer, // answer가 단일 값일 경우 그대로 유지
+//       };
+  
+//       // answer가 배열일 때 특정 필드를 업데이트
+//       if (Array.isArray(updatedAnswers[index].answer)) {
+//         updatedAnswers[index].answer[fieldIndex] = e.target.value; 
+//       } else {
+//         // answer가 단일 값일 경우 직접 업데이트
+//         updatedAnswers[index].answer = e.target.value;
+//       }
+  
+//       console.log('Updated answers:', updatedAnswers); // 상태 업데이트 후 확인
+//       return updatedAnswers; // 수정된 배열 반환
 //     });
+//   };
+//   const handleOptionClick = (value, field) => {
+//     setSurveyAnswers((prev) => ({
+//       ...prev,
+//       [field]: value,
+//     }));
+//   };
 
-//     // 이전 설문 과정에서 저장된 약물 데이터 초기화
-//     const [selectedPills, setSelectedPills] = useState(() => {
-//         // 약물 알러지 관련 데이터가 5번째 질문에 있다고 가정하고 불러옵니다.
-//         const previousPills = localAnswers[4]?.answer || [];
-//         return Array.isArray(previousPills) ? previousPills : [];
-//     });
+//   const handlePillSelect = (pill) => {};
 
-//     const handlePreviousClick = () => {
-//       navigate(-1);
-//     };
+//   const handleNoneSelected = () => {
+//     setSurveyAnswers({ ...surveyAnswers, allergies: [] });
+//     console.log('알러지 약물이 "없음"으로 초기화됨');  
+//   };
 
-//     const handleInputChange = (e, index, fieldIndex = 0) => {
-//         const updatedAnswers = [...localAnswers];
+//   const handleRemovePill = (pillToRemove) => {
+//     setSurveyAnswers((prev) => ({
+//       ...prev,
+//       allergies: prev.allergies.filter((pill) => pill !== pillToRemove), // 약물 제거
+//     }));
+//   };
 
-//         if (questions[index].type === 'multiple') {
-//             const multipleAnswers = [...(updatedAnswers[index].answer || ['', ''])];
-//             multipleAnswers[fieldIndex] = e.target.value;
-//             updatedAnswers[index] = { ...updatedAnswers[index], answer: multipleAnswers };
-//         } else {
-//             updatedAnswers[index] = { ...updatedAnswers[index], answer: e.target.value };
-//         }
+//   const handleSave = async () => {
+//     try {
+//       let familyAnswer = surveyAnswers.family || '';
+//       if (familyAnswer === userInfo.name) {
+//         familyAnswer = '나';
+//       }
 
-//         setLocalAnswers(updatedAnswers);
-//     };
+//       const pregnancyMap = {
+//         '계획없음': 'NONE',
+//         '임신 준비중': 'POSSIBLE',
+//         '임신 중': 'PREGNANT',
+//         '수유 중': 'NURSING',
+//       };
 
-//     const handleOptionClick = (option, index) => {
-//         const updatedAnswers = [...localAnswers];
-//         updatedAnswers[index] = { ...updatedAnswers[index], answer: option };
+//       const formatDate = (dateString) => {
+//         const date = new Date(dateString);
+//         const year = date.getFullYear();
+//         const month = String(date.getMonth() + 1).padStart(2, '0');
+//         const day = String(date.getDate()).padStart(2, '0');
+//         return `${year}-${month}-${day}`;
+//       };
 
-//         setLocalAnswers(updatedAnswers);
-//     };
+//       const formattedBirth = surveyAnswers.birth ? formatDate(surveyAnswers.birth) : '';
+//       const requestData = {
+//         birth: formattedBirth,
+//         height: parseFloat(surveyAnswers.height || 0),
+//         weight: parseFloat(surveyAnswers.weight || 0),
+//         gender: surveyAnswers.gender,
+//         pregnancy: pregnancyMap[surveyAnswers.pregnancy] || '',
+//         allergies: surveyAnswers.allergies.length > 0 ? surveyAnswers.allergies : [],
+//         family: familyAnswer,
+//       };
 
-//     // '없음' 버튼 클릭 시 처리
-//     const handleNoneSelected = (index) => {
-//         setSelectedPills([]); // 약물 초기화
-//         const updatedAnswers = [...localAnswers];
-//         updatedAnswers[index] = { ...updatedAnswers[index], answer: '없음' };
-//         setLocalAnswers(updatedAnswers);
-//     };
+//       const family = surveyAnswers.family || '';
+//       if (family === '나' || family === '본인' || family === userInfo.name) {
+//         const modifyUrl = MODIFY(family); // MODIFY URL에 family 파라미터를 쿼리로 추가
+//         await modifyFetchData(modifyUrl, 'PATCH', requestData); // PATCH 요청으로 수정
+//         alert('설문 응답이 성공적으로 수정되었습니다.');
+//       } else {
+//         await fetchData(REGISTER, 'POST', requestData); // POST 요청으로 새로운 설문 등록
+//         alert('설문 응답이 성공적으로 등록되었습니다.');
+//       }
 
-//     // 알약 선택 처리 함수
-//     const handlePillSelect = (pill, index) => {
-//         setSelectedPills((prevSelected) => {
-//             const updatedPills = [...new Set([...prevSelected, pill])];  // 중복 방지
-//             const updatedAnswers = [...localAnswers];
-//             updatedAnswers[index] = { ...updatedAnswers[index], answer: updatedPills };
-//             setLocalAnswers(updatedAnswers);
-//             return updatedPills;
-//         });
-//     };
-//     const handleSave = async () => {
-//         try {
-//             // 임신 여부 변환
-//             const pregnancyMap = {
-//                 '계획없음': 'NONE',
-//                 '임신 준비중': 'POSSIBLE',
-//                 '임신 중': 'PREGNANT',
-//                 '수유 중': 'NURSING',
-//             };
-    
-//             // 생년월일을 YYYY-MM-DD로 변환
-//             const formatDate = (dateString) => {
-//                 const date = new Date(dateString);
-//                 const year = date.getFullYear();
-//                 const month = String(date.getMonth() + 1).padStart(2, '0');
-//                 const day = String(date.getDate()).padStart(2, '0');
-//                 return `${year}-${month}-${day}`;
-//             };
-    
-//             const formattedBirth = localAnswers[1]?.answer ? formatDate(localAnswers[1].answer) : '';
-    
-//             // 설문 데이터를 API에 맞게 변환
-//             const requestData = {
-//                 birth: formattedBirth, // 변환된 생년월일
-//                 height: parseFloat(localAnswers[2]?.answer[0] || 0), // 키
-//                 weight: parseFloat(localAnswers[2]?.answer[1] || 0), // 몸무게
-//                 gender: '남자', // 성별 (일단 남성으로 설정)
-//                 pregnancy: pregnancyMap[localAnswers[3]?.answer] || '', // 변환된 임신 여부
-//                 allergies: selectedPills.length > 0 ? selectedPills : ['없음'], // 알러지 약물
-//                 family: localAnswers[0]?.answer[1] || '', // 관계
-//             };
-    
-//             // API 호출
-//             await fetchData(REGISTER, 'POST', requestData); // fetchData 함수 호출
-//             alert('설문 응답이 성공적으로 등록되었습니다.');
-//             localStorage.removeItem('surveyAnswers');
-//             localStorage.removeItem('localAnswers');
-//             localStorage.removeItem('currentStep');
-//             setSurveyAnswers([]);
-//             navigate('/home');
-//         } catch (error) {
-//             console.error('API 등록 오류:', error);
-//             alert('설문 응답 등록 중 오류가 발생했습니다.');
-//         }
-//     };
+//       resetSurveyAnswers();
+//       navigate('/home');
+//     } catch (error) {
+//       console.error('API 오류:', error);
+//       alert('설문 응답 등록 중 오류가 발생했습니다.');
+//     }
+//   };
 
+//   return (
+//     <SurveyEditContainer>
+//       <TextInput
+//         label="이름(관계)"
+//         placeholder="이름 혹은 관계 입력하세요"
+//         value={surveyAnswers[0].answer[0] || ''}
+//         onChange={(e) => handleInputChange(e, 0, 0)}
+//       />
+//       <TextInput
+//         label="성별"
+//         placeholder="성별을 입력하세요"
+//         value={surveyAnswers[0].answer[1] || ''}
+//         onChange={(e) => handleInputChange(e, 0, 1)}
+//       />
+//       <TextInput
+//         label="생년월일"
+//         placeholder="yyyy-mm-dd"
+//         value={surveyAnswers[1].answer || ''}
+//         onChange={(e) => handleInputChange(e, 1)}
+//         isDateInput={true}
+//       />
+//       <TextInput
+//         label="키"
+//         placeholder="키를 입력하세요"
+//         value={surveyAnswers[2].answer[0] || ''}
+//         onChange={(e) => handleInputChange(e, 2, 0)}
+//         type="number"
+//         step="0.01"
+//         unit="cm"
+//       />
+//       <TextInput
+//         label="몸무게"
+//         placeholder="몸무게를 입력하세요"
+//         value={surveyAnswers[2].answer[1] || ''}
+//         onChange={(e) => handleInputChange(e, 2, 1)}
+//         type="number"
+//         step="0.01"
+//         unit="kg"
+//       />
 
-//     useEffect(() => {
-//         localStorage.setItem('localAnswers', JSON.stringify(localAnswers));
-//     }, [localAnswers]);
+//       <HeaderContainer>
+//         <QuestionText>임신여부</QuestionText>
+//       </HeaderContainer>
+//       <ButtonContainer>
+//         <OptionButton
+//           label="계획없음"
+//           isSelected={surveyAnswers.pregnancy === 'NONE'}
+//           onClick={() => handleOptionClick('NONE', 'pregnancy')}
+//         />
+//         <OptionButton
+//           label="임신 준비중"
+//           isSelected={surveyAnswers.pregnancy === 'POSSIBLE'}
+//           onClick={() => handleOptionClick('POSSIBLE', 'pregnancy')}
+//         />
+//         <OptionButton
+//           label="임신 중"
+//           isSelected={surveyAnswers.pregnancy === 'PREGNANT'}
+//           onClick={() => handleOptionClick('PREGNANT', 'pregnancy')}
+//         />
+//         <OptionButton
+//           label="수유 중"
+//           isSelected={surveyAnswers.pregnancy === 'NURSING'}
+//           onClick={() => handleOptionClick('NURSING', 'pregnancy')}
+//         />
+//       </ButtonContainer>
 
-//     return (
-//         <SurveyEditContainer>
-//             <PreviousButton onClick={handlePreviousClick}>
-//                 이전
-//             </PreviousButton>
-//             {questions.map((question, index) => (
-//                 <QuestionContainer key={index}>
-//                     <HeaderContainer>
-//                         <QuestionText>{question.question}</QuestionText>
-//                     </HeaderContainer>
+//       <HeaderContainer>
+//         <QuestionText>약물 알러지</QuestionText>
+//       </HeaderContainer>
+//       <ButtonContainer>
+//         <OptionButton
+//           label="없음"
+//           isSelected={!surveyAnswers.allergies || surveyAnswers.allergies.length === 0}
+//           onClick={handleNoneSelected}
+//         />
+//       </ButtonContainer>
 
-//                  {/* 질문 출력  */}
-//                 <QuestionRender
-//                     key={index}
-//                     currentQuestion={question}
-//                     surveyAnswers={localAnswers}
-//                     handleInputChange={(e, fieldIndex) => handleInputChange(e, index, fieldIndex)}
-//                     handleOptionClick={(option) => handleOptionClick(option, index)}
-//                     currentStep={index + 1}
-//                     handlePillSelect={(pill) => handlePillSelect(pill, index)}  // 알약 선택 함수 전달
-//                     handleNoneSelected={() => handleNoneSelected(index)}  // '없음' 선택 함수 전달
-//                     // selectedPills={selectedPills}  // 선택된 알약 전달
-//                     selectedPills={index === 4 ? selectedPills : []}
-//                 />        
-//                 </QuestionContainer>
+//       <AddPillButtonContainer>
+//         <AddPillButton_ver1
+//           text="알러지 약물 추가"
+//           onSelect={(pill) => handlePillSelect(pill)}
+//         />
+//       </AddPillButtonContainer>
 
-                
-//             ))}
+//       <SelectedPillsList>
+//         {surveyAnswers.allergies && surveyAnswers.allergies.length > 0 ? (
+//           surveyAnswers.allergies.map((pill, index) => (
+//             <PillItem key={index}>
+//               <PillText>{pill}</PillText>
+//               <CloseButton onClick={() => handleRemovePill(pill)} />
+//             </PillItem>
+//           ))
+//         ) : (
+//           <p>선택된 약물이 없습니다.</p>
+//         )}
+//       </SelectedPillsList>
 
-//             <LongNextButton
-//               label="등록하기"
-//               onClick={handleSave}
-//               isSelected={true}
-//               bgColor={colors.main}
-//               borderColor={colors.main}
-//               textColor="white"
-//               width={'100%'}
-//             />
-//         </SurveyEditContainer>
-//     );
+//       <LongNextButton
+//         label="저장하기"
+//         onClick={handleSave}
+//         isSelected={true}
+//         bgColor={colors.main}
+//         borderColor={colors.main}
+//         textColor="white"
+//         width="100%"
+//       />
+//     </SurveyEditContainer>
+//   );
 // }
 
 // export default SurveyEdit;
-import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { surveyAnswersState } from '../../atoms/surveyState'; // Recoil 상태 import
-import useAxios from '../../hook/useAxiosPost';
-import { REGISTER, MODIFY } from '../../assets/apis'; 
+import styled from 'styled-components';
+import TextInput from '../../components/TextInput';
+import OptionButton from '../../components/OptionButton';
 import LongNextButton from '../../components/LongNextButton';
+import AddPillButton_ver1 from '../../components/AddPillButton_ver1';
+import useAxios from '../../hook/useAxiosPost';
 import colors from '../../assets/colors';
-import questions from './components/Questions';
-import QuestionRender from './components/QuestionsRender';
-import { userState } from '../../atoms/userState'; // userState import
+import { useNavigate } from 'react-router-dom';
+import { surveyAnswersState } from '../../atoms/surveyState';
+import { useRecoilState } from 'recoil';
+import { useResetRecoilState,useRecoilValue} from 'recoil';
+import { IoClose } from 'react-icons/io5';
+import { REGISTER, MODIFY } from '../../assets/apis'; 
+import { userState } from '../../atoms/userState';
 
-const SurveyEditContainer = styled.div`
+const SurveyUpdateContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 80vw;
-    margin: 2vh auto 0;
     position: relative;
-`;
-
-const QuestionContainer = styled.div`
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
 `;
 
 const HeaderContainer = styled.div`
@@ -261,192 +330,280 @@ const HeaderContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 400px;
+    margin-top: 1rem;
     margin-bottom: 0.125rem;
 `;
 
 const QuestionText = styled.div`
     color: #000;
-    font-family: 'NanumGothic', sans-serif;
-    font-size: 1.125rem;
-    font-weight: 700;
     line-height: normal;
 `;
 
-const PreviousButton = styled.button`
-    background-color: #3382E9;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    margin-bottom: 1rem;
-    align-self: flex-start;
-    position: sticky;
-    top: 0;
+const ButtonContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.8rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 400px;
+`;
 
-    &:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
+const AddPillButtonContainer = styled.div`
+  margin-top: 1rem;
+  margin-bottom: -0.4rem;
+`;
+
+const SelectedPillsList = styled.div`
+    width:100%;
+    margin-top: 1rem;
+    padding: 10px 0 ;
+    border-radius: 5px;
+`;
+
+const PillItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+  height: 1.8rem;
+`;
+
+const PillText = styled.span`
+  text-align: left;
+`;
+
+const CloseButton = styled(IoClose)`
+  cursor: pointer;
+  color: gray;
 `;
 
 function SurveyEdit() {
-    const userInfo = useRecoilValue(userState); // 유저 정보 가져오기
-    const { data: registerData, loading: registerLoading, error: registerError, fetchData: fetchData } = useAxios(REGISTER, 'POST');
-    const { data: modifyData, loading: modifyLoading, error: modifyError, fetchData: modifyFetchData } = useAxios(MODIFY, 'PATCH');
-    
-    const navigate = useNavigate();
-    const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
-    const [localAnswers, setLocalAnswers] = useState(() => {
-        const savedAnswers = localStorage.getItem('localAnswers');
-        return savedAnswers ? JSON.parse(savedAnswers) : [...surveyAnswers];
-    });
+  const [surveyAnswers] = useRecoilState(surveyAnswersState);
+//   const { fetchData } = useAxios(MODIFY, 'PATCH');
+  const resetSurveyAnswers = useResetRecoilState(surveyAnswersState);
+  const navigate = useNavigate();
+  const userInfo = useRecoilValue(userState); // 유저 정보 가져오기
+  const { fetchData } = useAxios(REGISTER, 'POST');
+  const { fetchData: modifyFetchData } = useAxios(MODIFY, 'PATCH');
 
-    // 이전 설문 과정에서 저장된 약물 데이터 초기화
-    const [selectedPills, setSelectedPills] = useState(() => {
-        const previousPills = localAnswers[4]?.answer || [];
-        return Array.isArray(previousPills) ? previousPills : [];
-    });
+  // initialSurveyState를 useState로 관리
+  const [formData, setFormData] = useState({
+    family: surveyAnswers[0].answer[0],
+    gender: surveyAnswers[0].answer[1],
+    birth: surveyAnswers[1].answer,
+    height: surveyAnswers[2].answer[0],
+    weight: surveyAnswers[2].answer[1],
+    pregnancy: 'NONE',  // 기본값 설정
+    allergies: surveyAnswers.allergies
+    // allergies: surveyAnswers[4].answer
+  });
+  console.log(formData)
+  const handleInputChange = (e, field) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
 
-    const handlePreviousClick = () => {
-        navigate(-1);
-    };
+  const handleOptionClick = (value, field) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-    const handleInputChange = (e, index, fieldIndex = 0) => {
-        const updatedAnswers = [...localAnswers];
+  const handlePillSelect = (pill) => {
+};
 
-        if (questions[index].type === 'multiple') {
-            const multipleAnswers = [...(updatedAnswers[index].answer || ['', ''])];
-            multipleAnswers[fieldIndex] = e.target.value;
-            updatedAnswers[index] = { ...updatedAnswers[index], answer: multipleAnswers };
-        } else {
-            updatedAnswers[index] = { ...updatedAnswers[index], answer: e.target.value };
-        }
+  const handleNoneSelected = () => {
+    setFormData({ ...formData, allergies: [] });
+    console.log('알러지 약물이 "없음"으로 초기화됨');
+  };
 
-        setLocalAnswers(updatedAnswers);
-    };
+  const handleRemovePill = (pillToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      allergies: prev.allergies.filter((pill) => pill !== pillToRemove),
+    }));
+  };
 
-    const handleOptionClick = (option, index) => {
-        const updatedAnswers = [...localAnswers];
-        updatedAnswers[index] = { ...updatedAnswers[index], answer: option };
-
-        setLocalAnswers(updatedAnswers);
-    };
-
-    const handleNoneSelected = (index) => {
-        setSelectedPills([]); // 약물 초기화
-        const updatedAnswers = [...localAnswers];
-        updatedAnswers[index] = { ...updatedAnswers[index], answer: '없음' };
-        setLocalAnswers(updatedAnswers);
-    };
-
-    const handlePillSelect = (pill, index) => {
-        setSelectedPills((prevSelected) => {
-            const updatedPills = [...new Set([...prevSelected, pill])];  // 중복 방지
-            const updatedAnswers = [...localAnswers];
-            updatedAnswers[index] = { ...updatedAnswers[index], answer: updatedPills };
-            setLocalAnswers(updatedAnswers);
-            return updatedPills;
-        });
-    };
-
-    const handleSave = async () => {
+//   const handleSave = async () => {
+//     try {
+//       await fetchData(MODIFY(formData.family), 'PATCH', formData);
+//       alert('수정되었습니다.');
+//       navigate('/profile');
+//       resetSurveyAnswers();
+//     } catch (error) {
+//       console.error('수정 중 오류 발생:', error);
+//       alert('수정 중 오류가 발생했습니다.');
+//     }
+const handleSave = async () => {
         try {
-            const familyAnswer = localAnswers[0]?.answer[1] || ''; // 가족관계에 대한 답변 가져오기
-            const pregnancyMap = {
-                '계획없음': 'NONE',
-                '임신 준비중': 'POSSIBLE',
-                '임신 중': 'PREGNANT',
-                '수유 중': 'NURSING',
-            };
-
-            const formatDate = (dateString) => {
-                const date = new Date(dateString);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
-
-            const formattedBirth = localAnswers[1]?.answer ? formatDate(localAnswers[1].answer) : '';
-
-            const requestData = {
-                birth: formattedBirth,
-                height: parseFloat(localAnswers[2]?.answer[0] || 0),
-                weight: parseFloat(localAnswers[2]?.answer[1] || 0),
-                gender: '남자',
-                pregnancy: pregnancyMap[localAnswers[3]?.answer] || '',
-                allergies: selectedPills.length > 0 ? selectedPills : ['없음'],
-                family: familyAnswer,
-            };
-
-            // family 답변이 '나', '본인', 혹은 userInfo.name과 같으면 MODIFY API를 호출
-            // if (familyAnswer === '나' || familyAnswer === '본인' || familyAnswer === userInfo?.name) {
-            //     await modifyFetchData(MODIFY, 'PATCH', requestData);
-            //     alert('설문 응답이 성공적으로 수정되었습니다.');
-            // } else {
-            //     await registerFetchData(REGISTER, 'POST', requestData);
-            //     alert('설문 응답이 성공적으로 등록되었습니다.');
-            // }
-            const family = localAnswers[0]?.answer[1] || '';
-        if (family === '나' || family === '본인' || family === userInfo.name) {
+          if (formData.family === userInfo.name) {
+            formData.family = '나';
+          }
+    
+          const pregnancyMap = {
+            '계획없음': 'NONE',
+            '임신 준비중': 'POSSIBLE',
+            '임신 중': 'PREGNANT',
+            '수유 중': 'NURSING',
+          };
+    
+          const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+          };
+    
+          const formattedBirth = surveyAnswers.birth ? formatDate(formData.birth) : '';
+          const requestData = {
+            birth: formattedBirth,
+            height: parseFloat(formData.height || 0),
+            weight: parseFloat(formData.weight || 0),
+            gender: formData.gender,
+            // pregnancy: pregnancyMap[formData.pregnancy] || '',
+            pregnancy: formData.pregnancy || '',
+            allergies: surveyAnswers.allergies.length > 0 ? formData.allergies : [],
+            family: formData.family,
+          };
+    
+          const family = formData.family || '';
+          if (family === '나' || family === '본인' || family === userInfo.name) {
             const modifyUrl = MODIFY(family); // MODIFY URL에 family 파라미터를 쿼리로 추가
-            await fetchData(modifyUrl, 'PATCH', requestData); // PATCH 요청으로 수정
+            await modifyFetchData(modifyUrl, 'PATCH', requestData); // PATCH 요청으로 수정
             alert('설문 응답이 성공적으로 수정되었습니다.');
-        } else {
+          } else {
             await fetchData(REGISTER, 'POST', requestData); // POST 요청으로 새로운 설문 등록
             alert('설문 응답이 성공적으로 등록되었습니다.');
-        }
-
-            localStorage.removeItem('surveyAnswers');
-            localStorage.removeItem('localAnswers');
-            localStorage.removeItem('currentStep');
-            setSurveyAnswers([]);
-            navigate('/home');
+          }
+    
+          resetSurveyAnswers();
+          navigate('/home');
         } catch (error) {
-            console.error('API 오류:', error);
-            alert('설문 응답 등록 중 오류가 발생했습니다.');
+          console.error('API 오류:', error);
+          alert('설문 응답 등록 중 오류가 발생했습니다.');
         }
-    };
+  };
 
-    useEffect(() => {
-        localStorage.setItem('localAnswers', JSON.stringify(localAnswers));
-    }, [localAnswers]);
+  return (
+    <SurveyUpdateContainer>
+      <TextInput
+        label="이름(관계)"
+        placeholder="이름 혹은 관계를 입력하세요"
+        value={formData.family || ''}
+        onChange={(e) => handleInputChange(e, 'family')}
+      />
+      <TextInput
+        label="성별"
+        placeholder="성별을 입력하세요"
+        value={formData.gender || ''}
+        onChange={(e) => handleInputChange(e, 'gender')}
+      />
+      <TextInput
+        label="생년월일"
+        placeholder="yyyy-mm-dd"
+        value={formData.birth || ''}
+        onChange={(e) => handleInputChange(e, 'birth')}
+        isDateInput={true}
+      />
+      <TextInput
+        label="키"
+        placeholder="키를 입력하세요"
+        value={formData.height || ''}
+        onChange={(e) => handleInputChange(e, 'height')}
+        type="number"
+        step="0.01"
+        unit="cm"
+      />
+      <TextInput
+        label="몸무게"
+        placeholder="몸무게를 입력하세요"
+        value={formData.weight || ''}
+        onChange={(e) => handleInputChange(e, 'weight')}
+        type="number"
+        step="0.01"
+        unit="kg"
+      />
 
-    return (
-        <SurveyEditContainer>
-            {questions.map((question, index) => (
-                <QuestionContainer key={index}>
-                    <HeaderContainer>
-                        <QuestionText>{question.question}</QuestionText>
-                    </HeaderContainer>
+      <HeaderContainer>
+        <QuestionText>임신여부</QuestionText>
+      </HeaderContainer>
 
-                    <QuestionRender
-                        key={index}
-                        currentQuestion={question}
-                        surveyAnswers={localAnswers}
-                        handleInputChange={(e, fieldIndex) => handleInputChange(e, index, fieldIndex)}
-                        handleOptionClick={(option) => handleOptionClick(option, index)}
-                        currentStep={index + 1}
-                        handlePillSelect={(pill) => handlePillSelect(pill, index)}  // 알약 선택 함수 전달
-                        handleNoneSelected={() => handleNoneSelected(index)}  // '없음' 선택 함수 전달
-                        selectedPills={index === 4 ? selectedPills : []}
-                    />
-                </QuestionContainer>
-            ))}
+      <ButtonContainer>
+        <OptionButton
+          label="계획없음"
+          isSelected={formData.pregnancy === 'NONE'}
+          onClick={() => handleOptionClick('NONE', 'pregnancy')}
+        />
+        <OptionButton
+          label="임신 준비중"
+          isSelected={formData.pregnancy === 'POSSIBLE'}
+          onClick={() => handleOptionClick('POSSIBLE', 'pregnancy')}
+        />
+        <OptionButton
+          label="임신 중"
+          isSelected={formData.pregnancy === 'PREGNANT'}
+          onClick={() => handleOptionClick('PREGNANT', 'pregnancy')}
+        />
+        <OptionButton
+          label="수유 중"
+          isSelected={formData.pregnancy === 'NURSING'}
+          onClick={() => handleOptionClick('NURSING', 'pregnancy')}
+        />
+      </ButtonContainer>
 
-            <LongNextButton
-              label="등록하기"
-              onClick={handleSave}
-              isSelected={true}
-              bgColor={colors.main}
-              borderColor={colors.main}
-              textColor="white"
-              width={'100%'}
-            />
-        </SurveyEditContainer>
-    );
+      <HeaderContainer>
+        <QuestionText>약물 알러지</QuestionText>
+      </HeaderContainer>
+      <ButtonContainer>
+        <OptionButton
+          label="없음"
+          isSelected={!formData.allergies || formData.allergies.length === 0}
+          onClick={handleNoneSelected}
+        />
+      </ButtonContainer>
+
+      <AddPillButtonContainer>
+        <AddPillButton_ver1
+          text="알러지 약물 추가"
+          onSelect={(pill) => handlePillSelect(pill)}
+        //   onSelect={(pill) => setFormData((prev) => ({
+        //     ...prev,
+        //     allergies: [...prev.allergies, pill]
+        //   }))}
+        />
+      </AddPillButtonContainer>
+
+      <SelectedPillsList>
+        {formData.allergies && formData.allergies.length > 0 ? (
+          formData.allergies.map((pill, index) => (
+            <PillItem key={index}>
+              <PillText>{formData.allergies[index].korName}</PillText>
+              <CloseButton onClick={() => handleRemovePill(pill)} />
+            </PillItem>
+          ))
+        ) : (
+          <p>선택된 약물이 없습니다.</p>
+        )}
+      </SelectedPillsList>
+
+      <LongNextButton
+        label="수정하기"
+        onClick={handleSave}
+        isSelected={true}
+        bgColor={colors.point1}
+        borderColor={colors.point1}
+        textColor="white"
+        width="100%"
+      />
+    </SurveyUpdateContainer>
+  );
 }
 
 export default SurveyEdit;

@@ -1,5 +1,4 @@
-const ENDPOINT = 'https://j11b308.p.ssafy.io/api/';
-
+const ENDPOINT = 'http://j11b308.p.ssafy.io:8080/api/';
 export const MAIN = `${ENDPOINT}`; // 메인화면 정보 불러오기
 export const LOGIN = `${ENDPOINT}login`; //로그인
 export const LOGOUT = `${ENDPOINT}logout`; //로그아웃
@@ -21,24 +20,33 @@ export const MEDICATIONADD = `${ENDPOINT}user-medication`; //복약 카드 추�
 export const MYPILLS = (userDetailId) => `${MEDICATIONADD}/${userDetailId}`; //모든 복약 카드 조회
 export const ADDDETAIL = (userMedicationId) => `${MEDICATIONADD}-detail/${userMedicationId}`; //디테일 추가
 export const MODIFYDETAIL = (userMedicationDetailId) => `${MEDICATIONADD}-detail/${userMedicationDetailId}`; //디테일 수정, 삭제
+export const STATUS = (id) => `${MEDICATIONADD}/${id}/status`;
 
 //복약기록
-// export const HISTORY = `${ENDPOINT}history`;
+export const HISTORY = `${ENDPOINT}history`;
 
 // 진료& 처방 내역
 export const MEDICATION = `${ENDPOINT}medication-api/request`;
 export const KAKAO_CERTIFY = `${ENDPOINT}medication-api/certify`; // 카카오 인증 요청
 
+// 알약 객체탐지
+export const MEDIPHOTO = (IMGURL) => `${ENDPOINT}/medicine/image?imageUrl=${IMGURL}`;
+
 //알약조회
 export const MEDICINE = `${ENDPOINT}medicine`; //알약 전체 조회
 export const DETAILMEDICINE = (medicineId) => `${MEDICINE}/${medicineId}`; //알약 상세 조회
+export const MEDICINEES = (prefix, categories) => {
+    const categoryString = categories.join(','); // categories 배열을 문자열로 변환
+    return `${ENDPOINT}medicine/d?prefix=${prefix}&categories=${categoryString}`;
+};
 export const COMPAREPILL = `${MEDICINE}/compare`; //알약 비교
 
 //알림
-export const NOTIFICATION = (medicationId) => `${ENDPOINT}remainder/${medicationId}`; //알림 조회
-export const ADDNOTIFICATION = `${NOTIFICATION}/register`; //알림 등록
-export const MODIFYNOTIFICATION = `${NOTIFICATION}/modify`; //알림 수정
-export const DELETENOTIFICATION = (id) => `${NOTIFICATION}/delete/${id}`;
-export const DELAYNOTIFICATION = (medicationId) => `${NOTIFICATION}/dealy/${medicationId}`;
-export const RESTARTNOTIFICATION = (medicationId) => `${NOTIFICATION}/restart/${medicationId}`;
-export const CHECKNOTIFICATION = (medicationId) => `${NOTIFICATION}/check/${medicationId}`;
+const NOTI = `${ENDPOINT}remainder/`;
+export const NOTIFICATION = (medicationId) => `${NOTI}${medicationId}`; //알림 조회
+export const ADDNOTIFICATION = `${NOTI}register`; //알림 등록
+// export const MODIFYNOTIFICATION = `${NOTI}modify`; //알림 수정
+export const DELETENOTIFICATION = (id) => `${NOTI}delete/${id}`; //알림삭제
+// export const DELAYNOTIFICATION = (medicationId) => `${NOTIFICATION}/dealy/${medicationId}`;
+// export const RESTARTNOTIFICATION = (medicationId) => `${NOTIFICATION}/restart/${medicationId}`;
+// export const CHECKNOTIFICATION = (medicationId) => `${NOTIFICATION}/check/${medicationId}`;

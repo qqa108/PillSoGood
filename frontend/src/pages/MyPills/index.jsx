@@ -10,6 +10,9 @@ import HistoryDetail from '../History/HistoryDetail';
 import Warn from '../../components/Warn';
 import { takingMediListState } from '../../atoms/mediListState';
 import { useRecoilValue } from 'recoil';
+import ReactModal from 'react-modal';
+
+ReactModal.setAppElement('#root');
 
 const MyPillContainer = styled.div`
     min-height: calc(100vh - 140px);
@@ -29,7 +32,10 @@ const IconContainer = styled.div`
     align-items: center;
     position: fixed;
     bottom: 5rem;
-    right: 1.2rem;
+    right: 0.25rem;
+    z-index: 2;
+    background-color: white;
+    border-radius: 50%;
 
     & > svg {
         font-size: 2rem;
@@ -80,20 +86,16 @@ function MyPills() {
                             <PillsItem type="mypliis" info={e} key={e?.id} handleOpenModal={() => handleOpenModal(e)} />
                         );
                     })}
-
                     <IconContainer alt="Add Icon" onClick={openRegisterModal}>
                         <FaCirclePlus />
                     </IconContainer>
-
                     <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} />
-
                     {isDetailModalOpen && (
                         <Modal onClose={handleCloseModal}>
-                            <HistoryDetail detailInfo={detail} />
+                            <HistoryDetail detailInfo={detail} onClose={handleCloseModal} />
                         </Modal>
                     )}
-                    {/* {mediListInfo.length !== 0 ? <Warn pillList={mediListInfo} /> : null} */}
-                    {/* 추가 버튼이 가려짐...*/}
+                    {mediListInfo.length !== 0 ? <Warn pillList={mediListInfo} /> : null}
                 </MyPillContainer>
             )}
             <Outlet />

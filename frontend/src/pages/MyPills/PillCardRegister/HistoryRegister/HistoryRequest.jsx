@@ -35,7 +35,7 @@
 
 //       // 요청이 성공적으로 완료되면 알림 표시 및 페이지 이동
 //       alert('설문 응답이 성공적으로 등록되었습니다.');
-//       navigate('/home'); // 페이지 이동
+//       navigate('/mypills/historyRegister'); // 페이지 이동
 //     } catch (error) {
 //       console.error('API 등록 오류:', error);
 //       alert('설문 응답 등록 중 오류가 발생했습니다.');
@@ -75,17 +75,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import useAxios from '../../../../hook/useAxiosPost'; // useAxios 훅 import
-import { MEDICATION } from '../../../../assets/apis'; // MEDICATION API 엔드포인트 import
-import { medication } from '../../../../atoms/medication'; // Recoil 상태 import (medication 사용)
-import { useRecoilState } from 'recoil'; // Recoil 훅
+import useAxios from '../../../../hook/useAxiosPost'; 
+import { MEDICATION } from '../../../../assets/apis'; 
+import { medicationState } from '../../../../atoms/medicationState'; 
+import { useRecoilState } from 'recoil'; 
 
 const HistoryRequest = () => {
   const navigate = useNavigate(); // 페이지 이동용 훅
   const location = useLocation(); // navigate로 전달된 state에서 callbackId를 받음
   const { callbackId } = location.state || {}; // state에서 callbackId 추출
   const { data, loading, error, fetchData } = useAxios(MEDICATION, 'POST'); // POST 요청 설정
-  const [medicationState, setMedication] = useRecoilState(medication); // Recoil 상태 (medication 사용)
+  const [medicationState, setMedication] = useRecoilState(medicationState); // Recoil 상태 (medication 사용)
 
   // callbackId 값 확인용 useEffect 추가
   useEffect(() => {
@@ -117,7 +117,7 @@ const HistoryRequest = () => {
 
       // 요청이 성공적으로 완료되면 알림 표시 및 페이지 이동
       alert('설문 응답이 성공적으로 등록되었습니다.');
-      navigate('/home'); // 페이지 이동
+      navigate('/mypills/historyRegister'); // 페이지 이동
     } catch (error) {
       console.error('API 등록 오류:', error);
       alert('설문 응답 등록 중 오류가 발생했습니다.');

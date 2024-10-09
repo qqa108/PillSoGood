@@ -59,8 +59,8 @@ function App() {
 
     return (
         <AppContainer>
-            <LoadMyPill />
-            <LoadNotification />
+            <LoadMyPill userInfo={userInfo} />
+            <LoadNotification userInfo={userInfo} />
             <Header />
             <OutletContainer>
                 <Outlet />
