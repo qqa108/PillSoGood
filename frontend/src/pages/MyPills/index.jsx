@@ -33,6 +33,9 @@ const IconContainer = styled.div`
     position: fixed;
     bottom: 5rem;
     right: 1.2rem;
+    z-index: 2;
+    background-color: white;
+    border-radius: 50%;
 
     & > svg {
         font-size: 2rem;
@@ -83,20 +86,16 @@ function MyPills() {
                             <PillsItem type="mypliis" info={e} key={e?.id} handleOpenModal={() => handleOpenModal(e)} />
                         );
                     })}
-
                     <IconContainer alt="Add Icon" onClick={openRegisterModal}>
                         <FaCirclePlus />
                     </IconContainer>
-
                     <PillCardRegister isModalOpen={isRegisterModalOpen} closeModal={closeRegisterModal} />
-
                     {isDetailModalOpen && (
                         <Modal onClose={handleCloseModal}>
                             <HistoryDetail detailInfo={detail} />
                         </Modal>
                     )}
-                    {/* {mediListInfo.length !== 0 ? <Warn pillList={mediListInfo} /> : null} */}
-                    {/* 추가 버튼이 가려짐...*/}
+                    {mediListInfo.length !== 0 ? <Warn pillList={mediListInfo} /> : null}
                 </MyPillContainer>
             )}
             <Outlet />
