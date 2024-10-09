@@ -1,5 +1,6 @@
 package com.ssafy.project.domain.userMedication.entity;
 
+import com.ssafy.project.domain.notification.entity.Notifications;
 import com.ssafy.project.domain.userDetail.entity.UserDetail;
 import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import jakarta.persistence.*;
@@ -48,8 +49,12 @@ public class UserMedication {
     @JoinColumn(name = "user_detail_id", nullable = false)
     private UserDetail userDetail;
 
-    @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<UserMedicationDetail> userMedicationDetailList = new ArrayList<>();
+    // UserMedicationDetail과의 관계 설정
+    @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserMedicationDetail> userMedicationDetailList;
+
+    @OneToMany(mappedBy = "userMedication", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Notifications> notificationsList;
 
     public void update(String name, Status status, LocalDateTime intakeAt, int prescriptionDay, String hospitalName, String pharmacyName) {
         this.status = status;
