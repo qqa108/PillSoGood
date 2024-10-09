@@ -29,8 +29,10 @@ async function requestPermission() {
         vapidKey: 'BOy_voze9Ytn5oWXIwPV1td5Rx12iS0pK7FoYIbMNgyih3ZFCE2TTXB3KcjJH-j6yKsiSir_dQKQ9gqsZ96Tte0',
     });
 
-    if (token) console.log('token: ', token);
-    else console.log('Can not get Token');
+    if (token) {
+        console.log('token: ', token);
+        localStorage.setItem('fcmToken', token);
+    } else console.log('Can not get Token');
 
     onMessage(messaging, (payload) => {
         console.log('메시지가 도착했습니다.', payload);

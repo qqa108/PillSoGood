@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 // 버튼 스타일
@@ -7,7 +6,7 @@ const Button = styled.button`
     height: 2.671rem;
     border-radius: 3.75rem;
     border: 0.06rem solid #033075;
-    background-color: ${(props) => (props.isSelected ? '#EBF3FF' : '#FFF')};  // 선택 여부에 따라 배경색 변경
+    background-color: ${(props) => (props.$isSelected ? '#EBF3FF' : '#FFF')};  // 선택 여부에 따라 배경색 변경
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -28,7 +27,7 @@ const ButtonText = styled.div`
 
 function OptionButton({ label, onClick, isSelected }) {
     return (
-        <Button onClick={onClick} isSelected={isSelected}>
+        <Button onClick={onClick} $isSelected={isSelected}>
             <ButtonText>{label}</ButtonText>
         </Button>
     );

@@ -21,6 +21,8 @@ import Compare from './pages/Compare';
 import DrugDetail from './pages/Search/DrugDetail';
 import FamilyDetail from './pages/Profile/familyDetail';
 import HistoryRequest from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRequest';
+import Logout from './pages/Member/Logout';
+import Signout from './pages/Member/Signout';
 
 const router = createBrowserRouter([
     {
@@ -43,10 +45,10 @@ const router = createBrowserRouter([
                         path: 'historyRegister',
                         element: <HistoryRegister />,
                     },
-                    {
-                        path: 'historyRequest',
-                        element: <HistoryRequest />,
-                    },
+                    // {
+                    //     path: 'historyRequest',
+                    //     element: <HistoryRequest />,
+                    // },
                     {
                         path: 'registerCard',
                         element: <RegisterCard />,
@@ -116,6 +118,14 @@ const router = createBrowserRouter([
             {
                 path: 'test',
                 element: <Test />,
+            },
+            {
+                path: 'logout',
+                element: <Logout />,
+            },
+            {
+                path: 'signout',
+                element: <Signout />,
             },
         ],
     },
