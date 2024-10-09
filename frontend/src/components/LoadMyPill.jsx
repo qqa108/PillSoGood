@@ -9,7 +9,7 @@ function LoadMyPill() {
     const setMediListState = useSetRecoilState(mediListState);
     const mediListInfo = useRecoilValue(mediListState);
     const userInfo = useRecoilValue(userState);
-    const { data, loading, error } = useAxios(MYPILLS(userInfo.userDetailId), 'GET');
+    const { data, loading, error } = useAxios(MYPILLS(2), 'GET');
 
     useEffect(() => {
         if (!loading && data !== null) {

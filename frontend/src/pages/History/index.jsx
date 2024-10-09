@@ -9,6 +9,7 @@ import { MYPILLS } from '../../assets/apis';
 import LoadMyPill from '../../components/LoadMyPill';
 import { useRecoilValue } from 'recoil';
 import { mediListState } from '../../atoms/mediListState';
+import { useNavigate } from 'react-router-dom';
 
 // const data = [1, 2, 3];
 const history = [
@@ -66,6 +67,10 @@ const HistoryWrapper = styled.div`
 `;
 
 function History() {
+    const navigate = useNavigate();
+    const goRegister = () => {
+        navigate('/mypills/historyReguisterModal');
+    };
     const [isModalOpen, setModalOpen] = useState(false);
     const handleOpenModal = (e) => {
         setDetail(e);
@@ -94,7 +99,7 @@ function History() {
                 ) : (
                     <HistoryWrapper>
                         <Text>등록된 복약 기록이 없습니다.</Text>
-                        <Button>복약 기록 불러오기</Button>
+                        <Button onClick={goRegister}>복약 기록 불러오기</Button>
                     </HistoryWrapper>
                 )}
             </HistoryContainer>
