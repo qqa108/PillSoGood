@@ -20,14 +20,16 @@ import Test from './pages/Member/test';
 import Compare from './pages/Compare';
 import DrugDetail from './pages/Search/DrugDetail';
 import FamilyDetail from './pages/Profile/familyDetail';
-import HistoryRequest from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRequest';
+// import HistoryRequest from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRequest';
 import Logout from './pages/Member/Logout';
 import Signout from './pages/Member/Signout';
+import ErrorBoundary from './pages/ErrorBoundary';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <App />,
+        errorElement: <ErrorBoundary />, // 오류 핸들링 추가
         children: [
             {
                 path: 'mypills',

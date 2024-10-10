@@ -12,10 +12,10 @@ const useAxios = (url, method, body = null) => {
             return;
         } // URL이 없으면 요청하지 않음
         // 잠깐 페이지 이동떔에 주석
-        // if (!accessToken) {
-        //     navigator('/member/login');
-        //     return;
-        // }
+        if (!localStorage.getItem('accessToken')) {
+            navigator('/member/login');
+            return;
+        }
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -45,4 +45,3 @@ const useAxios = (url, method, body = null) => {
 };
 
 export default useAxios;
-
