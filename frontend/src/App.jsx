@@ -46,21 +46,21 @@ function App() {
         }
     }, [data]); // data 전체가 변경될 때만 실행
 
-    // useEffect(() => {
-    //     if (userInfo) {
-    //         // 그 엑세스 토큰으로 회원정보 요청
-    //         if (location.pathname === '/') {
-    //             navigate('/home');
-    //         }
-    //     } else {
-    //         // navigate('/member/login');
-    //     }
-    // }, [userInfo, location.pathname, navigate, setUserState]);
+    useEffect(() => {
+        if (userInfo) {
+            // 그 엑세스 토큰으로 회원정보 요청
+            if (location.pathname === '/') {
+                navigate('/home');
+            }
+        } else {
+            // navigate('/member/login');
+        }
+    }, [userInfo, location.pathname, navigate, setUserState]);
 
     return (
         <AppContainer>
-            <LoadMyPill />
-            <LoadNotification />
+            <LoadMyPill userInfo={userInfo} />
+            <LoadNotification userInfo={userInfo} />
             <Header />
             <OutletContainer>
                 <Outlet />

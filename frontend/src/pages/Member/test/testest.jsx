@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Modal from '../../../../components/Modal';
 import TextInput from '../../../../components/TextInput';
 import colors from '../../../../assets/colors';
-import axios from 'axios'; // axios import
-import { KAKAO_CERTIFY, MEDICATION } from '../../../../assets/apis';
+import useAxios from '../../../../hook/useAxiosPost'; // useAxios 훅 import
+import { KAKAO_CERTIFY, MEDICATION } from '../../../../assets/apis'; // API 엔드포인트 import
 import { medicationState } from '../../../../atoms/medicationState';
-import { useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil'; // Recoil 훅
 
 const Dropdown = styled.select`
     height: 2.75rem;
@@ -66,59 +66,41 @@ const Label = styled.div`
     font-size: 1rem;
 `;
 
-const Loader = styled.div`
-    width: 50px;
-    padding: 8px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: #25b09b;
-    --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
-    -webkit-mask: var(--_m);
-    mask: var(--_m);
-    -webkit-mask-composite: source-out;
-    mask-composite: subtract;
-    animation: l3 1s infinite linear;
-    @keyframes l3 {
-        to {
-            transform: rotate(1turn);
-        }
-    }
-`;
-
 export default function HistoryRegisterModal() {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(true);
+    const { data, loading, error, fetchData } = useAxios(); // useAxios로 API 호출
     const [formData, setFormData] = useState({
-        LOGINOPTION: '0',
+        LOGINOPTION: '0', // 고정
         JUMIN: '',
         USERNAME: '',
         HPNUMBER: '',
-        TELECOMGUBUN: '3',
-        DETAILPARSE: 3,
-        CHILDPARSE: null,
+        TELECOMGUBUN: '3', // 기본값 설정
+        DETAILPARSE: 3, // 기본값 설정
+        CHILDPARSE: null, // 고정
     });
-    const [callbackId, setCallbackId] = useState(null);
+    const [callbackId, setCallbackId] = useState(null); // callbackId 상태
     const [medicationRecoilState, setMedicationState] = useRecoilState(medicationState);
     const [medicationData, setMedicationData] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [data, setData] = useState(null);
 
+    // 입력 값 변경 처리 함수
     const handleInputChange = (e, fieldName, value) => {
         setFormData({
             ...formData,
-            [fieldName]: value !== undefined ? value : e.target.value,
+            [fieldName]: value !== undefined ? value : e.target.value, // DETAILPARSE는 숫자, 나머지는 문자열
         });
     };
 
+    // 통신사 드롭다운에서 선택 시 값 변환 (1: KT, 2: SKT, 3: LG)
     const handleTelecomChange = (e) => {
         const value = e.target.value;
         setFormData({
             ...formData,
-            TELECOMGUBUN: value,
+            TELECOMGUBUN: value, // 선택한 값을 그대로 저장 (1, 2, 3 중 하나)
         });
     };
 
+    // 휴대폰 번호 하이픈 자동 추가
     const autoHyphen1 = (e) => {
         const target = e.target;
         const formattedPhone = target.value
@@ -132,71 +114,70 @@ export default function HistoryRegisterModal() {
         });
     };
 
+    // 모든 필드가 채워졌는지 확인하는 함수
     const isFormValid = () => {
         return formData.JUMIN.trim() !== '' && formData.USERNAME.trim() !== '' && formData.HPNUMBER.trim() !== '';
     };
 
+    // 첫 번째 API 요청 (callbackId 가져오기)
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(formData);
+        e.preventDefault(); // 기본 동작(페이지 리로드) 방지
         if (isFormValid()) {
             try {
+                // API 호출 (KAKAO_CERTIFY로 데이터 전송)
                 const requestData = {
                     LOGINOPTION: formData.LOGINOPTION,
                     JUMIN: formData.JUMIN,
                     USERNAME: formData.USERNAME,
-                    HPNUMBER: formData.HPNUMBER.replace(/-/g, ''),
+                    HPNUMBER: formData.HPNUMBER.replace(/-/g, ''), // 하이픈 제거
                     TELECOMGUBUN: formData.TELECOMGUBUN,
                     DETAILPARSE: formData.DETAILPARSE,
                     CHILDPARSE: formData.CHILDPARSE,
                 };
 
-                const response = await axios.post(KAKAO_CERTIFY, requestData, {
-                    headers: {
-                        Authorization: localStorage.getItem('accessToken'),
-                        RefreshToken: localStorage.getItem('refreshToken'),
-                    },
-                });
-                console.log(response);
-                setData(response.data); // 응답 데이터 저장
+                const response = await fetchData(KAKAO_CERTIFY, 'POST', requestData);
 
-                if (response.data) {
-                    setCallbackId(response.data);
-                    if (confirm('인증을 하시고 확인을 눌러주세요')) {
-                        setLoading(true);
-                        await handleHistoryRequest(response.data);
-                        setLoading(false);
-                        setIsModalOpen(false);
-                    }
+                // 인증 완료 시 callbackId 받아오기
+                if (response && response.callbackId) {
+                    console.log(response.callbackId);
+                    setCallbackId(response.callbackId); // callbackId 상태에 저장
+                    alert('진료내역을 가져오는 인증이 완료되었습니다.');
+
+                    // HistoryRequest를 내부에서 처리
+                    await handleHistoryRequest(response.callbackId);
+                    console.log('진료내역 가져오는 중');
+
+                    setIsModalOpen(false); // 모달 닫기
                 }
             } catch (error) {
                 console.error('API 요청 중 오류:', error);
-                setError(error);
                 alert('인증에 실패했습니다.');
-                setLoading(false);
             }
         } else {
             alert('모든 필드를 채워주세요.');
         }
     };
 
+    // 두 번째 API 요청 (진료내역 조회)
     const handleHistoryRequest = async (callbackId) => {
+        console.log('진료 내역 가져오기 시도');
         try {
             const requestData = {
-                callbackId,
+                callbackId, // 인증 후 받은 callbackId
             };
 
-            const historyResponse = await axios.post(MEDICATION, requestData, {
-                headers: {
-                    Authorization: localStorage.getItem('accessToken'),
-                    RefreshToken: localStorage.getItem('refreshToken'),
-                },
-            });
-            setMedicationData(historyResponse.data);
-            setMedicationState(historyResponse.data);
-            localStorage.setItem('medicationData', JSON.stringify(historyResponse.data));
-            alert('설문 응답이 성공적으로 등록되었습니다.');
-            navigate('/mypills/historyRegister');
+            const historyResponse = await fetchData(MEDICATION, 'POST', requestData);
+
+            if (historyResponse) {
+                console.log('응답 데이터:', historyResponse);
+                setMedicationState(historyResponse); // Recoil 전역 상태에 저장
+                setMedicationData(historyResponse);
+                localStorage.setItem('medicationData', JSON.stringify(historyResponse)); // 로컬 스토리지에 저장
+                console.log('recoil', medicationRecoilState);
+                // 요청이 성공적으로 완료되면 알림 표시 및 페이지 이동
+                alert('설문 응답이 성공적으로 등록되었습니다.');
+                navigate('/mypills/historyRegister'); // 페이지 이동
+            }
         } catch (error) {
             console.error('진료내역 조회 중 오류:', error);
             alert('진료내역 조회 중 오류가 발생했습니다.');
@@ -215,6 +196,8 @@ export default function HistoryRegisterModal() {
             `}
                     </style>
                     <h2>진료내역을 가져오기 위한 정보를 입력해주세요</h2>
+
+                    {/* 사용자 이름 입력 */}
                     <TextInput
                         label="이름"
                         value={formData.USERNAME}
@@ -222,6 +205,8 @@ export default function HistoryRegisterModal() {
                         type="text"
                         placeholder="이름을 입력하세요"
                     />
+
+                    {/* 주민번호 입력 */}
                     <TextInput
                         label="주민번호"
                         value={formData.JUMIN}
@@ -229,12 +214,16 @@ export default function HistoryRegisterModal() {
                         type="text"
                         placeholder="YYYYMMDD"
                     />
+
+                    {/* 통신사 선택 */}
                     <Label>통신사</Label>
                     <Dropdown value={formData.TELECOMGUBUN} onChange={handleTelecomChange}>
                         <option value="1">KT</option>
                         <option value="2">SKT</option>
                         <option value="3">LG</option>
                     </Dropdown>
+
+                    {/* 전화번호 입력 */}
                     <TextInput
                         label="전화번호"
                         value={formData.HPNUMBER}
@@ -242,15 +231,19 @@ export default function HistoryRegisterModal() {
                         type="tel"
                         placeholder="전화번호를 입력하세요"
                     />
+
+                    {/* 상세 여부 선택 */}
                     <Label>상세 여부</Label>
                     <Dropdown
                         value={formData.DETAILPARSE}
-                        onChange={(e) => handleInputChange(e, 'DETAILPARSE', Number(e.target.value))}
+                        onChange={(e) => handleInputChange(e, 'DETAILPARSE', Number(e.target.value))} // 숫자로 변환하여 설정
                     >
                         <option value={1}>일반</option>
                         <option value={2}>일반 + 상세</option>
                         <option value={3}>일반 + 상세 + 의약품 상세</option>
                     </Dropdown>
+
+                    {/* 제출 버튼 */}
                     <ButtonContainer>
                         {isFormValid() ? (
                             <SubmitButton onClick={handleSubmit}>가져오기</SubmitButton>
@@ -258,14 +251,22 @@ export default function HistoryRegisterModal() {
                             <DisabledButton disabled>가져오기</DisabledButton>
                         )}
                     </ButtonContainer>
-                    {loading && <Loader />}
+
+                    {/* 로딩 상태 표시 */}
+                    {loading && <p>로딩 중...</p>}
+
+                    {/* 에러 발생 시 표시 */}
                     {error && <p>오류: {error.message}</p>}
+
+                    {/* 응답 데이터 표시 */}
                     {data && (
                         <div>
                             <h2>응답 결과:</h2>
                             <pre>{JSON.stringify(data, null, 2)}</pre>
                         </div>
                     )}
+
+                    {/* 두 번째 API 응답 데이터 표시 */}
                     {medicationData && (
                         <div>
                             <h2>진료 내역 (MEDICATION):</h2>

@@ -5,6 +5,8 @@ import Warn from '../../components/Warn';
 import { useState } from 'react';
 import Modal from '../../components/Modal';
 import CompareMyPills from './CompareMyPills';
+import DrugSearch from '../Search/searchforAll';
+import RegisterPill from './RegisterPill';
 
 const CompareContainer = styled.div`
     width: 100%;
@@ -72,6 +74,7 @@ function Compare() {
         const updatedPillList = pillList.filter((_, i) => i !== index);
         setPillList(updatedPillList);
     };
+    console.log(pillList);
     return (
         <>
             <CompareContainer>
@@ -107,7 +110,9 @@ function Compare() {
             {isModalOpen && (
                 <Modal onClose={handleCloseModal}>
                     {modalType === 'search' ? (
-                        <div>search</div>
+                        <div>
+                            <RegisterPill setPillList={setPillList} onClose={handleCloseModal} />
+                        </div>
                     ) : (
                         <CompareMyPills setPillList={setPillList} onClose={handleCloseModal} />
                     )}

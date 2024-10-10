@@ -8,7 +8,6 @@ import medicine_bag_guide from '../../../../assets/medicine_bag_guide.svg';
 import medicine_guide from '../../../../assets/medicine_guide.svg';
 import PreprocessImage from './PreprocessImage'; // 전처리 컴포넌트
 
-//
 
 const Container = styled.div`
     display: flex;
@@ -91,7 +90,7 @@ const guides = {
         title: '약봉투 촬영 가이드',
         description: '복약 정보가 보이도록 촬영해주세요.',
     },
-    medicine: {
+    'medicine': {
         title: '약사진 촬영 가이드',
         description: '약 사진을 촬영하기 전에 가이드에 맞춰주세요.',
     },
@@ -106,7 +105,7 @@ export default function PhotoGuide() {
     const [isRegistered, setIsRegistered] = useState(false); // 등록 여부 상태 추가
 
     const selectedItem = location.state?.selectedItem || 'medicine';
-
+    console.log('뭐암?',selectedItem)
     useEffect(() => {
         // setIsChildRoute(location.pathname !== '/mypills'); // 경로가 '/mypills'가 아닌 경우에 true로 설정
 
@@ -186,7 +185,7 @@ export default function PhotoGuide() {
             </ButtonContainer>
 
             {/* 사진이 찍히고 등록하기 버튼을 눌렀을 때만 PreprocessImage로 넘김 */}
-            {capturedImage && isRegistered && <PreprocessImage imageSrc={capturedImage} />}
+            {capturedImage && isRegistered && <PreprocessImage imageSrc={capturedImage} selectedItem={selectedItem}  />}
         </Container>
     );
 }
