@@ -43,9 +43,35 @@ export default function NextPage({ selectedItems, onNext }) {
     //     })),
     //   };
 
-    //   try {
-    //     // API 호출
-    //     await fetchData(MEDICATIONADD, 'POST', requestData);
+  // };
+  const handleNextClick = async () => {
+    // const filteredItems = selectedItems.filter((_, index) => checked[index]);
+    // onNext(filteredItems);
+    const promises = selectedItems.map(async (item, index) => {
+      const status = checked[index] ? 'TAKING' : 'COMPLETED'; // 선택된 항목은 TAKING, 선택되지 않은 항목은 COMPLETED
+      const requestData = {
+        // userDetailId: 21,
+        userDetailId: userInfo?.userDetailId,
+        name: '진료내역 자동 등록',
+        status, 
+        intakeAt: item.intakeAt, 
+        hospitalName: item.hospitalName || '', 
+        pharmacyName: item.pharmacyName || '', 
+        prescriptionDay: item.prescriptionDay || 3, // 처방 일수
+        userMedicationDetailList: item.userMedicationDetailList.map((pill) => ({
+          dailyIntakeFrequency: pill.dailyIntakeFrequency || 3, // 하루 복용 횟수 기본값
+          perAmount: pill.perAmount || 3, // 1회 복용량 기본값
+          medicineId: pill.medicineId, // 약 ID
+        })),
+      };
+      console.log(requestData)
+      try {
+        // 각 아이템별로 API 호출
+        await fetchData(MEDICATIONADD, 'POST', requestData);
+      } catch (error) {
+        console.error(`아이템 ${index + 1} 등록 중 오류 발생:`, error);
+      }
+    });
 
     //     // 성공적으로 제출되었을 경우
     //     alert('설문 응답이 성공적으로 등록되었습니다.');
