@@ -36,7 +36,7 @@ function Join() {
             <Button onClick={() => navigate('/survey')}>
                 내 정보를 입력하고 <br /> 상세하게 안내 받을래요
             </Button>
-            <Button onClick={() => navigate('/home')}>다음에 입력할래요</Button>
+            <Button onClick={() => navigate('/home', { replace: true })}>다음에 입력할래요</Button>
         </ContentContainer>
     );
 }

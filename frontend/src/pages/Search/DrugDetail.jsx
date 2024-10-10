@@ -6,9 +6,10 @@ import colors from "@/assets/colors"; // colors.js에서 색상 가져오기
 import { DETAILMEDICINE } from "@/assets/apis"; // API 경로 가져오기
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 60px;
 `;
 
 const DrugName = styled.div`
