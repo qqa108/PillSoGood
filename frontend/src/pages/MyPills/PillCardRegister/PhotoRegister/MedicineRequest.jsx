@@ -1,156 +1,58 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { MEDIPHOTO } from '../../../../assets/apis';
-import useAxiosPost from '../../../../hook/useAxiosPost';
 import useAxios from '../../../../hook/useAxios';
 import { useNavigate } from 'react-router-dom';
-import { DETAILMEDICINE } from '../../../../assets/apis';
-import MediSearch from './MediSearch';
 
-const dataURLtoBlob = (dataUrl) => {
-  const byteString = atob(dataUrl.split(',')[1]); // Base64 데이터를 바이너리로 디코딩
-  const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0]; // MIME 타입 추출
-
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  return new Blob([ab], { type: mimeString }); // Blob 생성
-};
-
-export default function MedicineRequest({ originalImage, processedImage }) {
-  const { data, loading, error, fetchData} = useAxiosPost()
+export default function MedicineRequest({ imageUrl }) {
+  const apiUrl = imageUrl ? MEDIPHOTO(imageUrl) : null;
+  const { data, loading, error } = useAxios(apiUrl, 'GET');
   const navigate = useNavigate()
-  const [imageUploaded, setImageUploaded] = useState(false); 
-
-  const uploadImage = async (imageDataUrl) => {
-    const formData = new FormData();
-    try {
-      // Base64 인코딩된 이미지 데이터를 Blob으로 변환
-      const blob = dataURLtoBlob(imageDataUrl);
-      const file = new File([blob], "image.png", { type: "image/png" }); // Blob을 파일로 변환
-      formData.append('file', file); // FormData에 파일 추가
-
-      console.log(
-        "blob",blob,
-        "file",file,
-        "formData",formData,
-      )
-
-      // FormData의 내용을 출력하는 방법
-      for (let pair of formData.entries()) {
-        console.log("formData2",pair[0], pair[1]);  // 키와 값 출력
-      }
-
-      // API 호출
-      await fetchData(MEDIPHOTO, 'POST', formData);
-      setImageUploaded(true);
-    } catch (error) {
-      console.error('이미지 업로드 중 오류 발생:', error);
-    }
-  };
 
   useEffect(() => {
-    console.log('originalImage:', originalImage);
+    if (imageUrl && data) {
+      const existingPills = JSON.parse(localStorage.getItem('selectedPills')) || [];
+      const newPill = { pillId: data.data.pillId, name: data.data.name };
 
-    if (originalImage) {
-      console.log('uploadImage called');
-      uploadImage(originalImage);  // 캡처된 Base64 PNG 이미지를 업로드
+      const updatedPills = [...existingPills, newPill];
+      localStorage.setItem('selectedPills', JSON.stringify(updatedPills));
+      localStorage.setItem('MediPhoto',true)
+      navigate('/mypills/registerCard')
     }
-  }, [originalImage]);
+  }, [data, imageUrl]);
 
-  if (loading) {
-    return <div>이미지 업로드 중...</div>;
-  }
+  // 로딩, 에러, 데이터 상태에 따른 렌더링 처리
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (data) return <div>Medicine Data: {JSON.stringify(data)}</div>;
 
-  if (error) {
-    return <div>오류 발생: {error.message}</div>;
-  }
+  return <div>Fetching Medicine Data...</div>;
 
-  return (
-    <div>
-      {loading && <div>이미지 업로드 중...</div>} 
-      {error && <div>오류 발생: {error.message}</div>} 
-      {imageUploaded && data && <MediSearch  medicineId={ data} />} 
-      
-    </div>
-  );
+  // const { data: imageUrlData, loading: loadingImageUrl, error: imageUrlError, fetchData: fetchImageUrl } = useAxios();
+  // const { data: medicineData, loading: loadingMedicine, error: medicineError, fetchData: fetchMedicineData } = useAxios();
+  // const [imageUrl, setImageUrl] = useState(null);
+
+  // useEffect(() => {
+  //   // 첫 번째 API 호출: 이미지 URL을 받아오는 API
+  //   if (initialRequestUrl) {
+  //     fetchImageUrl(initialRequestUrl, 'GET');
+  //   }
+  // }, [initialRequestUrl, fetchImageUrl]);
+
+  // useEffect(() => {
+  //   // 두 번째 API 호출: 받은 이미지 URL로 MEDIPHOTO API 호출
+  //   if (imageUrlData?.url) { // 첫 번째 API에서 받은 URL이 있으면
+  //     const apiUrl = MEDIPHOTO(imageUrlData.url); // MEDIPHOTO URL 생성
+  //     fetchMedicineData(apiUrl, 'GET'); // 두 번째 API 호출
+  //   }
+  // }, [imageUrlData, fetchMedicineData]);
+
+  // // 로딩 및 에러 처리
+  // if (loadingImageUrl || loadingMedicine) return <div>Loading...</div>;
+  // if (imageUrlError) return <div>Error fetching image URL: {imageUrlError.message}</div>;
+  // if (medicineError) return <div>Error fetching medicine data: {medicineError.message}</div>;
+
+  // // 데이터 렌더링
+  // if (medicineData) return <div>Medicine Data: {JSON.stringify(medicineData)}</div>;
+  // return <div>Fetching Data...</div>;
 }
 
-
-// import { useEffect, useState } from 'react';
-// import { MEDIPHOTO } from '../../../../assets/apis';
-// import useAxiosPost from '../../../../hook/useAxiosPost';
-// import { useNavigate } from 'react-router-dom';
-// import MediSearch from './MediSearch';
-
-// const dataURLtoBlob = (dataUrl) => {
-//   const byteString = atob(dataUrl.split(',')[1]); // Base64 데이터를 바이너리로 디코딩
-//   const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0]; // MIME 타입 추출
-
-//   const ab = new ArrayBuffer(byteString.length);
-//   const ia = new Uint8Array(ab);
-//   for (let i = 0; i < byteString.length; i++) {
-//     ia[i] = byteString.charCodeAt(i);
-//   }
-
-//   return new Blob([ab], { type: mimeString }); // Blob 생성
-// };
-
-// export default function MedicineRequest({ originalImage }) {
-//   // const [data, setData] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState(null);
-//   const [imageUploaded, setImageUploaded] = useState(false);
-//   const navigate = useNavigate();
-
-//   // const fake
-//   const data = 2
-
-//   const uploadImage = async (imageDataUrl) => {
-//     const formData = new FormData();
-//     // try {
-//     //   const blob = dataURLtoBlob(imageDataUrl);
-//     //   const file = new File([blob], 'image.png', { type: 'image/png' });
-//     //   formData.append('file', file);
-
-//     //   // 가짜 API 응답 설정
-//     //   console.log('업로드 중...');
-//     //   setLoading(true);
-
-//     //   // API 호출 대신, 가짜 응답 데이터를 설정
-//     //   setTimeout(() => {
-//     //     setData(fakeResponseData); // 가짜 데이터 설정
-//     //     setImageUploaded(true);
-//     //     setLoading(false);
-//     //   }, 1000); // 1초 후에 가짜 응답 설정
-//     // } catch (error) {
-//     //   console.error('이미지 업로드 중 오류 발생:', error);
-//     //   setError(error);
-//     // }
-//   };
-
-//   useEffect(() => {
-//     console.log('originalImage:', originalImage);
-
-//     if (originalImage) {
-//       console.log('uploadImage called');
-//       uploadImage(originalImage);  // 가짜 이미지 업로드 테스트
-//     }
-//   }, [originalImage]);
-
-//   if (loading) {
-//     return <div>이미지 업로드 중...</div>;
-//   }
-
-//   if (error) {
-//     return <div>오류 발생: {error.message}</div>;
-//   }
-
-//   return (
-//     <div>
-//       {data && <MediSearch medicineId={data} />} {/* 가짜 응답을 통해 MediSearch로 이동 */}
-//     </div>
-//   );
-// }

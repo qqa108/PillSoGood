@@ -77,7 +77,7 @@ const IconWrapper = styled.div`
 const items = [
   { icon: MedicineBag, type:"medicine-bag", text: "약봉투 등록", path: '/mypills/photoGuide'},
   { icon: Medicine, type:"medicine",text: "약사진 등록", path: '/mypills/photoGuide' },
-  { icon: Prescription, type:"medicine-bag", text: "내 진료내역 등록",  path: '/mypills/mediReguisterModal' },
+  { icon: Prescription, type:"medicine-bag", text: "내 진료내역 등록",  path: '/mypills/historyReguisterModal' },
   { icon: Pencil, type:"medicine-bag", text: "직접 등록", path: '/mypills/registerCard' },
 ];
 

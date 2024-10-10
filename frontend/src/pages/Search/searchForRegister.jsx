@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SearchBox from "@/components/SearchBox";
 import Filter from "@/components/Filter";
@@ -7,9 +7,8 @@ import SearchResult from "@/components/SearchResult";
 import colors from "@/assets/colors";
 import axios from "axios";
 import { MEDICINEES } from "@/assets/apis"; // ElasticSearch 기반 API 엔드포인트 임포트
-import { useRecoilState,useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { surveyAnswersState } from "../../atoms/surveyState";
-import { selectedPillsState } from "../../atoms/selectedPillsState";
 
 const SelectedPillsContainer = styled.div`
   margin-top: 1rem;
@@ -69,11 +68,7 @@ const RegisterPill = () => {
   const [filteredPills, setFilteredPills] = useState([]); // 초기 상태를 빈 배열로 설정
   const [filteredCount, setFilteredCount] = useState(0); // 필터링된 개수 상태
   const [selectedPills, setSelectedPills] = useState([]); // 선택된 약물 관리
-  // const setSelectedPillsState = useSetRecoilState(selectedPillsState); // 약물 상태관리
   const navigate = useNavigate();
-  const [selectedPillsRecoil, setSelectedPillsState] = useRecoilState(selectedPillsState);
-  const currentPills = useRecoilValue(selectedPillsState);
-
 
   // API를 통해 약물 데이터를 불러오는 함수 (ElasticSearch 기반)
   const fetchPillData = async (term, currentFilterOptions) => {
@@ -162,18 +157,11 @@ const RegisterPill = () => {
       const names = extractNamesFromOcr(ocrPills);  // name만 추출하여 배열로 반환
       setOcrPills(names);
     // Promise.all을 사용해 각 약물 이름에 대해 개별 검색을 병렬로 실행
-    // Promise.all(
-    //   names.map(name => fetchPillData(name, filterOptions))
-    // )
     Promise.all(
-      names.map(async (name) => {
-        const result = await fetchPillData(name, filterOptions);
-        return { name, result }; // name을 결과와 함께 반환
-      })
+      names.map(name => fetchPillData(name, filterOptions))
     )
     .then((results) => {
       const validResults = results
-      console.log('results',results)
     .filter(result => result !== null && result !== undefined) // 유효한 값만 필터링
     .flat();  // 배열 평탄화 (nested 배열일 경우 대비)
 
@@ -188,7 +176,6 @@ const RegisterPill = () => {
     });
   }
   }, []);
-
   
   // OCR 데이터에서 name 값만 추출하는 함수
   const extractNamesFromOcr = (ocrData) => {
@@ -198,68 +185,57 @@ const RegisterPill = () => {
   };
 
   const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
-  console.log(surveyAnswers.family)
-  const location = useLocation();
 
-  // const [existingPills, setexistingPills] = useState([])
-  const existingdPills = []
   const handleRegister = () => {
     console.log('검색',surveyAnswers)
-    const recoilPills = Array.isArray(selectedPillsRecoil) ? selectedPillsRecoil : [];
-    const familydata = surveyAnswers.family;
-    const surveyAllergie = Array.isArray(surveyAnswers.allergies) ? surveyAnswers.allergies : [];
-
-    console.log('surveyAnswers.allergies',surveyAnswers.allergies)
-    const prevLocation = location.state?.from;
-    console.log('prevLocation',prevLocation)
-    console.log('현재 경ㄱ로',`/profile/${familydata}`)
-
-    let existingPills;
-    let updatedPills;
-    if (prevLocation === `/profile/${familydata}`) {
-      existingPills = surveyAnswers.allergies
-      const pillNames = selectedPills.map(pill => pill.korName);
-      updatedPills = [...new Set([...existingPills, ...pillNames])];
-     } else {
-      existingPills = recoilPills
-      updatedPills = [...new Set([...existingPills, ...selectedPills])];
-     }
-    
-
-    console.log('selectedPills',selectedPills)
-    console.log('surveyAllergie',surveyAllergie)
-    console.log('existingPills',existingPills)
-    // const existingPills = storedPills ? JSON.parse(storedPills) : [];
+    // 기존에 로컬 스토리지에 저장된 약물 목록 가져오기
+    const storedPills = localStorage.getItem("selectedPills");
+    const existingPills = storedPills ? JSON.parse(storedPills) : [];
 
     // 새로운 약물을 기존 약물에 추가 (중복 제거)
-    // const updatedPills = [...new Set([...existingPills, ...selectedPills])];
+    const updatedPills = [...new Set([...existingPills, ...selectedPills])];
+    // const updatedPills = [...new Set([...selectedPills])];
 
+    // Recoil 상태 업데이트
+    // const updatedAnswers = [...surveyAnswers];
+    // updatedAnswers[4] = {
+    //   type: "option-pill",
+    //   answer: updatedPills.length > 0 ? updatedPills : ["없음"],
+    //   addedPills: updatedPills, // 추가된 약물 관리
+    // };
+    // const updatedAnswers = {
+    //   ...surveyAnswers,  // 기존의 surveyAnswers 객체를 복사
+    //   allergies
+    //   : {         // 약물 관련 데이터를 새로운 속성으로 추가
+    //     type: "option-pill",
+    //     answer: updatedPills.length > 0 ? updatedPills : [],
+    //     addedPills: updatedPills,  // 추가된 약물 관리
+    //   },
+    // };
     const updatedAnswers = {
       ...surveyAnswers,  // 기존의 surveyAnswers 객체를 복사
       allergies: updatedPills.length > 0 ? updatedPills : [],  // allergies를 배열 형태로 유지
-
+      // allergies
+      //   : {         // 약물 관련 데이터를 새로운 속성으로 추가
+      //     type: "option-pill",
+      //     answer: updatedPills.length > 0 ? updatedPills : [],
+      //     addedPills: updatedPills,  // 추가된 약물 관리
+      //   },
     };
     setSurveyAnswers(updatedAnswers);
     console.log('update',updatedAnswers)
-    
-    setSelectedPillsState(updatedPills);
-    console.log('약물 검색 상태관리', selectedPillsRecoil)
-
- 
-    console.log('Recoil에 저장된 약물 목록:', currentPills);
-    // localStorage.setItem("selectedPills", JSON.stringify(updatedPills));
+    // 로컬 스토리지에 저장
+    localStorage.setItem("selectedPills", JSON.stringify(updatedPills));
 
     // 이전 페이지로 이동
-    if (ocrPills.length <= 0 ? navigate(-1) : navigate('/mypills/registerCard') )
+    if (setOcrPills.length >0 ? navigate('/mypills/registerCard') : navigate(-1) )
     
-    console.log('ocr리스트',setOcrPills)
-    localStorage.removeItem('ocrPills')
 
     // 디버깅용 콘솔 출력
     console.log("약 검색 등록", updatedPills);
   };
 
-  console.log('필터된거',filteredPills)
+  console.log(filteredPills)
 
   return (
     <RegisterPillContainer>

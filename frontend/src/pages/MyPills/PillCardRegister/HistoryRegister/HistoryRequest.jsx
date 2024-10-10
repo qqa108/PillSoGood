@@ -117,7 +117,7 @@ const HistoryRequest = () => {
 
       // 요청이 성공적으로 완료되면 알림 표시 및 페이지 이동
       alert('설문 응답이 성공적으로 등록되었습니다.');
-      navigate('/mypills/mediRegister'); // 페이지 이동
+      navigate('/mypills/historyRegister'); // 페이지 이동
     } catch (error) {
       console.error('API 등록 오류:', error);
       alert('설문 응답 등록 중 오류가 발생했습니다.');

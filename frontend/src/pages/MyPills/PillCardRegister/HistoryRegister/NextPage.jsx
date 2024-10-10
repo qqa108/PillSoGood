@@ -43,6 +43,18 @@ export default function NextPage({ selectedItems, onNext }) {
     //     })),
     //   };
 
+    //   try {
+    //     // API 호출
+    //     await fetchData(MEDICATIONADD, 'POST', requestData);
+
+    //     // 성공적으로 제출되었을 경우
+    //     alert('설문 응답이 성공적으로 등록되었습니다.');
+    //     navigate('/mypills'); // 성공 후 페이지 이동
+    //   } catch (error) {
+    //     console.error('API 등록 오류:', error);
+    //     alert('설문 응답 등록 중 오류가 발생했습니다.');
+    //   }
+
     // };
     const handleNextClick = async () => {
         // const filteredItems = selectedItems.filter((_, index) => checked[index]);
