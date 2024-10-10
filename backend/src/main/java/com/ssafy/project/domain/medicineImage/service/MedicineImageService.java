@@ -19,7 +19,7 @@ public class MedicineImageService {
 
     // 이미지를 특정 URL로 전송하는 로직
     public String uploadImageToUrl(MultipartFile file) {
-        WebClient webClient = webClientBuilder.baseUrl("http://70.12.130.111:5000").build();  // 필요한 baseUrl 설정
+        WebClient webClient = webClientBuilder.baseUrl("http://22.107.238.124:5000").build();  // 필요한 baseUrl 설정
 
         try {
             // 이미지 전송
