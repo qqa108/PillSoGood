@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios'; 
 import { MEDICATIONADD } from '../../../assets/apis';
 import useAxios from '../../../hook/useAxiosPost';
@@ -8,8 +8,9 @@ import TextInput from '../../../components/TextInput';
 import AddPillButton_ver1 from '../../../components/AddPillButton_ver1'; // 약 추가 버튼
 import colors from '../../../assets/colors';
 import LongNextButton from '../../../components/LongNextButton';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { userState } from '../../../atoms/userState';
+import { selectedPillsState } from '../../../atoms/selectedPillsState';
 
 
 const Title = styled.p`
@@ -21,7 +22,7 @@ const MedicineWrapper = styled.div`
 `;
 
 const AddPillPhoto = styled(AddPillButton_ver1)`
-  
+  margin-top:1.2rem !important;
 `;
 
 const SelectedPillsContainer = styled.div`
@@ -124,7 +125,11 @@ const ButtonContainer = styled.div`
 export default function RegisterCard() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(userState);
+  const location = useLocation();
   const { data, loading, error, fetchData } = useAxios(MEDICATIONADD, 'POST');
+  const [selectedPillsRecoil, setSelectedPillsState] = useRecoilState(selectedPillsState);
+  const currentPills = useRecoilValue(selectedPillsState);
+  const [MediPhotoState, setMediPhotoState] = useState(false);
 
   const questions = [
     {
@@ -173,16 +178,25 @@ export default function RegisterCard() {
     localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
   }, [surveyAnswers]);
 
-  const [selectedPills, setSelectedPills] = useState(() => {
-    const storedPills = JSON.parse(localStorage.getItem('selectedPills')) || [];
-    return storedPills.map((pill) => ({
-      name: pill.name || pill, // OCR 데이터가 아니면 이름만 있을 수 있음
-      id: pill.id,
-      dose: pill.dose && pill.dose !== 'N/A' ? pill.dose : 3, // 1회 투약량 기본값 3
-      frequency: pill.frequency && pill.frequency !== 'N/A' ? pill.frequency : 3, // 1일 투여횟수 기본값 3
-      days: pill.days && pill.days !== 'N/A' ? pill.days : 3, // 처방 일수 기본값 3
-    }));
-  });
+  console.log('카드 등록 recoil',selectedPillsRecoil)
+  // const [selectedPills, setSelectedPills] = useState()
+  // setSelectedPills(selectedPillsRecoil)
+  const [selectedPills, setSelectedPills] = useState([]);
+
+  useEffect(() => {
+    if (selectedPillsRecoil && selectedPillsRecoil.length > 0) {
+      const storedPills = selectedPillsRecoil.map((pill) => ({
+        id: pill.id,
+        name: pill.korName,
+        dose: pill.dose && pill.dose !== 'N/A' ? pill.dose : 3, // 1회 투약량 기본값 3
+        frequency: pill.frequency && pill.frequency !== 'N/A' ? pill.frequency : 3, // 1일 투여횟수 기본값 3
+        days: pill.days && pill.days !== 'N/A' ? pill.days : 3, // 처방 일수 기본값 3
+      }));
+      setSelectedPills(storedPills); // 추출한 데이터로 상태 업데이트
+    }
+  }, [selectedPillsRecoil]);
+
+  console.log('새로운 selectedPills',selectedPills)
 
   // 선택된 약물이 추가될 때 로컬 스토리지와 상태 업데이트
   const handlePillAdd = (pill) => {
@@ -241,7 +255,7 @@ export default function RegisterCard() {
           dailyIntakeFrequency: parseInt(pill.frequency) || 3, // 1일 투여 횟수 기본값
           perAmount: parseInt(pill.dose) || 3, // 1회 투약량 기본값
           // medicineId: pill.name, // 약 id
-          medicineId: pill.name.id, // 약 id
+          medicineId: pill.id, // 약 id
         })),
       };
 
@@ -251,6 +265,7 @@ export default function RegisterCard() {
         
         // 성공적으로 제출되었을 경우
         alert('설문 응답이 성공적으로 등록되었습니다.');
+        setSelectedPillsState([])
         navigate('/mypills'); // 성공 후 페이지 이동
       } catch (error) {
         console.error('API 등록 오류:', error);
@@ -258,7 +273,16 @@ export default function RegisterCard() {
       }
     }
   };
-  const MediPhotoState = localStorage.getItem('MediPhoto');
+  const selectedItem = location.state?.selectedItem || '기본';
+  useEffect(() => {
+    // if (location.state && location.state.selectedItem === 'prevMediphotoState') {
+    if ( location.state?.selectedItem === 'prevMediphotoState') {
+      setMediPhotoState(true); // 조건 만족 시 MediPhotoState를 true로 설정
+    }
+  }, [location.state]);
+  console.log('MediPhotoState',MediPhotoState)
+  // console.log('location.state.selectedItem',location.state.selectedItem)
+
   const handleMediPhotoAdd = () => {
     // navigate('/mypills/photoGuide')
     navigate('/mypills/photoGuide', { state: { selectedItem: 'medicine' } });
@@ -292,9 +316,15 @@ export default function RegisterCard() {
 
       <MedicineWrapper>
         <Title>약 선택</Title>
-        <AddPillButton_ver1 text="약 추가" onClick={() => handlePillAdd('타이레놀')} />
-        {MediPhotoState === 'true' && (
-          <AddPillPhoto onClick={handleMediPhotoAdd}>이미지로 약 추가하기</AddPillPhoto>
+        <AddPillButton_ver1 text="약 추가" />
+        {/* <AddPillButton_ver1 text="약 추가" onClick={() => handlePillAdd('타이레놀')} /> */}
+        {MediPhotoState === true && (
+          <AddPillPhoto 
+          text='이미지로 약 추가하기'
+          onClick={handleMediPhotoAdd}
+          style={{ margin: '1rem' }}
+          >
+          </AddPillPhoto>
         )}
       </MedicineWrapper>
 
@@ -305,8 +335,8 @@ export default function RegisterCard() {
             {selectedPills.map((pill, index) => (
               <PillItemContainer key={index}>
                 <PillItemHeader>
-                  {pill.id ? pill.name.korName : pill.name}
-                  {/* {pill.name.korName} */}
+                  {/* {pill.id ? pill.name : pill.name} */}
+                  {pill.name}
                   <DeleteButton onClick={() => handlePillDelete(pill)}>삭제</DeleteButton>
                 </PillItemHeader>
                 <Divider />
