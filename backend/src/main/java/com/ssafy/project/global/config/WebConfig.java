@@ -12,12 +12,12 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOriginPatterns(
+                        "https://j11b308.p.ssafy.io",
                         "http://j11b308.p.ssafy.io",
-                        "http://localhost:3000",
                         "http://localhost:5173"
                 )
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
-                .allowedHeaders("Content-Type", "Authorization", "RefreshToken")
+                .allowedMethods("*")
+                .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
     }

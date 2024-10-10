@@ -42,10 +42,10 @@ public class SecurityConfig {
                     var corsConfiguration = new CorsConfiguration();
                     corsConfiguration.setAllowedOriginPatterns(List.of(
                             "https://j11b308.p.ssafy.io",
-                            "http://localhost:5173",
-                            "https://j11b308.p.ssafy.io:5173")); // 적절히 도메인 설정
+                            "http://j11b308.p.ssafy.io",
+                            "http://localhost:5173")); // 적절히 도메인 설정
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-                    corsConfiguration.setAllowedHeaders(List.of("Content-Type", "Authorization", "RefreshToken"));
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
                     corsConfiguration.setAllowCredentials(true);
                     corsConfiguration.setMaxAge(3600L);
                     return corsConfiguration;
