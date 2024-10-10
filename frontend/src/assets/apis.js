@@ -17,7 +17,13 @@ export const DELETEFAMILY = (FAMILY) => `${USER}/family/delete?family=${FAMILY}`
 
 //복약
 export const MEDICATIONADD = `${ENDPOINT}user-medication`; //복약 카드 추가
-export const MYPILLS = (userDetailId) => `${MEDICATIONADD}/${userDetailId}`; //모든 복약 카드 조회
+export const MYPILLS = (userDetailId) => {
+    if (userDetailId === null) {
+        return null;
+    } else {
+        return `${MEDICATIONADD}/${userDetailId}`;
+    }
+}; //모든 복약 카드 조회
 export const ADDDETAIL = (userMedicationId) => `${MEDICATIONADD}-detail/${userMedicationId}`; //디테일 추가
 export const MODIFYDETAIL = (userMedicationDetailId) => `${MEDICATIONADD}-detail/${userMedicationDetailId}`; //디테일 수정, 삭제
 export const STATUS = (id) => `${MEDICATIONADD}/${id}/status`;
