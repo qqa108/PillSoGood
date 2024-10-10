@@ -7,6 +7,10 @@ import AddPillButton_ver1 from '../../../components/AddPillButton_ver1';
 import { IoClose } from 'react-icons/io5';
 // import { surveyAnswersState } from '../../atoms/surveyState';
 // import { useRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
+import { userState } from '../../../atoms/userState';
+import { selectedPillsState } from '../../../atoms/selectedPillsState';
+
 
 const ButtonContainer = styled.div`
   display: grid;
@@ -61,6 +65,8 @@ const CloseButton = styled(IoClose)`
 
 const QuestionRender = ({ currentQuestion, surveyAnswers, handleInputChange, handleOptionClick, currentStep, selectedPills,setSurveyAnswers }) => {
   // const [surveyAnswers, setSurveyAnswers] = useRecoilState(surveyAnswersState);
+  const [selectedPillsRecoil, setSelectedPillsState] = useRecoilState(selectedPillsState);
+
   const handleRemovePill = (pillToRemove) => {
     setSurveyAnswers((prev) => ({
       ...prev,
@@ -72,7 +78,7 @@ const QuestionRender = ({ currentQuestion, surveyAnswers, handleInputChange, han
     setSurveyAnswers({ ...surveyAnswers, allergies: [] });
     console.log('알러지 약물이 "없음"으로 초기화됨');  
   };
-
+  
   return (
     <>
       {/* {currentQuestion.type === 'text' ? ( */}

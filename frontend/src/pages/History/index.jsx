@@ -4,28 +4,9 @@ import { useState } from 'react';
 import PillsItem from '../../components/PillsItem';
 import Modal from '../../components/Modal';
 import HistoryDetail from './HistoryDetail';
-import useAxios from '../../hook/useAxios';
-import { MYPILLS } from '../../assets/apis';
-import LoadMyPill from '../../components/LoadMyPill';
 import { useRecoilValue } from 'recoil';
 import { mediListState } from '../../atoms/mediListState';
 import { useNavigate } from 'react-router-dom';
-
-// const data = [1, 2, 3];
-const history = [
-    {
-        date: '2024.09.06',
-        hospitalName: '최용훈 이비인후과',
-        pillsNickName: '코로나 약 (7일분)',
-        pillsList: ['타이레놀', '콘택골드캡슐', '포린정', '그린노즈에스시럽'],
-    },
-    {
-        date: '2024.09.01',
-        hospitalName: '한지훈 안과',
-        pillsNickName: '눈병 약 (3일분)',
-        pillsList: ['안약', '안대', '인공눈물'],
-    },
-];
 
 const HistoryContainer = styled.div`
     min-height: calc(100vh - 140px);
@@ -35,6 +16,7 @@ const HistoryContainer = styled.div`
     & > *:not(:last-child) {
         margin-bottom: 15px;
     }
+    margin-bottom: 60px;
 `;
 
 const Text = styled.div`
@@ -76,7 +58,7 @@ function History() {
         setDetail(e);
         setModalOpen(true);
     };
-    const handleCloseModal = (e) => {
+    const handleCloseModal = () => {
         setDetail(null);
         setModalOpen(false);
     };

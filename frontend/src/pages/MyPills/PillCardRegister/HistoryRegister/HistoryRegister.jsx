@@ -1,5 +1,4 @@
 import { useState } from 'react';
-// import LongNextButton from '../../../../components/LongNextButton';
 import SelectPage from './SelectPage';
 import NextPage from './NextPage';
 
@@ -13,6 +12,12 @@ export default function HistoryRegister() {
     };
 
     return (
-        <div>{step === 1 ? <SelectPage onNext={handleNextClick} /> : <NextPage selectedItems={selectedItems} />}</div>
+        <div>
+            {step === 1 ? (
+                <SelectPage onNext={handleNextClick} setSelectedItems={setSelectedItems} />
+            ) : (
+                <NextPage selectedItems={selectedItems} />
+            )}
+        </div>
     );
 }

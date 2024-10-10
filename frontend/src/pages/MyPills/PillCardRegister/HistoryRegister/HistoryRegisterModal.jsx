@@ -66,6 +66,12 @@ const Label = styled.div`
     font-size: 1rem;
 `;
 
+const LoaderWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+`;
+
 const Loader = styled.div`
     width: 50px;
     padding: 8px;
@@ -140,6 +146,7 @@ export default function HistoryRegisterModal() {
         e.preventDefault();
         console.log(formData);
         if (isFormValid()) {
+            setLoading(true);
             try {
                 const requestData = {
                     LOGINOPTION: formData.LOGINOPTION,
@@ -163,7 +170,6 @@ export default function HistoryRegisterModal() {
                 if (response.data) {
                     setCallbackId(response.data);
                     if (confirm('인증을 하시고 확인을 눌러주세요')) {
-                        setLoading(true);
                         await handleHistoryRequest(response.data);
                         setLoading(false);
                         setIsModalOpen(false);
@@ -192,11 +198,13 @@ export default function HistoryRegisterModal() {
                     RefreshToken: localStorage.getItem('refreshToken'),
                 },
             });
+            console.log(historyResponse);
+            console.log(historyResponse.data);
             setMedicationData(historyResponse.data);
             setMedicationState(historyResponse.data);
             localStorage.setItem('medicationData', JSON.stringify(historyResponse.data));
-            alert('설문 응답이 성공적으로 등록되었습니다.');
-            navigate('/mypills/historyRegister');
+            alert('진료내역 조회가 완료되었습니다.');
+            navigate('/mypills/mediRegister');
         } catch (error) {
             console.error('진료내역 조회 중 오류:', error);
             alert('진료내역 조회 중 오류가 발생했습니다.');
@@ -258,13 +266,10 @@ export default function HistoryRegisterModal() {
                             <DisabledButton disabled>가져오기</DisabledButton>
                         )}
                     </ButtonContainer>
-                    {loading && <Loader />}
-                    {error && <p>오류: {error.message}</p>}
-                    {data && (
-                        <div>
-                            <h2>응답 결과:</h2>
-                            <pre>{JSON.stringify(data, null, 2)}</pre>
-                        </div>
+                    {loading && (
+                        <LoaderWrapper>
+                            <Loader />
+                        </LoaderWrapper>
                     )}
                     {medicationData && (
                         <div>

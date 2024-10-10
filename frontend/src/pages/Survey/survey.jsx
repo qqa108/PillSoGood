@@ -9,6 +9,7 @@ import questions from './components/Questions';
 import QuestionRender from './components/QuestionsRender';
 import { userState } from '../../atoms/userState';
 import { useRecoilValue } from 'recoil';
+import colors from '../../assets/colors';
 
 const SurveyContainer = styled.div`
     display: flex;
@@ -87,33 +88,7 @@ function Survey() {
     useEffect(() => {
         console.log('설문',surveyAnswers)
     })
-    
 
-    // 로컬 저장된 데이터 불러오기 (현재 단계, 답변)
-    // useEffect(() => {
-        // const savedStep = localStorage.getItem('currentStep');
-        // const savedAnswers = localStorage.getItem('surveyAnswers');
-        // const savedPills = localStorage.getItem('selectedPills');
-
-    //     if (savedStep) {
-    //         setCurrentStep(parseInt(savedStep, 10));
-    //     }
-
-    //     if (savedAnswers) {
-    //         setSurveyAnswers(JSON.parse(savedAnswers));
-    //     }
-
-    //     if (savedPills) {
-    //         setSelectedPills(JSON.parse(savedPills));
-    //     }
-    // }, []);
-
-    // 현재 상태를 로컬에 저장
-    // useEffect(() => {
-    //     localStorage.setItem('currentStep', currentStep);
-    //     localStorage.setItem('surveyAnswers', JSON.stringify(surveyAnswers));
-    //     localStorage.setItem('selectedPills', JSON.stringify(selectedPills));
-    // }, [currentStep, surveyAnswers, selectedPills]);
 
     const handlePillSelect = (pill) => {
         setSelectedPills((prevSelected) => {
@@ -230,7 +205,11 @@ function Survey() {
         } else if (currentStep === questions.length) {
             // 마지막 단계에서 surveyAnswers가 충분한지 확인
             if (!surveyAnswers[currentStep - 1]) {
-                setSurveyAnswers([...surveyAnswers, { answer: '' }]);
+                // setSurveyAnswers([...surveyAnswers, { answer: '' }]);
+                setSurveyAnswers({
+                    ...surveyAnswers,
+                    [currentStep - 1]: { answer: '' } // 새 키 추가
+                });
             }
             navigate('/surveyEdit');
         }
