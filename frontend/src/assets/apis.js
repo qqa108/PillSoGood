@@ -36,7 +36,7 @@ export const MEDICATION = `${ENDPOINT}medication-api/request`;
 export const KAKAO_CERTIFY = `${ENDPOINT}medication-api/certify`; // 카카오 인증 요청
 
 // 알약 객체탐지
-export const MEDIPHOTO = `${ENDPOINT}medicine-image/upload`;
+export const MEDIPHOTO = (IMGURL) => `${ENDPOINT}/medicine/image?imageUrl=${IMGURL}`;
 
 //알약조회
 export const MEDICINE = `${ENDPOINT}medicine`; //알약 전체 조회

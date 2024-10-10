@@ -11,8 +11,6 @@ import Warn from '../../components/Warn';
 import { takingMediListState } from '../../atoms/mediListState';
 import { useRecoilValue } from 'recoil';
 import ReactModal from 'react-modal';
-import { useRecoilState } from 'recoil';
-import { selectedPillsState } from '../../atoms/selectedPillsState';
 
 ReactModal.setAppElement('#root');
 
@@ -48,9 +46,7 @@ const IconContainer = styled.div`
 function MyPills() {
     const location = useLocation();
     const [isChildRoute, setIsChildRoute] = useState(false);
-    const [selectedPillsRecoil, setSelectedPillsState] = useRecoilState(selectedPillsState);
 
-    
     useEffect(() => {
         setIsChildRoute(location.pathname !== '/mypills'); // 경로가 '/mypills'가 아닌 경우에 true로 설정
 
@@ -58,12 +54,12 @@ function MyPills() {
             localStorage.removeItem('selectedPills'); // 경로가 '/mypills'일 때 로컬 스토리지에서 항목 삭제
             localStorage.removeItem('surveyAnswers'); // 경로가 '/mypills'일 때 로컬 스토리지에서 항목 삭제
             localStorage.removeItem('intakeAt'); // 경로가 '/mypills'일 때 로컬 스토리지에서 항목 삭제
-            setSelectedPillsState({})
         }
     }, [location.pathname]);
+
     useEffect(() => {
         // localStorage.removeItem('selectedPills');
-        // console.log(selectedPillsRecoil)
+
         // 현재 경로가 부모 경로(`/mypills`)가 아니면 자식 라우트로 간주
         setIsChildRoute(location.pathname !== '/mypills');
     }, [location]);

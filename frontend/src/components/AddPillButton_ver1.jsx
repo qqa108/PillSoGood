@@ -16,7 +16,6 @@ const Button = styled.button`
   justify-content: space-between;
   align-items: center;
   padding: 0 20px; /* 텍스트와 아이콘 사이 여백 */
-  margin-bottom:1rem;
 `;
 
 // 버튼 내 텍스트 스타일 정의
@@ -63,20 +62,12 @@ const PillItem = styled.li`
   font-size: 0.9rem;
 `;
 
-const AddPillButton_ver1 = ({ text, onClick }) => {
+const AddPillButton_ver1 = ({ text }) => {
 
   const navigate = useNavigate()
 
-  // const handleClick = () => {
-  //   navigate('/search/register', { state: { from: location.pathname } }); // 클릭 시 페이지 이동
-  // };
   const handleClick = () => {
-    if (onClick) {
-      onClick(); // 전달된 onClick 함수 실행
-    } else {
-      // 기본 동작 실행
-      navigate('/search/register', { state: { from: location.pathname } });
-    }
+    navigate('/search/register'); // 클릭 시 페이지 이동
   };
 
   return (

@@ -160,8 +160,7 @@ export default function PhotoGuide() {
                     <Webcam
                         audio={false}
                         ref={webcamRef}
-                        screenshotFormat="image/png"
-                        // screenshotFormat="image/jpeg"
+                        screenshotFormat="image/jpeg"
                         videoConstraints={{
                             width: window.innerWidth,
                             height: window.innerHeight,

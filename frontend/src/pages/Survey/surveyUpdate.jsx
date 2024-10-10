@@ -88,17 +88,13 @@ function SurveyUpdate({ data }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    
-    console.log('길이',surveyAnswers.family)
+    console.log('길이',surveyAnswers.length)
     console.log('빈값',surveyAnswers[0]?.answer)
     
     // surveyAnswers가 아직 설정되지 않았거나 빈 객체일 경우에만 초기화
-    // if (surveyAnswers[0]?.answer?.length) {
-    if (!surveyAnswers.family) {
+    if (surveyAnswers[0]?.answer?.length) {
       setSurveyAnswers(data);
-      console.log('data',data)
     }
-    console.log('surveyAnswers',surveyAnswers)
 
     if (surveyAnswers.family !== data.family) {
 
@@ -140,7 +136,7 @@ function SurveyUpdate({ data }) {
       }));
     };
 
-    console.log('엥',surveyAnswers)
+    
     const handleSave = async () => {
       try {
         const allergiesKorNames = surveyAnswers.allergies.map((pill) => pill.korName);
@@ -262,8 +258,7 @@ function SurveyUpdate({ data }) {
       {surveyAnswers.allergies && surveyAnswers.allergies.length > 0 ? (
         surveyAnswers.allergies.map((pill, index) => (
           <PillItem key={index}>
-             <PillText>{surveyAnswers.allergies[index]}</PillText>
-             {/* <PillText>{surveyAnswers.allergies[index].korName}</PillText> */}
+             <PillText>{surveyAnswers.allergies[index].korName}</PillText>
              <CloseButton onClick={() => handleRemovePill(pill)} />
           </PillItem>
         ))
