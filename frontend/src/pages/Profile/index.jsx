@@ -101,7 +101,7 @@ function Profile() {
 
         // 삭제 확인 메시지
         const isConfirmed = window.confirm('정말로 데이터를 삭제하시겠습니까?');
-    
+
         if (isConfirmed) {
             // 사용자가 확인을 눌렀을 경우 삭제 수행
             setDeleteFamilyId(family); // 가족 ID 설정 후 DELETE 요청
@@ -121,14 +121,18 @@ function Profile() {
 
     // 로그아웃
     const handleLogout = () => {
-        alert('로그아웃되었습니다.');
-        navigate('/member/logout');
+        if (confirm('로그아웃 하시겠습니까?')) {
+            alert('로그아웃되었습니다.');
+            navigate('/member/logout');
+        }
     };
 
     // 탈퇴
     const handleSignout = () => {
-        alert('탈퇴되었습니다.');
-        navigate('/member/signout');
+        if (confirm('정말 탈퇴하시겠습니까?')) {
+            alert('탈퇴되었습니다.');
+            navigate('/member/signout');
+        }
     };
 
     useEffect(() => {
