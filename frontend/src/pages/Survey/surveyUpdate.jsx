@@ -147,7 +147,7 @@ function SurveyUpdate({ data }) {
 
         const requestData = {
           ...surveyAnswers,
-          // allergies: allergiesKorNames, // 이름만 담긴 배열로 교체
+          allergies: allergiesKorNames, // 이름만 담긴 배열로 교체
         };
 
         await fetchData(MODIFY(surveyAnswers.family), 'PATCH', requestData);

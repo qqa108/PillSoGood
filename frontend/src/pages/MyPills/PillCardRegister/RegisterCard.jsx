@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios'; 
 import { MEDICATIONADD } from '../../../assets/apis';
 import useAxios from '../../../hook/useAxiosPost';
@@ -22,7 +22,7 @@ const MedicineWrapper = styled.div`
 `;
 
 const AddPillPhoto = styled(AddPillButton_ver1)`
-  
+  margin-top:1.2rem !important;
 `;
 
 const SelectedPillsContainer = styled.div`
@@ -125,9 +125,11 @@ const ButtonContainer = styled.div`
 export default function RegisterCard() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(userState);
+  const location = useLocation();
   const { data, loading, error, fetchData } = useAxios(MEDICATIONADD, 'POST');
   const [selectedPillsRecoil, setSelectedPillsState] = useRecoilState(selectedPillsState);
   const currentPills = useRecoilValue(selectedPillsState);
+  const [MediPhotoState, setMediPhotoState] = useState(false);
 
   const questions = [
     {
@@ -271,7 +273,16 @@ export default function RegisterCard() {
       }
     }
   };
-  const MediPhotoState = localStorage.getItem('MediPhoto');
+  const selectedItem = location.state?.selectedItem || '기본';
+  useEffect(() => {
+    // if (location.state && location.state.selectedItem === 'prevMediphotoState') {
+    if ( location.state?.selectedItem === 'prevMediphotoState') {
+      setMediPhotoState(true); // 조건 만족 시 MediPhotoState를 true로 설정
+    }
+  }, [location.state]);
+  console.log('MediPhotoState',MediPhotoState)
+  // console.log('location.state.selectedItem',location.state.selectedItem)
+
   const handleMediPhotoAdd = () => {
     // navigate('/mypills/photoGuide')
     navigate('/mypills/photoGuide', { state: { selectedItem: 'medicine' } });
@@ -305,9 +316,15 @@ export default function RegisterCard() {
 
       <MedicineWrapper>
         <Title>약 선택</Title>
-        <AddPillButton_ver1 text="약 추가" onClick={() => handlePillAdd('타이레놀')} />
-        {MediPhotoState === 'true' && (
-          <AddPillPhoto onClick={handleMediPhotoAdd}>이미지로 약 추가하기</AddPillPhoto>
+        <AddPillButton_ver1 text="약 추가" />
+        {/* <AddPillButton_ver1 text="약 추가" onClick={() => handlePillAdd('타이레놀')} /> */}
+        {MediPhotoState === true && (
+          <AddPillPhoto 
+          text='이미지로 약 추가하기'
+          onClick={handleMediPhotoAdd}
+          style={{ margin: '1rem' }}
+          >
+          </AddPillPhoto>
         )}
       </MedicineWrapper>
 
