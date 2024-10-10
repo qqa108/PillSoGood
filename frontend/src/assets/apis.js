@@ -1,4 +1,4 @@
-const ENDPOINT = 'http://j11b308.p.ssafy.io:8080/api/';
+const ENDPOINT = 'https://j11b308.p.ssafy.io/api/';
 export const MAIN = `${ENDPOINT}`; // 메인화면 정보 불러오기
 export const LOGIN = `${ENDPOINT}login`; //로그인
 export const LOGOUT = `${ENDPOINT}logout`; //로그아웃
