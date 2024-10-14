@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import ActiveCheckIcon from "../assets/check_active.svg";
 import InactiveCheckIcon from "../assets/check_inactive.svg";
@@ -12,7 +12,7 @@ const SearchResultContainer = styled.div`
   flex-shrink: 0;
   border-radius: 0.375rem;
   border: 1px solid
-    ${({ isActive }) => (isActive ? colors.point1 : colors.point4)};
+    ${({ $isActive }) => ($isActive ? colors.point1 : colors.point4)};
   background: #fff;
   color: #000;
   font-size: 1.25rem;
@@ -36,20 +36,20 @@ const CheckBoxIcon = styled.img`
   height: 1.5rem;
 `;
 
-const SearchResult = ({ text = "임시텍스트" }) => {
-  const [isActive, setIsActive] = useState(false);
-
-  const toggleActive = () => {
-    setIsActive((prevState) => !prevState);
+const SearchResult = ({ id, korName, isActive, onSelect, hideCheckbox }) => {
+  const handleSelect = () => {
+    onSelect(id); // 클릭 시 ID 전달
   };
 
   return (
-    <SearchResultContainer isActive={isActive} onClick={toggleActive}>
-      <SearchResultText>{text}</SearchResultText>
-      <CheckBoxIcon
-        src={isActive ? ActiveCheckIcon : InactiveCheckIcon}
-        alt="check icon"
-      />
+    <SearchResultContainer $isActive={isActive} onClick={handleSelect}>
+      <SearchResultText>{korName}</SearchResultText>
+      {!hideCheckbox && (
+        <CheckBoxIcon
+          src={isActive ? ActiveCheckIcon : InactiveCheckIcon}
+          alt="check icon"
+        />
+      )}
     </SearchResultContainer>
   );
 };

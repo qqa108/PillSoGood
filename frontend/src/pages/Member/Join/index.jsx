@@ -4,6 +4,8 @@ import ContentText from '../ContentText';
 import PillImage from '../PillImage';
 import colors from '../../../assets/colors';
 import { useNavigate } from 'react-router-dom';
+import useAxios from '../../../hook/useAxios';
+import { REGISTER } from '../../../assets/apis';
 
 const Button = styled.div`
     display: flex;
@@ -23,6 +25,10 @@ const Button = styled.div`
 
 function Join() {
     const navigate = useNavigate();
+    const body = { family: '나' };
+    const { data, loading, error } = useAxios(REGISTER, 'POST', body);
+    console.log(error);
+    console.log(data);
     return (
         <ContentContainer>
             <ContentText>회원가입이 완료되었습니다!</ContentText>
@@ -30,7 +36,7 @@ function Join() {
             <Button onClick={() => navigate('/survey')}>
                 내 정보를 입력하고 <br /> 상세하게 안내 받을래요
             </Button>
-            <Button onClick={() => navigate('/home')}>다음에 입력할래요</Button>
+            <Button onClick={() => navigate('/home', { replace: true })}>다음에 입력할래요</Button>
         </ContentContainer>
     );
 }

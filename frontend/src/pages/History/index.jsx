@@ -1,16 +1,12 @@
 import styled from 'styled-components';
 import colors from '../../assets/colors';
-import HistoryItem from './HistoryItem';
-
-// const history = [1, 2, 3];
-const history = [
-    {
-        date: '2024.09.06',
-        hospitalName: '최용훈 이비인후과',
-        pillsNickName: '코로나 약 (7일분)',
-        pillsList: ['타이레놀', '콘택골드캡슐', '포린정', '그린노즈에스시럽'],
-    },
-];
+import { useState } from 'react';
+import PillsItem from '../../components/PillsItem';
+import Modal from '../../components/Modal';
+import HistoryDetail from './HistoryDetail';
+import { useRecoilValue } from 'recoil';
+import { mediListState } from '../../atoms/mediListState';
+import { useNavigate } from 'react-router-dom';
 
 const HistoryContainer = styled.div`
     min-height: calc(100vh - 140px);
@@ -20,6 +16,7 @@ const HistoryContainer = styled.div`
     & > *:not(:last-child) {
         margin-bottom: 15px;
     }
+    margin-bottom: 60px;
 `;
 
 const Text = styled.div`
@@ -52,19 +49,48 @@ const HistoryWrapper = styled.div`
 `;
 
 function History() {
+    const navigate = useNavigate();
+    const goRegister = () => {
+        navigate('/mypills/historyReguisterModal');
+    };
+    const [isModalOpen, setModalOpen] = useState(false);
+    const handleOpenModal = (e) => {
+        setDetail(e);
+        setModalOpen(true);
+    };
+    const handleCloseModal = () => {
+        setDetail(null);
+        setModalOpen(false);
+    };
+    const data = useRecoilValue(mediListState);
+    const [detail, setDetail] = useState();
     return (
-        <HistoryContainer>
-            {history.length > 0 ? (
-                history.map((e, i) => {
-                    return <HistoryItem item={e} key={e} />;
-                })
-            ) : (
-                <HistoryWrapper>
-                    <Text>등록된 복약 기록이 없습니다.</Text>
-                    <Button>복약 기록 불러오기</Button>
-                </HistoryWrapper>
+        <>
+            <HistoryContainer>
+                {data !== null && data.length > 0 ? (
+                    data.map((e, i) => {
+                        return (
+                            <PillsItem
+                                type="history"
+                                info={e}
+                                key={`${e}${i}`}
+                                handleOpenModal={() => handleOpenModal(e)}
+                            />
+                        );
+                    })
+                ) : (
+                    <HistoryWrapper>
+                        <Text>등록된 복약 기록이 없습니다.</Text>
+                        <Button onClick={goRegister}>복약 기록 불러오기</Button>
+                    </HistoryWrapper>
+                )}
+            </HistoryContainer>
+            {isModalOpen && (
+                <Modal onClose={handleCloseModal}>
+                    <HistoryDetail detailInfo={detail} onClose={handleCloseModal} />
+                </Modal>
             )}
-        </HistoryContainer>
+        </>
     );
 }
 

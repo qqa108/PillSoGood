@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,14 +40,17 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.setAllowedOriginPatterns(List.of("https://j11b308.p.ssafy.io", "http://j11b308.p.ssafy.io", "http://localhost:3000")); // 적절히 도메인 설정
+                    corsConfiguration.setAllowedOriginPatterns(List.of(
+                            "https://j11b308.p.ssafy.io",
+                            "http://j11b308.p.ssafy.io",
+                            "http://localhost:5173")); // 적절히 도메인 설정
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                     corsConfiguration.setAllowedHeaders(List.of("*"));
                     corsConfiguration.setAllowCredentials(true);
                     corsConfiguration.setMaxAge(3600L);
                     return corsConfiguration;
                 }))
-                .csrf(csrf -> csrf.disable())  // 새로운 방식으로 CSRF 비활성화
+                .csrf(AbstractHttpConfigurer::disable)  // 새로운 방식으로 CSRF 비활성화
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)) // 인증 실패 시 처리 로직 설정
                 .sessionManagement(sessionManagement ->

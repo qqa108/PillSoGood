@@ -5,6 +5,8 @@ import com.ssafy.project.domain.medicine.entity.Medicine;
 import com.ssafy.project.domain.medicine.repository.MedicineRepository;
 import com.ssafy.project.domain.userDetail.entity.UserDetail;
 import com.ssafy.project.domain.userDetail.repository.UserDetailRepository;
+import com.ssafy.project.domain.userMedication.dto.StatusRequestDTO;
+import com.ssafy.project.domain.userMedication.entity.Status;
 import com.ssafy.project.domain.userMedicationDetail.dto.UserMedicationDetailRequestDTO;
 import com.ssafy.project.domain.userMedicationDetail.dto.UserMedicationDetailResponseDTO;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
@@ -31,7 +33,7 @@ public class UserMedicationService {
 
     //복약정보 추가하기
     public void save(UserMedicationRequestDTO userMedicationRequestDTO) {
-
+        System.out.println("service");
         UserDetail userDetail = userDetailRepository.findById(userMedicationRequestDTO.getUserDetailId()).orElseThrow(() ->
                 new IllegalArgumentException("UserDetail not found"));
 
@@ -71,7 +73,7 @@ public class UserMedicationService {
         UserMedication userMedication = userMedicationRepository.findById(userMedicationId).orElseThrow(() ->
                 new IllegalArgumentException("UserMedication not found"));
 
-        userMedication.update(userMedicationRequestDTO.getName(), userMedicationRequestDTO.getIntakeAt(),
+        userMedication.update(userMedicationRequestDTO.getName(), userMedicationRequestDTO.getStatus(), userMedicationRequestDTO.getIntakeAt(),
                 userMedicationRequestDTO.getPrescriptionDay(), userMedicationRequestDTO.getHospitalName(),
                 userMedicationRequestDTO.getPharmacyName());
 
@@ -85,4 +87,15 @@ public class UserMedicationService {
         }
     }
 
+    //복약카드 수정
+    public void updateUserMedicationStatus(int userMedicationId, StatusRequestDTO requestDTO) {
+        // 문자열을 enum으로 변환
+        Status enumStatus = Status.valueOf(requestDTO.getStatus().toUpperCase());
+
+        UserMedication userMedication = userMedicationRepository.findById(userMedicationId).orElseThrow(() ->
+                new IllegalArgumentException("UserMedication not found"));
+        userMedication.updateStatus(enumStatus);
+
+        userMedicationRepository.save(userMedication);
+    }
 }

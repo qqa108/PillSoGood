@@ -3,16 +3,22 @@ import styled from 'styled-components';
 import colors from '../assets/colors';
 
 // 공통 스타일
-const BaseButton = styled.button`
-    width: ${(props) => props.width || '80%'};
-    height: 2.875rem;
-    flex-shrink: 0;
-    border-radius: 0.625rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-`;
+const BaseButton = styled.button.attrs((props) => ({
+    bgColor: undefined, 
+    borderColor: undefined, 
+    textColor: undefined, 
+    marginBottom: undefined
+  }))`
+      width: ${(props) => props.width || '80%'};
+      height: 2.875rem;
+      flex-shrink: 0;
+      border-radius: 0.625rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      margin-bottom: ${(props) => (props.marginBottom ? props.marginBottom : '5.5rem')}; 
+  `;
 
 // 활성 버튼 (테두리, 배경, 글씨 색 바꾸고 싶으면 props로 직접 넘겨주기)
 const EnabledButton = styled(BaseButton)`
@@ -41,7 +47,7 @@ const DisabledButton = styled(BaseButton)`
 `;
 
 
-function LongNextButton({ label, onClick, isSelected, width, bgColor, borderColor, textColor}) {
+function LongNextButton({ label, onClick, isSelected, width, bgColor, borderColor, textColor,marginBottom}) {
     return isSelected ? (
         <EnabledButton 
             onClick={onClick} 
@@ -49,11 +55,16 @@ function LongNextButton({ label, onClick, isSelected, width, bgColor, borderColo
             bgColor={bgColor} 
             borderColor={borderColor} 
             textColor={textColor}
+            marginBottom={marginBottom}
         >
             {label}
         </EnabledButton>
     ) : (
-        <DisabledButton disabled={!isSelected}>
+        <DisabledButton 
+            disabled={!isSelected}
+            width={width}
+            marginBottom={marginBottom}
+        >
             {label}
         </DisabledButton>
     );

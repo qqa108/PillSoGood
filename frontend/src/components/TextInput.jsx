@@ -5,6 +5,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import CustomCalendar from './CustomCalendar';  // 커스텀 헤더 컴포넌트 임포트
 
+
+
 const TextInputContainer = styled.div`
     width: 100%;
     margin-top: 0.825rem;
@@ -20,7 +22,6 @@ const Label = styled.div`
     justify-content: center;
     flex-shrink: 0;
     color: #000;
-    font-family: 'NanumGothic', sans-serif;
     font-size: 1rem;
     font-weight: 400;
     line-height: normal;
@@ -117,7 +118,8 @@ function TextInput({ label, value, onChange, placeholder, isDateInput, type = 't
                                     onChange={handleDateChange}
                                     inline
                                     locale="ko"
-                                    dateFormat="yyyy/MM/dd"
+                                    maxDate={new Date()}
+                                    dateFormat="YYYY-MM-dd"
                                     renderCustomHeader={(props) => (
                                         <CustomCalendar {...props} />
                                     )}

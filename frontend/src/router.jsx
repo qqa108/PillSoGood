@@ -1,4 +1,3 @@
-// src/router.js
 import { createBrowserRouter } from 'react-router-dom';
 import App from './App'; // App 컴포넌트 import
 import MyPills from './pages/MyPills';
@@ -8,20 +7,51 @@ import History from './pages/History';
 import Profile from './pages/Profile';
 import Survey from './pages/Survey/survey';
 import SurveyEdit from './pages/Survey/surveyEdit';
-import Login from './pages/member/Login';
+import Login from './pages/Member/Login';
 import Member from './pages/Member';
-import Join from './pages/member/Join';
-import PillCardRegister from './pages/MyPills/PillCardRegister';
-import PhotoGuide from './pages/MyPills/PillCardRegister/photoGuide';
+import Join from './pages/Member/Join';
+import PhotoGuide from './pages/MyPills/PillCardRegister/PhotoRegister/PhotoGuide';
+import HistoryRegisterModal from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRegisterModal';
+import HistoryRegister from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRegister';
+import RegisterCard from './pages/MyPills/PillCardRegister/RegisterCard';
+import RegisterPill from './pages/Search/searchForRegister';
+import DrugSearch from './pages/Search/searchforAll';
+import Test from './pages/Member/test';
+import Compare from './pages/Compare';
+import DrugDetail from './pages/Search/DrugDetail';
+import FamilyDetail from './pages/Profile/familyDetail';
+// import HistoryRequest from './pages/MyPills/PillCardRegister/HistoryRegister/HistoryRequest';
+import Logout from './pages/Member/Logout';
+import Signout from './pages/Member/Signout';
+import ErrorBoundary from './pages/ErrorBoundary';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <App />, // App 컴포넌트를 라우터의 루트 요소로 설정
+        element: <App />,
+        errorElement: <ErrorBoundary />, // 오류 핸들링 추가
         children: [
             {
                 path: 'mypills',
                 element: <MyPills />,
+                children: [
+                    {
+                        path: 'photoGuide',
+                        element: <PhotoGuide />,
+                    },
+                    {
+                        path: 'mediReguisterModal',
+                        element: <HistoryRegisterModal />,
+                    },
+                    {
+                        path: 'mediRegister',
+                        element: <HistoryRegister />,
+                    },
+                    {
+                        path: 'registerCard',
+                        element: <RegisterCard />,
+                    },
+                ],
             },
             {
                 path: 'notification',
@@ -38,6 +68,12 @@ const router = createBrowserRouter([
             {
                 path: 'profile',
                 element: <Profile />,
+                children: [
+                    {
+                        path: ':family',
+                        element: <FamilyDetail />,
+                    },
+                ],
             },
             {
                 path: 'survey',
@@ -47,22 +83,27 @@ const router = createBrowserRouter([
                 path: 'surveyEdit',
                 element: <SurveyEdit />,
             },
-        ],
-    },
-
-    {
-        path: '/member',
-        element: <Member />,
-        children: [
             {
-                path: 'photoGuide',
-                element: <PhotoGuide />,
+                path: 'search/register', // 수정된 부분
+                element: <RegisterPill />,
+            },
+            {
+                path: 'search',
+                element: <DrugSearch />,
+            },
+            {
+                path: 'search/medicine/:id',
+                element: <DrugDetail />,
+            },
+            {
+                path: 'home/compare',
+                element: <Compare />,
             },
         ],
     },
     {
-        path: '/cardRegister',
-        element: <PillCardRegister />,
+        path: '/member',
+        element: <Member />,
         children: [
             {
                 path: 'login',
@@ -72,8 +113,19 @@ const router = createBrowserRouter([
                 path: 'join',
                 element: <Join />,
             },
+            {
+                path: 'test',
+                element: <Test />,
+            },
+            {
+                path: 'logout',
+                element: <Logout />,
+            },
+            {
+                path: 'signout',
+                element: <Signout />,
+            },
         ],
     },
 ]);
-
 export default router;

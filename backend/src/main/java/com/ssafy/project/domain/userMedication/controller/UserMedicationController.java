@@ -1,7 +1,9 @@
 package com.ssafy.project.domain.userMedication.controller;
 
+import com.ssafy.project.domain.userMedication.dto.StatusRequestDTO;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationResponseDTO;
+import com.ssafy.project.domain.userMedication.entity.Status;
 import com.ssafy.project.domain.userMedication.service.UserMedicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ public class UserMedicationController {
     //복약카드 추가
     @PostMapping("")
     public ResponseEntity<?> saveUserMedication(@RequestBody UserMedicationRequestDTO userMedicationRequestDTO) {
+        System.out.println("controller");
         userMedicationService.save(userMedicationRequestDTO);
         return ResponseEntity.ok("복약정보가 성공적으로 저장되었습니다");
     }
@@ -26,6 +29,7 @@ public class UserMedicationController {
     //회원의 모든 복약카드 불러오기
     @GetMapping("/{userDetailId}")
     public ResponseEntity<List<UserMedicationResponseDTO>> getAllUserMedication(@PathVariable int userDetailId) {
+        System.out.println(userDetailId);
         return ResponseEntity.ok(userMedicationService.getUserMedication(userDetailId));
     }
 
@@ -36,6 +40,10 @@ public class UserMedicationController {
         return ResponseEntity.ok("복약카드 업데이트 완료");
     }
 
-
-
+    //복약카드 상태 수정
+    @PutMapping("/{userMedicationId}/status")
+    public ResponseEntity<String> updateUserMedicationStatus(@PathVariable int userMedicationId, @RequestBody StatusRequestDTO requestDTO) {
+        userMedicationService.updateUserMedicationStatus(userMedicationId, requestDTO);
+        return ResponseEntity.ok("복약카드 상태 업데이트 완료");
+    }
 }
