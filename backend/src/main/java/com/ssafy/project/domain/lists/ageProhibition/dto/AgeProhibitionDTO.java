@@ -3,7 +3,10 @@ package com.ssafy.project.domain.lists.ageProhibition.dto;
 import com.ssafy.project.domain.lists.ageProhibition.entity.AgeField;
 import com.ssafy.project.domain.lists.ageProhibition.entity.AgeProhibition;
 import com.ssafy.project.domain.lists.ageProhibition.entity.AgeRange;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

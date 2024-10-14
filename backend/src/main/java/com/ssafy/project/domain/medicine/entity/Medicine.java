@@ -5,7 +5,6 @@ import com.ssafy.project.domain.lists.amountProhibition.entity.AmountProhibition
 import com.ssafy.project.domain.lists.medicineInformation.entity.MedicineInformation;
 import com.ssafy.project.domain.lists.pregnancyProhibition.entity.PregnancyProhibition;
 import com.ssafy.project.domain.lists.seniorProhibition.entity.SeniorProhibition;
-import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -56,10 +55,6 @@ public class Medicine {
 
     @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageUrl;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_medication_detail_id", referencedColumnName = "id")
-    private UserMedicationDetail userMedicationDetail;
 
     // Medicine이 여러 MedicineInformation을 갖고 있는 일대다 관계 설정
     @OneToMany(mappedBy = "medicine", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -3,10 +3,13 @@ package com.ssafy.project.domain.userMedication.dto;
 import com.ssafy.project.domain.userDetail.entity.UserDetail;
 import com.ssafy.project.domain.userMedication.entity.Status;
 import com.ssafy.project.domain.userMedication.entity.UserMedication;
-import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
 import com.ssafy.project.domain.userMedicationDetail.dto.UserMedicationDetailRequestDTO;
-import lombok.*;
+import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,7 @@ public class UserMedicationRequestDTO {
     private String name;
     private Status status;
     private int userDetailId;
-    private String intakeAt;
+    private LocalDateTime intakeAt;
     private int prescriptionDay;
     private String hospitalName;
     private String pharmacyName;

@@ -1,7 +1,10 @@
 package com.ssafy.project.domain.lists.seniorProhibition.dto;
 
 import com.ssafy.project.domain.lists.seniorProhibition.entity.SeniorProhibition;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

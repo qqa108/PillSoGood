@@ -2,7 +2,10 @@ package com.ssafy.project.domain.userMedicationDetail.dto;
 
 import com.ssafy.project.domain.medicine.dto.MedicineDTO;
 import com.ssafy.project.domain.userMedicationDetail.entity.UserMedicationDetail;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

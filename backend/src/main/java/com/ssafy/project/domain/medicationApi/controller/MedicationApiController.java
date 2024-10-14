@@ -1,10 +1,8 @@
-
 package com.ssafy.project.domain.medicationApi.controller;
 
 import com.ssafy.project.domain.medicationApi.dto.MedicationApiKey;
 import com.ssafy.project.domain.medicationApi.dto.MedicationApiRequestDto;
 import com.ssafy.project.domain.medicationApi.service.MedicationApiService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +30,7 @@ public class MedicationApiController {
         if (userId <= 0) {
             throw new IllegalArgumentException("유효하지 않은 사용자 ID");
         }
-
+        
         // 서비스 호출 후 필요한 필드만 추출
         return ResponseEntity.ok(medicationApiService.requestMedication(key.getCallbackId(), userId));
     }

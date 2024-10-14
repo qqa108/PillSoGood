@@ -3,7 +3,6 @@ package com.ssafy.project.domain.userMedication.controller;
 import com.ssafy.project.domain.userMedication.dto.StatusRequestDTO;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationRequestDTO;
 import com.ssafy.project.domain.userMedication.dto.UserMedicationResponseDTO;
-import com.ssafy.project.domain.userMedication.entity.Status;
 import com.ssafy.project.domain.userMedication.service.UserMedicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,10 @@
 package com.ssafy.project.domain.lists.pregnancyProhibition.dto;
 
 import com.ssafy.project.domain.lists.pregnancyProhibition.entity.PregnancyProhibition;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

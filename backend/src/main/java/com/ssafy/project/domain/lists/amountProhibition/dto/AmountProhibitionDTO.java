@@ -2,7 +2,10 @@ package com.ssafy.project.domain.lists.amountProhibition.dto;
 
 import com.ssafy.project.domain.lists.amountProhibition.entity.AmountProhibition;
 import com.ssafy.project.domain.lists.amountProhibition.entity.Field;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

@@ -5,9 +5,7 @@ import com.ssafy.project.domain.lists.amountProhibition.dto.AmountProhibitionDTO
 import com.ssafy.project.domain.lists.combinationProhibition.dto.CombinationProhibitionDTO;
 import com.ssafy.project.domain.lists.medicineInformation.dto.MedicineInformationDTO;
 import com.ssafy.project.domain.lists.pregnancyProhibition.dto.PregnancyProhibitionDTO;
-import com.ssafy.project.domain.lists.pregnancyProhibition.entity.PregnancyProhibition;
 import com.ssafy.project.domain.lists.seniorProhibition.dto.SeniorProhibitionDTO;
-import com.ssafy.project.domain.lists.seniorProhibition.entity.SeniorProhibition;
 import com.ssafy.project.domain.medicine.dto.MedicineDTO;
 import com.ssafy.project.domain.medicine.dto.MedicineListDTO;
 import com.ssafy.project.domain.medicine.dto.MedicinePreviewDTO;
@@ -19,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
